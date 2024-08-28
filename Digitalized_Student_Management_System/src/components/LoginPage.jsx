@@ -1,27 +1,25 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect } from 'react';
 import 'boxicons/css/boxicons.min.css';
 import StudentLogo from './studentsImg.png';
 import FacultyLogo from './Faculty.png';
 import HODLogo from './student.png';
 import backgroundImage from './loginBackground.jpg';
 import ScrollReveal from 'scrollreveal';
+import {motion} from 'framer-motion'
 
 function LoginPage() {
   const [activeItem, setActiveItem] = useState('Student');
-  const imageRef = useRef(null); 
+  const [trig, setTrig] = useState(true);
 
   const handleItemClick = (item) => {
     setActiveItem(item);
-    console.log(imageRef.current);
-    console.log(activeItem);
-
-    
+    setTrig(!trig);  // Toggle trig state to trigger the animation
   };
 
   const switchImage = () => {
     switch (activeItem) {
       case 'HOD':
-        return HODLogo ;
+        return HODLogo;
       case 'Faculty':
         return FacultyLogo;
       case 'Student':
@@ -31,23 +29,6 @@ function LoginPage() {
     }
   };
 
-const Animation =(para)=>{
-  const sr = ScrollReveal();
-
-  
-  sr.reveal(para, {
-    duration: 1000,           // Duration of the animation in milliseconds
-    distance: '50px',         // Distance the element moves during the animation
-    easing: 'ease-in-out',    // Easing function for the animation
-    origin: 'left',         // Direction from which the element animates
-    opacity: 0,               // Initial opacity of the element
-    reset: true               // Whether the animation should reset when the element leaves the viewport
-  });
-}
-
-  useEffect(() => {
-    Animation(imageRef.current)
-  }, [activeItem]);
  
 
   return (
@@ -56,34 +37,38 @@ const Animation =(para)=>{
         className="bg-custom-bg bg-cover bg-center h-screen w-2/4 h-full flex justify-end items-center p-0"
         style={{ backgroundImage: `url(${backgroundImage})` }}
       >
-        <div className="justify-start items-start">
-          <img
+        <div className="justify-start items-start" id="imgDiv">
+          <motion.img
+            key={activeItem}
+
+            initial={{ x:-100 }} 
+            animate={{ x:0 }}
+            exit={{x:100}} 
+            transition={{ duration:1.5  }}
+
             src={switchImage()}
             alt={activeItem}
             className="w-full"
-            ref={imageRef} 
           />
         </div>
+        
         
         <ol className="w-40 text-right mr-0 text-white">
           <li
             className={`mt-5 p-2 rounded-l-md border-black border-l-2 border-b-2 ${activeItem === 'HOD' ? 'bg-slate-100 text-black' : 'bg-purple-500'}`}
-            onClick={() => {handleItemClick('HOD') }}
-            
+            onClick={() => handleItemClick('HOD')}
           >
             HOD
           </li>
           <li
             className={`mt-5 p-2 rounded-l-md border-black border-l-2 border-b-2 ${activeItem === 'Faculty' ? 'bg-slate-100 text-black' : 'bg-purple-500'}`}
             onClick={() => handleItemClick('Faculty')}
-            
           >
             Faculty
           </li>
           <li
             className={`mt-5 p-2 rounded-l-md border-black border-l-2 border-b-2 ${activeItem === 'Student' ? 'bg-slate-100 text-black' : 'bg-purple-500'}`}
             onClick={() => handleItemClick('Student')}
-            
           >
             Student
           </li>
@@ -98,7 +83,6 @@ const Animation =(para)=>{
               type="text"
               placeholder="Username"
               className="text-stone-950 p-2 pl-10 rounded w-full border-solid border-r-2 border-b-2"
-              
             />
           </div>
           <div className="relative">
@@ -107,24 +91,22 @@ const Animation =(para)=>{
               type="password"
               placeholder="Password"
               className="text-stone-950 p-2 pl-10 rounded w-full border-solid border-r-2 border-b-2"
-            
             />
           </div>
-          <button type="button" className="text-orange-400 text-sm" >Forgot password?</button>
+          <button type="button" className="text-orange-400 text-sm">Forgot password?</button>
           <div className="text-center">
             <button
               type="button"
               onClick={() => console.log('Login clicked')}
               className="bg-purple-400 rounded text-white mt-4 w-full h-8"
-              
             >
               Login
             </button>
           </div>
-          <div className="text-center mt-3" >
+          <div className="text-center mt-3">
             --------------------------
           </div>
-          <div className="text-center mt-3 text-2xl hover:text-purple-500" >
+          <div className="text-center mt-3 text-2xl hover:text-purple-500">
             <i className="bx bxl-google-plus-circle"></i>
           </div>
         </div>
