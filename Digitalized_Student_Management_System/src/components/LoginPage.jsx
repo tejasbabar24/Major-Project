@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import 'boxicons/css/boxicons.min.css';
-import StudentLogo from './studentsImg.png';
-import FacultyLogo from './Faculty.png';
-import HODLogo from './student.png';
-import backgroundImage from './loginBackground.jpg';
+import StudentLogo from '../assets/studentsImg.png';
+import FacultyLogo from '../assets/Faculty.png';
+import HODLogo from '../assets/student.png';
+import backgroundImage from '../assets/loginBackground.jpg';
 import ScrollReveal from 'scrollreveal';
 import {motion} from 'framer-motion'
 
