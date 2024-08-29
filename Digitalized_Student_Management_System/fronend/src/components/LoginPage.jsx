@@ -65,25 +65,25 @@ function LoginPage() {
         
         <ol className="w-40 text-right mr-0 text-white">
           <li
-            className={`mt-5 p-2 rounded-l-md border-black border-l-2 border-b-2 ${activeItem === 'HOD' ? 'bg-slate-100 text-black' : 'bg-purple-500'}`}
+            className={`mt-5 p-2 cursor-pointer rounded-l-md border-black border-l-2 border-b-2 ${activeItem === 'HOD' ? 'bg-slate-100 text-black' : 'bg-purple-500'}`}
             onClick={() => handleItemClick('HOD')}
           >
             HOD
           </li>
           <li
-            className={`mt-5 p-2 rounded-l-md border-black border-l-2 border-b-2 ${activeItem === 'Faculty' ? 'bg-slate-100 text-black' : 'bg-purple-500'}`}
+            className={`mt-5 p-2 cursor-pointer rounded-l-md border-black border-l-2 border-b-2 ${activeItem === 'Faculty' ? 'bg-slate-100 text-black' : 'bg-purple-500'}`}
             onClick={() => handleItemClick('Faculty')}
           >
             Faculty
           </li>
           <li
-            className={`mt-5 p-2 rounded-l-md border-black border-l-2 border-b-2 ${activeItem === 'Student' ? 'bg-slate-100 text-black' : 'bg-purple-500'}`}
+            className={`mt-5 p-2 cursor-pointer rounded-l-md border-black border-l-2 border-b-2 ${activeItem === 'Student' ? 'bg-slate-100 text-black' : 'bg-purple-500'}`}
             onClick={() => handleItemClick('Student')}
           >
             Student
           </li>
           <li
-            className={`mt-5 p-2 rounded-l-md border-black border-l-2 border-b-2 ${activeItem === 'Parent' ? 'bg-slate-100 text-black' : 'bg-purple-500'}`}
+            className={`mt-5 p-2 cursor-pointer rounded-l-md border-black border-l-2 border-b-2 ${activeItem === 'Parent' ? 'bg-slate-100 text-black' : 'bg-purple-500'}`}
             onClick={() => handleItemClick('Parent')}
           >
             Parent

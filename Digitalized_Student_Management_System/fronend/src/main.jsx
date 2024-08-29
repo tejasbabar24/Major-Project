@@ -22,7 +22,7 @@ const router = createBrowserRouter([
       {
         path:"/home",
         element:(
-            <Home/>
+          <Home/>
         )
       },
       {
@@ -33,6 +33,36 @@ const router = createBrowserRouter([
       },
       {
         path:"/add-faculty",
+        element:(
+            <Home/>
+        )
+      },
+      {
+        path:"/class-list",
+        element:(
+            <Home/>
+        )
+      },
+      {
+        path:"/exam",
+        element:(
+            <Home/>
+        )
+      },
+      {
+        path:"/exam-result",
+        element:(
+            <Home/>
+        )
+      },
+      {
+        path:"/timetable",
+        element:(
+            <Home/>
+        )
+      },
+      {
+        path:"/homework",
         element:(
             <Home/>
         )

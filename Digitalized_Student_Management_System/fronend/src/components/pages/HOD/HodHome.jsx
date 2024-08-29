@@ -63,18 +63,22 @@ function Home() {
          <Card
           logo={TimetableLogo}
           label="Timetable"
+          slug='timetable'
         />
         <Card
           logo={HomeworkLogo}
           label="Homework"
+          slug='homework'
         />
         <Card
           logo={NotifyLogo}
           label="Notice"
+          slug='notice'
         />
         <Card
           logo={ResultLogo}
           label="Exam Result"
+          slug='exam-result'
         />
         
 
