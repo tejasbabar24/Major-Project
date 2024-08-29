@@ -4,10 +4,11 @@ import StudentLogo from '../assets/studentsImg.png';
 import FacultyLogo from '../assets/Faculty.png';
 import HODLogo from '../assets/student.png';
 import backgroundImage from '../assets/loginBackground.jpg';
-import ScrollReveal from 'scrollreveal';
+
 import 'aos/dist/aos.css'; 
 import AOS from 'aos';
 import {motion} from 'framer-motion'
+import { Link } from 'react-router-dom';
 
 
 function LoginPage() {
@@ -115,6 +116,9 @@ function LoginPage() {
           </div>
           <div className="text-center mt-3 text-2xl hover:text-purple-500">
             <i className="bx bxl-google-plus-circle"></i>
+          </div>
+          <div className='text-center mt-3 text-md hover:text-purple-500'>
+            <Link to='/signup'>dont have an account ? </Link>
           </div>
         </div>
       </div>
