@@ -31,6 +31,8 @@ function LoginPage() {
         return FacultyLogo;
       case 'Student':
         return StudentLogo;
+      case 'Parent':
+        return StudentLogo;
       default:
         return StudentLogo;
     }
@@ -41,7 +43,7 @@ function LoginPage() {
   return (
     <div className="flex flex-row w-full h-screen font-merriweather">
       <div
-        className="bg-custom-bg bg-cover bg-center h-screen w-2/4 h-full flex justify-end items-center p-0"
+        className="bg-custom-bg bg-cover bg-center h-screen w-2/4  flex justify-end items-center p-0"
         style={{ backgroundImage: `url(${backgroundImage})` }}
       >
         <div className="justify-start items-start" id="imgDiv">
@@ -80,6 +82,13 @@ function LoginPage() {
           >
             Student
           </li>
+          <li
+            className={`mt-5 p-2 rounded-l-md border-black border-l-2 border-b-2 ${activeItem === 'Parent' ? 'bg-slate-100 text-black' : 'bg-purple-500'}`}
+            onClick={() => handleItemClick('Parent')}
+          >
+            Parent
+          </li>
+       
         </ol>
       </div>
       <div className="w-full h-full flex justify-center items-center bg-slate-100">
