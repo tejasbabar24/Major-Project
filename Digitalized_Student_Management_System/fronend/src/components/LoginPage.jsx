@@ -5,17 +5,23 @@ import FacultyLogo from '../assets/Faculty.png';
 import HODLogo from '../assets/student.png';
 import backgroundImage from '../assets/loginBackground.jpg';
 import ScrollReveal from 'scrollreveal';
+import 'aos/dist/aos.css'; 
+import AOS from 'aos';
 import {motion} from 'framer-motion'
+
 
 function LoginPage() {
   const [activeItem, setActiveItem] = useState('Student');
-  const [trig, setTrig] = useState(true);
 
-  const handleItemClick = (item) => {
+  useEffect(() => {
+    AOS.init({ duration: 1000 }); 
+  }, []);
+
+  const handleItemClick =(item)=>{
     setActiveItem(item);
-    setTrig(!trig);  // Toggle trig state to trigger the animation
-  };
+  }
 
+  
   const switchImage = () => {
     switch (activeItem) {
       case 'HOD':
@@ -53,6 +59,7 @@ function LoginPage() {
         </div>
         
         
+        
         <ol className="w-40 text-right mr-0 text-white">
           <li
             className={`mt-5 p-2 rounded-l-md border-black border-l-2 border-b-2 ${activeItem === 'HOD' ? 'bg-slate-100 text-black' : 'bg-purple-500'}`}
@@ -75,7 +82,7 @@ function LoginPage() {
         </ol>
       </div>
       <div className="w-full h-full flex justify-center items-center bg-slate-100">
-        <div className="p-10 rounded">
+        <div className="p-10 rounded" data-aos="fade-up">
           <p className="mb-4 text-stone-950 text-2xl text-center"> {activeItem} Login</p>
           <div className="relative mb-4">
             <i className="bx bx-user absolute left-3 top-3 text-gray-400"></i>
