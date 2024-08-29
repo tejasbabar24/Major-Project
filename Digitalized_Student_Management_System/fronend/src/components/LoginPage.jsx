@@ -4,7 +4,7 @@ import StudentLogo from '../assets/studentsImg.png';
 import FacultyLogo from '../assets/Faculty.png';
 import HODLogo from '../assets/student.png';
 import backgroundImage from '../assets/loginBackground.jpg';
-
+import { useNavigate } from 'react-router-dom';
 import 'aos/dist/aos.css'; 
 import AOS from 'aos';
 import {motion} from 'framer-motion'
@@ -13,7 +13,7 @@ import { Link } from 'react-router-dom';
 
 function LoginPage() {
   const [activeItem, setActiveItem] = useState('Student');
-
+  const navigate = useNavigate()
   useEffect(() => {
     AOS.init({ duration: 1000 }); 
   }, []);
@@ -114,7 +114,7 @@ function LoginPage() {
           <div className="text-center">
             <button
               type="button"
-              onClick={() => console.log('Login clicked')}
+              onClick={() => navigate("/home")}
               className="bg-purple-400 rounded text-white mt-4 w-full h-8"
             >
               Login
