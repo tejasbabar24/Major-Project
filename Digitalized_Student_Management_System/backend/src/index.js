@@ -1,6 +1,7 @@
 import dotenv from "dotenv";
 import connectDB from "./db/index.js";
 import { app } from "./app.js";
+import User from "./models/user.models.js"
 
 dotenv.config()
 
@@ -12,4 +13,10 @@ connectDB()
 })
 .catch((err)=>{
     console.log("MONGODB CONNECTION FAILED!!",err);
+})
+
+app.post('/register',(req,res)=>{
+    User.create(req.body)
+    .then(users => res.json(users))
+    .catch(err => res.json(err))
 })
