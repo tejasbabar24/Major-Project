@@ -7,6 +7,7 @@ import backgroundImage from '../../assets/loginBackground.jpg';
 import 'aos/dist/aos.css';
 import AOS from 'aos';
 import { motion } from 'framer-motion'
+import axios from 'axios'
 
 
 
@@ -40,6 +41,13 @@ function SignUp() {
     }
   };
 
+  const handleSubmit=(e)=>{
+    e.preventDefault();
+    axios.post(`https://localhost:8000/register`,{hod_username,hod_email,hod_password,hod_college_name,hod_department_name})
+    .then(result => console.log(result))
+    .catch(err=>console.log(err))
+  }
+
   const renderComponent = (item) => {
     switch (item) {
       case 'HOD':
@@ -51,6 +59,9 @@ function SignUp() {
               <input id='hod_password' type="text" placeholder='Create Password' className='text-stone-950 p-2 pl-10 rounded w-full border-solid border-r-2 border-b-2 m-3' />
               <input id='hod_college_name' type="text" placeholder='Enter College Name' className='text-stone-950 p-2 pl-10 rounded w-full border-solid border-r-2 border-b-2 m-3' />
               <input id='hod_department_name' type="text" placeholder='Enter Department' className='text-stone-950 p-2 pl-10 rounded w-full border-solid border-r-2 border-b-2 m-3' />
+            
+            <button type="submit" className='text-stone-950 p-2 pl-10 rounded w-full border-solid border-r-2 border-b-2 m-3'>Register</button>
+
             </form>
           </div>
         )
