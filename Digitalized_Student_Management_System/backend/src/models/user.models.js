@@ -12,7 +12,6 @@ const userSchema = new mongoose.Schema({
     },
     role:{
         type:String,
-        required:true,
         index:true,
         trim:true
     },
@@ -22,12 +21,11 @@ const userSchema = new mongoose.Schema({
         trim:true,
     },
     password:{
-        type:password,
+        type:String,
         required:true
     },
     photo:{
         type:String,
-        required:true
     },
     clgName:{
         type:String,

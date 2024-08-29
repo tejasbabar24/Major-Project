@@ -8,16 +8,18 @@ import 'aos/dist/aos.css';
 import AOS from 'aos';
 import { motion } from 'framer-motion'
 import axios from 'axios'
+import { useNavigate } from 'react-router';
 
 
 
 function SignUp() {
   const [activeItem, setActiveItem] = useState('HOD');
-  const [hod_username,sethod_username]=useState();
-  const [hod_email,sethod_email]=useState();
-  const[hod_password,sethod_password]=useState();
-  const [hod_college_name,sethod_college_name]=useState();
-  const [hod_department_name,sethod_department_name]=useState();
+  const [username,sethod_username]=useState();
+  const [email,sethod_email]=useState();
+  const[password,sethod_password]=useState();
+  const [clgName,sethod_college_name]=useState();
+  const [deptName,sethod_department_name]=useState();
+  const navigate=useNavigate()
 
   useEffect(() => {
     AOS.init({ duration: 1000 });
@@ -43,8 +45,10 @@ function SignUp() {
 
   const handleSubmit=(e)=>{
     e.preventDefault();
-    axios.post(`https://localhost:8000/register`,{hod_username,hod_email,hod_password,hod_college_name,hod_department_name})
-    .then(result => console.log(result))
+    axios.post(`http://localhost:8000/register`,{username,email,password,clgName,deptName})
+    .then(result =>  { console.log(result)
+      navigate('/home')
+    })
     .catch(err=>console.log(err))
   }
 
@@ -53,12 +57,12 @@ function SignUp() {
       case 'HOD':
         return (
           <div className=' flex flex-col'>
-            <form action="" className=' justify-center align-ccenter flex flex-col '>
-              <input id='hod_username' type="text" placeholder='Username' className='text-stone-950 p-2 pl-10 rounded w-full border-solid border-r-2 border-b-2 m-3' />
-              <input id='hod_email' type="email" placeholder='Email Id' className='text-stone-950 p-2 pl-10 rounded w-full border-solid border-r-2 border-b-2 m-3' />
-              <input id='hod_password' type="text" placeholder='Create Password' className='text-stone-950 p-2 pl-10 rounded w-full border-solid border-r-2 border-b-2 m-3' />
-              <input id='hod_college_name' type="text" placeholder='Enter College Name' className='text-stone-950 p-2 pl-10 rounded w-full border-solid border-r-2 border-b-2 m-3' />
-              <input id='hod_department_name' type="text" placeholder='Enter Department' className='text-stone-950 p-2 pl-10 rounded w-full border-solid border-r-2 border-b-2 m-3' />
+            <form action="" className=' justify-center align-ccenter flex flex-col ' onSubmit={handleSubmit}>
+              <input id='hod_username' type="text" placeholder='Username' className='text-stone-950 p-2 pl-10 rounded w-full border-solid border-r-2 border-b-2 m-3'onChange={(e)=>sethod_username(e.target.value)} />
+              <input id='hod_email' type="email" placeholder='Email Id' className='text-stone-950 p-2 pl-10 rounded w-full border-solid border-r-2 border-b-2 m-3' onChange={(e)=>sethod_email(e.target.value)}/>
+              <input id='hod_password' type="text" placeholder='Create Password' className='text-stone-950 p-2 pl-10 rounded w-full border-solid border-r-2 border-b-2 m-3' onChange={(e)=>sethod_password(e.target.value)}/>
+              <input id='hod_college_name' type="text" placeholder='Enter College Name' className='text-stone-950 p-2 pl-10 rounded w-full border-solid border-r-2 border-b-2 m-3' onChange={(e)=>sethod_college_name(e.target.value)}/>
+              <input id='hod_department_name' type="text" placeholder='Enter Department' className='text-stone-950 p-2 pl-10 rounded w-full border-solid border-r-2 border-b-2 m-3' onChange={(e)=>sethod_department_name(e.target.value)}/>
             
             <button type="submit" className='text-stone-950 p-2 pl-10 rounded w-full border-solid border-r-2 border-b-2 m-3'>Register</button>
 
