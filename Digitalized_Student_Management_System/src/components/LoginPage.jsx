@@ -17,8 +17,11 @@ function LoginPage() {
     AOS.init({ duration: 1000 }); 
   }, []);
 
+  const handleItemClick =(item)=>{
+    setActiveItem(item);
+  }
 
-
+  
   const switchImage = () => {
     switch (activeItem) {
       case 'HOD':
