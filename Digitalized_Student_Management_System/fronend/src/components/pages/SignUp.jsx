@@ -69,10 +69,22 @@ function SignUp() {
             </form>
           </div>
         )
-      case 'Faculty':
+      case 'Parent':
         return FacultyLogo;
       case 'Student':
-        return StudentLogo;
+        return(
+          <div className=''>
+            <form action="" className='flex flex-col'>
+              <div >
+                <input type="text" placeholder='First Name' className='text-stone-950 p-2 pl-10 rounded  border-solid border-r-2 border-b-2 m-3' />
+                <input type="text" placeholder='Last Name'  className='text-stone-950 p-2 pl-10 rounded  border-solid border-r-2 border-b-2 m-3'  />
+              </div>
+              <div>
+                <input type="text" placeholder='Enter Enrollment No'  className='text-stone-950 p-2 pl-10 rounded border-solid border-r-2 border-b-2 m-3' />
+              </div>
+            </form>
+          </div>
+        )
       default:
         return StudentLogo;
     }
@@ -104,19 +116,25 @@ function SignUp() {
 
         <ol className="w-40 text-right mr-0 text-white">
           <li
-            className={`mt-5 p-2 rounded-l-md border-black border-l-2 border-b-2 ${activeItem === 'HOD' ? 'bg-slate-100 text-black' : 'bg-purple-500'}`}
+            className={`mt-5 p-2 cursor-pointer rounded-l-md border-black border-l-2 border-b-2 ${activeItem === 'HOD' ? 'bg-slate-100 text-black' : 'bg-purple-500'}`}
             onClick={() => handleItemClick('HOD')}
           >
             HOD
           </li>
 
           <li
-            className={`mt-5 p-2 rounded-l-md border-black border-l-2 border-b-2 ${activeItem === 'Student' ? 'bg-slate-100 text-black' : 'bg-purple-500'}`}
+            className={`mt-5 p-2 cursor-pointer rounded-l-md border-black border-l-2 border-b-2 ${activeItem === 'Student' ? 'bg-slate-100 text-black' : 'bg-purple-500'}`}
             onClick={() => handleItemClick('Student')}
           >
             Student
           </li>
-        </ol>
+          <li
+            className={`mt-5 p-2 rounded-l-md border-black border-l-2 border-b-2 ${activeItem === 'Parent' ? 'bg-slate-100 text-black' : 'bg-purple-500'}`}
+            onClick={() => handleItemClick('Parent')}
+          >
+            Parent
+          </li>
+       </ol>
       </div>
       <div className="w-full h-full flex justify-center items-center bg-slate-100">
         <div className="p-10 rounded" data-aos="fade-up">

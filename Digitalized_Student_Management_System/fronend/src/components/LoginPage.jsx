@@ -4,7 +4,11 @@ import StudentLogo from '../assets/studentsImg.png';
 import FacultyLogo from '../assets/Faculty.png';
 import HODLogo from '../assets/student.png';
 import backgroundImage from '../assets/loginBackground.jpg';
+
 import axios from 'axios';
+
+import { useNavigate } from 'react-router-dom';
+
 import 'aos/dist/aos.css'; 
 import AOS from 'aos';
 import {motion} from 'framer-motion'
@@ -14,9 +18,11 @@ import { Link, useNavigate } from 'react-router-dom';
 
 function LoginPage() {
   const [activeItem, setActiveItem] = useState('Student');
+
   const [username,setusername]=useState();
   const [password,setpassword]=useState();
   const navigate=useNavigate();
+
 
   useEffect(() => {
     AOS.init({ duration: 1000 }); 
@@ -77,25 +83,25 @@ function LoginPage() {
         
         <ol className="w-40 text-right mr-0 text-white">
           <li
-            className={`mt-5 p-2 rounded-l-md border-black border-l-2 border-b-2 ${activeItem === 'HOD' ? 'bg-slate-100 text-black' : 'bg-purple-500'}`}
+            className={`mt-5 p-2 cursor-pointer rounded-l-md border-black border-l-2 border-b-2 ${activeItem === 'HOD' ? 'bg-slate-100 text-black' : 'bg-purple-500'}`}
             onClick={() => handleItemClick('HOD')}
           >
             HOD
           </li>
           <li
-            className={`mt-5 p-2 rounded-l-md border-black border-l-2 border-b-2 ${activeItem === 'Faculty' ? 'bg-slate-100 text-black' : 'bg-purple-500'}`}
+            className={`mt-5 p-2 cursor-pointer rounded-l-md border-black border-l-2 border-b-2 ${activeItem === 'Faculty' ? 'bg-slate-100 text-black' : 'bg-purple-500'}`}
             onClick={() => handleItemClick('Faculty')}
           >
             Faculty
           </li>
           <li
-            className={`mt-5 p-2 rounded-l-md border-black border-l-2 border-b-2 ${activeItem === 'Student' ? 'bg-slate-100 text-black' : 'bg-purple-500'}`}
+            className={`mt-5 p-2 cursor-pointer rounded-l-md border-black border-l-2 border-b-2 ${activeItem === 'Student' ? 'bg-slate-100 text-black' : 'bg-purple-500'}`}
             onClick={() => handleItemClick('Student')}
           >
             Student
           </li>
           <li
-            className={`mt-5 p-2 rounded-l-md border-black border-l-2 border-b-2 ${activeItem === 'Parent' ? 'bg-slate-100 text-black' : 'bg-purple-500'}`}
+            className={`mt-5 p-2 cursor-pointer rounded-l-md border-black border-l-2 border-b-2 ${activeItem === 'Parent' ? 'bg-slate-100 text-black' : 'bg-purple-500'}`}
             onClick={() => handleItemClick('Parent')}
           >
             Parent
@@ -128,8 +134,9 @@ function LoginPage() {
           <button type="button" className="text-orange-400 text-sm">Forgot password?</button>
           <div className="text-center">
             <button
+
               type="submit"
-              onClick={() => console.log('Login clicked')}
+              onClick={() => navigate("/home")}
               className="bg-purple-400 rounded text-white mt-4 w-full h-8"
             >
               Login
