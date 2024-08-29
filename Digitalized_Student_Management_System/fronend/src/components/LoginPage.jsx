@@ -7,7 +7,7 @@ import backgroundImage from '../assets/loginBackground.jpg';
 
 import axios from 'axios';
 
-import { useNavigate } from 'react-router-dom';
+
 
 import 'aos/dist/aos.css'; 
 import AOS from 'aos';
@@ -55,7 +55,8 @@ function LoginPage() {
      if(result.data === "Success"  )
       navigate('/home')
     })
-    .catch(err=>console.log(err))
+    .catch(err=>alert("Hello") 
+    )
   }
 
   return (
@@ -136,7 +137,6 @@ function LoginPage() {
             <button
 
               type="submit"
-              onClick={() => navigate("/home")}
               className="bg-purple-400 rounded text-white mt-4 w-full h-8"
             >
               Login
