@@ -47,6 +47,8 @@ function SignUp() {
             <input id='hod_password' type="text" placeholder='Create Password' className='text-stone-950 p-2 pl-10 rounded w-full border-solid border-r-2 border-b-2 m-3'/>
             <input id='hod_college_name' type="text" placeholder='Enter College Name' className='text-stone-950 p-2 pl-10 rounded w-full border-solid border-r-2 border-b-2 m-3' />
             <input id='hod_department_name' type="text" placeholder='Enter Department' className='text-stone-950 p-2 pl-10 rounded w-full border-solid border-r-2 border-b-2 m-3'/>
+
+            <button type="submit" className='text-stone-950 p-2 pl-10 rounded w-full border-solid border-r-2 border-b-2 m-3'>Register</button>
           </form>
           </div>
         )
@@ -97,6 +99,7 @@ function SignUp() {
           >
             Student
           </li>
+
         </ol>
       </div>
       <div className="w-full h-full flex justify-center items-center bg-slate-100">
