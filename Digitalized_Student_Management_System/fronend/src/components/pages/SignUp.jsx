@@ -57,14 +57,14 @@ function SignUp() {
       case 'HOD':
         return (
           <div className=' flex flex-col'>
-            <form action="" className=' justify-center align-ccenter flex flex-col ' onSubmit={handleSubmit}>
+            <form action="" className=' justify-center align-center flex flex-col align-middle text-center ' onSubmit={handleSubmit}>
               <input id='hod_username' type="text" placeholder='Username' className='text-stone-950 p-2 pl-10 rounded w-full border-solid border-r-2 border-b-2 m-3'onChange={(e)=>sethod_username(e.target.value)} />
               <input id='hod_email' type="email" placeholder='Email Id' className='text-stone-950 p-2 pl-10 rounded w-full border-solid border-r-2 border-b-2 m-3' onChange={(e)=>sethod_email(e.target.value)}/>
               <input id='hod_password' type="text" placeholder='Create Password' className='text-stone-950 p-2 pl-10 rounded w-full border-solid border-r-2 border-b-2 m-3' onChange={(e)=>sethod_password(e.target.value)}/>
               <input id='hod_college_name' type="text" placeholder='Enter College Name' className='text-stone-950 p-2 pl-10 rounded w-full border-solid border-r-2 border-b-2 m-3' onChange={(e)=>sethod_college_name(e.target.value)}/>
               <input id='hod_department_name' type="text" placeholder='Enter Department' className='text-stone-950 p-2 pl-10 rounded w-full border-solid border-r-2 border-b-2 m-3' onChange={(e)=>sethod_department_name(e.target.value)}/>
             
-            <button type="submit" className='text-stone-950 p-2 pl-10 rounded w-full border-solid border-r-2 border-b-2 m-3'>Register</button>
+            <button type="submit" className='text-stone-950 p-2 pl-10 rounded w-25 bg-purple-500 border-solid border-r-2 border-b-2 w-full ml-4'>Register</button>
 
             </form>
           </div>
