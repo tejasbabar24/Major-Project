@@ -55,7 +55,7 @@ function LoginPage() {
      if(result.data === "Success"  )
       navigate('/home')
     })
-    .catch(err=>alert("Hello") 
+   
     )
   }
 
