@@ -1,15 +1,15 @@
 import React from 'react'
-import Card from '../../Card';
-import StudentLogo from '../../../assets/HodHomePageLogo/student.png'
-import ClassListLogo from '../../../assets/HodHomePageLogo/classList.png' 
-import FacultLogo from '../../../assets/HodHomePageLogo/faculty.png'
-import HomeworkLogo from '../../../assets/HodHomePageLogo/homework.png'
-import TimetableLogo from '../../../assets/HodHomePageLogo/timetable.png'
-import ExamLogo from '../../../assets/HodHomePageLogo/exam.png'
-import NotifyLogo from '../../../assets/HodHomePageLogo/notifyLogo.png'
-import ResultLogo from '../../../assets/HodHomePageLogo/ResultLogo.png'
-import ProfileLogo from '../../../assets/HodHomePageLogo/profileLogo.png'
-import Sidebar from '../../Sidebar/Sidebar';
+import Card from '../../components/Card'; 
+import StudentLogo from '../../assets/HodHomePageLogo/student.png'
+import ClassListLogo from '../../assets/HodHomePageLogo/classList.png' 
+import FacultLogo from '../../assets/HodHomePageLogo/faculty.png'
+import HomeworkLogo from '../../assets/HodHomePageLogo/homework.png'
+import TimetableLogo from '../../assets/HodHomePageLogo/timetable.png'
+import ExamLogo from '../../assets/HodHomePageLogo/exam.png'
+import NotifyLogo from '../../assets/HodHomePageLogo/notifyLogo.png'
+import ResultLogo from '../../assets/HodHomePageLogo/ResultLogo.png'
+import ProfileLogo from '../../assets/HodHomePageLogo/profileLogo.png'
+import Sidebar from '../../components/Sidebar/Sidebar';
 
 function Home() {
     const role = "HOD";

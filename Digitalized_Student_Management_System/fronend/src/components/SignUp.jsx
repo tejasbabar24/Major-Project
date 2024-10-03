@@ -1,15 +1,15 @@
 import React, { useState, useEffect } from 'react';
 import 'boxicons/css/boxicons.min.css';
-import StudentLogo from '../../assets/studentsImg.png';
-import FacultyLogo from '../../assets/Faculty.png';
-import HODLogo from '../../assets/student.png';
-import backgroundImage from '../../assets/loginBackground.jpg';
+import StudentLogo from '../assets/studentsImg.png';
+import FacultyLogo from '../assets/Faculty.png';
+import HODLogo from '../assets/student.png';
+import backgroundImage from '../assets/loginBackground.jpg';
 import 'aos/dist/aos.css';
 import AOS from 'aos';
 import { motion } from 'framer-motion'
 import axios from 'axios'
 import { useNavigate } from 'react-router';
-
+import Input from './Input';
 
 
 function SignUp() {
@@ -45,7 +45,7 @@ function SignUp() {
 
   const handleSubmit=(e)=>{
     e.preventDefault();
-    axios.post(`http://localhost:8000/register`,{username,email,password,clgName,deptName})
+    axios.post(`http://localhost:8000/register`,{username,activeItem,email,password,clgName,deptName})
     .then(result =>  { console.log(result)
       navigate('/home')
     })
@@ -58,11 +58,20 @@ function SignUp() {
         return (
           <div className=' flex flex-col'>
             <form action="" className=' justify-center align-center flex flex-col align-middle text-center ' onSubmit={handleSubmit}>
-              <input id='hod_username' type="text" placeholder='Username' className='text-stone-950 p-2 pl-10 rounded w-full border-solid border-r-2 border-b-2 m-3'onChange={(e)=>sethod_username(e.target.value)} />
-              <input id='hod_email' type="email" placeholder='Email Id' className='text-stone-950 p-2 pl-10 rounded w-full border-solid border-r-2 border-b-2 m-3' onChange={(e)=>sethod_email(e.target.value)}/>
-              <input id='hod_password' type="text" placeholder='Create Password' className='text-stone-950 p-2 pl-10 rounded w-full border-solid border-r-2 border-b-2 m-3' onChange={(e)=>sethod_password(e.target.value)}/>
-              <input id='hod_college_name' type="text" placeholder='Enter College Name' className='text-stone-950 p-2 pl-10 rounded w-full border-solid border-r-2 border-b-2 m-3' onChange={(e)=>sethod_college_name(e.target.value)}/>
-              <input id='hod_department_name' type="text" placeholder='Enter Department' className='text-stone-950 p-2 pl-10 rounded w-full border-solid border-r-2 border-b-2 m-3' onChange={(e)=>sethod_department_name(e.target.value)}/>
+              <Input 
+              type="text" placeholder='Username' 
+              className='text-stone-950 p-2 pl-10 rounded w-full border-solid border-r-2 border-b-2 m-3'
+              onChange={(e)=>sethod_username(e.target.value)} />
+              
+              <Input 
+              type="email" 
+              placeholder='Email Id' 
+              className='text-stone-950 p-2 pl-10 rounded w-full border-solid border-r-2 border-b-2 m-3' 
+              onChange={(e)=>sethod_email(e.target.value)}/>
+
+              <Input  type="text" placeholder='Create Password' className='text-stone-950 p-2 pl-10 rounded w-full border-solid border-r-2 border-b-2 m-3' onChange={(e)=>sethod_password(e.target.value)}/>
+              <Input  type="text" placeholder='Enter College Name' className='text-stone-950 p-2 pl-10 rounded w-full border-solid border-r-2 border-b-2 m-3' onChange={(e)=>sethod_college_name(e.target.value)}/>
+              <Input  type="text" placeholder='Enter Department' className='text-stone-950 p-2 pl-10 rounded w-full border-solid border-r-2 border-b-2 m-3' onChange={(e)=>sethod_department_name(e.target.value)}/>
             
             <button type="submit" className='text-stone-950 p-2 pl-10 rounded w-25 bg-purple-500 border-solid border-r-2 border-b-2 w-full ml-4'>Register</button>
 

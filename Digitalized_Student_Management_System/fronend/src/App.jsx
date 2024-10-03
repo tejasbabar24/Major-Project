@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import LoginPage from './components/LoginPage'
+import LoginPage from './components/LogIn.jsx'
 // In your index.js or App.js
 import 'boxicons/css/boxicons.min.css';
 import { Outlet } from 'react-router';
