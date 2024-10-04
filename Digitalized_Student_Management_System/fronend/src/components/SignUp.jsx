@@ -10,6 +10,7 @@ import { motion } from 'framer-motion'
 import axios from 'axios'
 import { useNavigate } from 'react-router';
 import Input from './Input';
+import Button from './Button';
 
 
 function SignUp() {
@@ -59,6 +60,13 @@ function SignUp() {
           <div className=' flex flex-col'>
             <form action="" className=' justify-center align-center flex flex-col align-middle text-center ' onSubmit={handleSubmit}>
               <Input 
+              type="text" placeholder='Role' 
+              value = {activeItem}
+              className='text-stone-950 p-2 pl-10 rounded w-full border-solid border-r-2 border-b-2 m-3'
+              onChange={(e)=>setActiveItem(e.target.value)}
+              readOnly/>
+
+              <Input 
               type="text" placeholder='Username' 
               className='text-stone-950 p-2 pl-10 rounded w-full border-solid border-r-2 border-b-2 m-3'
               onChange={(e)=>sethod_username(e.target.value)} />
@@ -73,7 +81,7 @@ function SignUp() {
               <Input  type="text" placeholder='Enter College Name' className='text-stone-950 p-2 pl-10 rounded w-full border-solid border-r-2 border-b-2 m-3' onChange={(e)=>sethod_college_name(e.target.value)}/>
               <Input  type="text" placeholder='Enter Department' className='text-stone-950 p-2 pl-10 rounded w-full border-solid border-r-2 border-b-2 m-3' onChange={(e)=>sethod_department_name(e.target.value)}/>
             
-            <button type="submit" className='text-stone-950 p-2 pl-10 rounded w-25 bg-purple-500 border-solid border-r-2 border-b-2 w-full ml-4'>Register</button>
+            <Button type="submit" className='text-stone-950 p-2 pl-10 rounded w-25 bg-purple-500 border-solid border-r-2 border-b-2 w-full ml-4'>Register</Button>
 
             </form>
           </div>
@@ -85,11 +93,11 @@ function SignUp() {
           <div className=''>
             <form action="" className='flex flex-col'>
               <div >
-                <input type="text" placeholder='First Name' className='text-stone-950 p-2 pl-10 rounded  border-solid border-r-2 border-b-2 m-3' />
-                <input type="text" placeholder='Last Name'  className='text-stone-950 p-2 pl-10 rounded  border-solid border-r-2 border-b-2 m-3'  />
+                <Input type="text" placeholder='First Name' className='text-stone-950 p-2 pl-10 rounded  border-solid border-r-2 border-b-2 m-3' />
+                <Input type="text" placeholder='Last Name'  className='text-stone-950 p-2 pl-10 rounded  border-solid border-r-2 border-b-2 m-3'  />
               </div>
               <div>
-                <input type="text" placeholder='Enter Enrollment No'  className='text-stone-950 p-2 pl-10 rounded border-solid border-r-2 border-b-2 m-3' />
+                <Input type="text" placeholder='Enter Enrollment No'  className='text-stone-950 p-2 pl-10 rounded border-solid border-r-2 border-b-2 m-3' />
               </div>
             </form>
           </div>

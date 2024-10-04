@@ -12,6 +12,7 @@ import AOS from "aos";
 import { motion } from "framer-motion";
 import { Link, useNavigate } from "react-router-dom";
 import Input from "./Input";
+import Button from "./Button";
 
 function LogIn() {
   const [activeItem, setActiveItem] = useState("Student");
@@ -147,12 +148,12 @@ function LogIn() {
               Forgot password?
             </button>
             <div className="text-center">
-              <button
+              <Button
                 type="submit"
                 className="bg-purple-400 rounded text-white mt-4 w-full h-8"
               >
                 Login
-              </button>
+              </Button>
             </div>
           </form>
           <div className="text-center mt-3">--------------------------</div>
