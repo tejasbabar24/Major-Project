@@ -11,7 +11,8 @@ import axios from 'axios'
 import { useNavigate } from 'react-router';
 import Input from './Input';
 import Button from './Button';
-
+import { login } from '../store/authSlice';
+import { useDispatch } from 'react-redux';
 
 function SignUp() {
   const [activeItem, setActiveItem] = useState('HOD');
@@ -21,6 +22,7 @@ function SignUp() {
   const [clgName,sethod_college_name]=useState();
   const [deptName,sethod_department_name]=useState();
   const navigate=useNavigate()
+  const dispatch = useDispatch();
 
   useEffect(() => {
     AOS.init({ duration: 1000 });
@@ -47,7 +49,9 @@ function SignUp() {
   const handleSubmit=(e)=>{
     e.preventDefault();
     axios.post(`http://localhost:8000/register`,{username,activeItem,email,password,clgName,deptName})
-    .then(result =>  { console.log(result)
+    .then(result =>  { 
+      console.log(result) 
+      if(result) dispatch(login(result.data)) 
       navigate('/home')
     })
     .catch(err=>console.log(err))

@@ -18,6 +18,28 @@ connectDB()
     })
     .catch((err) => {
         console.log("MONGODB CONNECTION FAILED!!", err);
+})
+
+
+app.post('/register',(req,res)=>{
+    User.create(req.body)
+    .then(users => res.json(users))
+    .catch(err => res.json(err))
+})
+
+app.post('/login',(req,res)=>{
+    const {username,password}= (req.body);
+    User.findOne({username:username})
+    .then(user=>{
+        if(user){
+        if(user.password==password){
+            res.json(user)
+        }else{
+            res.json("Password Incorrect")
+        }
+    }else{
+        res.json("No record Exsit")
+    }
     })
 
 app.post('/login', (req, res) => {

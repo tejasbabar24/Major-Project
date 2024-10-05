@@ -9,11 +9,11 @@ import ExamLogo from '../../assets/HodHomePageLogo/exam.png'
 import NotifyLogo from '../../assets/HodHomePageLogo/notifyLogo.png'
 import ResultLogo from '../../assets/HodHomePageLogo/ResultLogo.png'
 import ProfileLogo from '../../assets/HodHomePageLogo/profileLogo.png'
-import Sidebar from '../../components/Sidebar/Sidebar';
+import Sidebar from '../../components/Sidebar/Sidebar'
+import { useSelector } from 'react-redux';
 
 function Home() {
-    const role = "HOD";
-    const name = "SamayRaina"
+    const userData = useSelector(state => state.auth.userData);
   return (
     <div className="w-full flex bg-gray-200">
       <Sidebar/>
@@ -22,8 +22,8 @@ function Home() {
         
         <div className='py-4 px-6 flex justify-between'>
         <div className=''>
-          <h1 className='font-bold'>{role/*role*/}</h1>
-          <h2 className=''>{name}</h2>
+          <h1 className='font-bold'>{userData.activeItem}</h1>
+          <h2 className=''>{userData.username}</h2>
         </div>
 
         <div className='flex items-center gap-x-3'>
