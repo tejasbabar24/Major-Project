@@ -1,5 +1,5 @@
-import { asyncHandler } from "../utils/asyncHandler";
-import { ApiError } from "../utils/ApiError";
+import { asyncHandler } from "../utils/asyncHandler.js";
+import { ApiError } from "../utils/ApiError.js";
 import { ApiResponse } from "../utils/ApiResponse.js"
 import { User } from "../models/user.models.js";
 
@@ -32,12 +32,13 @@ const registerUser = asyncHandler(async (req, res) => {
     const createdUser = await User.findById(user._id).select("-password -refreshToken")
 
     if (!createdUser) {
-        throw new ApiError(500, "SOmething went wrong while registring the user")
+        throw new ApiError(500, "Something went wrong while registring the user")
     }
 
     return res.status(201).json(
-        new ApiResponse(200, createdUser, "User Registered Successfully!!!")
+        new ApiResponse(200, createdUser, "User Registered Successfully!!!")            
     )
+
 })
 
 export { registerUser }
