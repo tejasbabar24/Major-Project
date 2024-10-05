@@ -4,7 +4,6 @@ import StudentLogo from "../assets/studentsImg.png";
 import FacultyLogo from "../assets/Faculty.png";
 import HODLogo from "../assets/student.png";
 import backgroundImage from "../assets/loginBackground.jpg";
-
 import axios from "axios";
 
 import "aos/dist/aos.css";
@@ -13,10 +12,12 @@ import { motion } from "framer-motion";
 import { Link, useNavigate } from "react-router-dom";
 import Input from "./Input";
 import Button from "./Button";
+import { login } from "../store/authSlice";
+import { useDispatch } from "react-redux";
 
 function LogIn() {
   const [activeItem, setActiveItem] = useState("Student");
-
+  const dispatch = useDispatch();
   const [username, setusername] = useState();
   const [password, setpassword] = useState();
   const navigate = useNavigate();
@@ -50,7 +51,8 @@ function LogIn() {
       .post(`http://localhost:8000/login`, { username, password })
       .then((result) => {
         console.log(result);
-        if (result.data === "Success") {
+        if (result.data) {
+          dispatch(login(result.data))
           navigate("/home");
         } else {
           alert("creadentials mismatched");
