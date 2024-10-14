@@ -1,1 +1,1 @@
-export const DB_NAME="acadamix"
+export const DB_NAME = "acadamix"
