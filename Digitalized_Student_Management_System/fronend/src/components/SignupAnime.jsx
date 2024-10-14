@@ -72,6 +72,7 @@ function SignupAnime({
             onClick={() => handleItemClick('Parent')}
           >
             Parent
+            
           </li>
        </ol>
       </div>

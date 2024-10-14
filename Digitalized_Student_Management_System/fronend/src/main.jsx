@@ -9,6 +9,7 @@ import SignupPage from './pages/SignupPage.jsx'
 import {createBrowserRouter} from 'react-router-dom'
 import { RouterProvider } from 'react-router-dom'
 import Home from './pages/HOD/HodHome.jsx'
+import ClassroomHomePage from './components/ClassroomHomePage.jsx'
 
 const router = createBrowserRouter([
   {
@@ -34,9 +35,10 @@ const router = createBrowserRouter([
         )
       },
       {
-        path:"/add-faculty",
+        //path:"/add-faculty" 
+        path:"/classroom"  ,
         element:(
-            <Home/>
+            <ClassroomHomePage/>
         )
       },
       {
