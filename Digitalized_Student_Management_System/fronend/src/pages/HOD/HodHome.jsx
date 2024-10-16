@@ -22,8 +22,8 @@ function Home() {
         
         <div className='py-4 px-6 flex justify-between'>
         <div className=''>
-          <h1 className='font-bold'>{userData.activeItem}</h1>
-          <h2 className=''>{userData.username}</h2>
+          <h1 className='font-bold'>{`userData.activeItem`}</h1>
+          <h2 className=''>{`userData.username`}</h2>
         </div>
 
         <div className='flex items-center gap-x-3'>

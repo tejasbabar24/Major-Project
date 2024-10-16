@@ -11,11 +11,14 @@ import ExamLogo from '../../assets/HodHomePageLogo/exam.png'
 import NotifyLogo from '../../assets/HodHomePageLogo/notifyLogo.png'
 import ResultLogo from '../../assets/HodHomePageLogo/ResultLogo.png'
 import BookLogo from '../../assets/HodHomePageLogo/book.png'
+import { useSelector } from 'react-redux'
 
 function Sidebar() {
   //const navigate = useNavigate();
     const role = "HOD";
     const name = "DhulShettee"
+    const userData = useSelector(state => state.auth.userData);
+
     const navItems = [
     {
       name:"Home",
@@ -72,6 +75,63 @@ function Sidebar() {
       active:true
     },
   ]
+    const studItems = [
+    {
+      name:"Home",
+      slug:"/",
+      logo: HomeLogo,
+      active:true
+    },
+    {
+      name:"Join Class",
+      slug:"/classroom",
+      logo: FacultLogo,
+      active:true
+    },
+    {
+      name:"My Classes",
+      slug:"/class-list",
+      logo: ClassListLogo,
+      active:true
+    },
+    {
+      name:"My Attendance",
+      slug:"/attendance",
+      logo: StudentLogo,
+      active:true
+    },
+    {
+      name:"Exam",
+      slug:"/exam",
+      logo: ExamLogo,
+      active:true
+    },
+    {
+      name:"View Timetable",
+      slug:"/timetable",
+      logo: TimetableLogo,
+      active:true
+    },
+    {
+      name:"Homework",
+      slug:"/homework",
+      logo: HomeworkLogo,
+      active:true
+    },
+    {
+      name:"View Notice",
+      slug:"/notice",
+      logo: NotifyLogo,
+      active:true
+    },
+    {
+      name:"Exam Result",
+      slug:"/exam-result",
+      logo: ResultLogo,
+      active:true
+    },
+  ]
+  const renderArr = []
   return (
     <div className='flex'>
       <div className='w-64 bg-gray-700  min-h-screen'>
@@ -85,7 +145,9 @@ function Sidebar() {
       <nav>
         <ul className='pl-3 mt-4'>
           {
-            navItems.map((item)=>
+            userData.activeItem === "Student" ? renderArr = studItems : userData.activeItem === "Teacher" ? renderArr = navItems : null
+            (
+            renderArr.map((item)=>
               item.active ? (
                 <li className='flex my-2 text-white items-center my-4 hover:bg-gray-500' key={item.name}>
                   <img className='w-10 h-10 cursor-pointer' src={item.logo} alt={`${item.name}-logo`} />
@@ -97,7 +159,7 @@ function Sidebar() {
                   </button>
                 </li>
               ) : null
-            )
+            ))
           }
         </ul>
       </nav>
