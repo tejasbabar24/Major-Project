@@ -16,7 +16,7 @@ import { login } from "../store/authSlice";
 import { useDispatch } from "react-redux";
 
 function LogIn() {
-  const [activeItem, setActiveItem] = useState("Student");
+  const [role, setRole] = useState("Student");
   const dispatch = useDispatch();
   const [username, setusername] = useState();
   const [password, setpassword] = useState();
@@ -27,11 +27,11 @@ function LogIn() {
   }, []);
 
   const handleItemClick = (item) => {
-    setActiveItem(item);
+    setRole(item);
   };
 
   const switchImage = () => {
-    switch (activeItem) {
+    switch (role) {
       case "HOD":
         return HODLogo;
       case "Faculty":
@@ -48,7 +48,7 @@ function LogIn() {
   const handleSubmit = (e) => {
     e.preventDefault();
     axios
-      .post(`http://localhost:8000/login`, { username, password })
+      .post(`http://localhost:8000/users/login`, { username:username.toLowerCase(), password })
       .then((result) => {
         console.log(result);
         if (result.data) {
@@ -69,13 +69,13 @@ function LogIn() {
       >
         <div className="justify-start items-start" id="imgDiv">
           <motion.img
-            key={activeItem}
+            key={role}
             initial={{ x: -100 }}
             animate={{ x: 0 }}
             exit={{ x: 100 }}
             transition={{ duration: 1.5 }}
             src={switchImage()}
-            alt={activeItem}
+            alt={role}
             className="w-full"
           />
         </div>
@@ -83,7 +83,7 @@ function LogIn() {
         <ol className="w-40 text-right mr-0 text-white">
           <li
             className={`mt-5 p-2 cursor-pointer rounded-l-md border-black border-l-2 border-b-2 ${
-              activeItem === "HOD" ? "bg-slate-100 text-black" : "bg-purple-500"
+              role === "HOD" ? "bg-slate-100 text-black" : "bg-purple-500"
             }`}
             onClick={() => handleItemClick("HOD")}
           >
@@ -91,7 +91,7 @@ function LogIn() {
           </li>
           <li
             className={`mt-5 p-2 cursor-pointer rounded-l-md border-black border-l-2 border-b-2 ${
-              activeItem === "Faculty"
+              role === "Faculty"
                 ? "bg-slate-100 text-black"
                 : "bg-purple-500"
             }`}
@@ -101,7 +101,7 @@ function LogIn() {
           </li>
           <li
             className={`mt-5 p-2 cursor-pointer rounded-l-md border-black border-l-2 border-b-2 ${
-              activeItem === "Student"
+              role === "Student"
                 ? "bg-slate-100 text-black"
                 : "bg-purple-500"
             }`}
@@ -111,7 +111,7 @@ function LogIn() {
           </li>
           <li
             className={`mt-5 p-2 cursor-pointer rounded-l-md border-black border-l-2 border-b-2 ${
-              activeItem === "Parent"
+              role === "Parent"
                 ? "bg-slate-100 text-black"
                 : "bg-purple-500"
             }`}
@@ -125,7 +125,7 @@ function LogIn() {
         <div className="p-10 rounded" data-aos="fade-up">
           <p className="mb-4 text-stone-950 text-2xl text-center">
             {" "}
-            {activeItem} Login
+            {role} Login
           </p>
           <form action="" onSubmit={handleSubmit}>
             <div className="relative mb-4">

@@ -27,9 +27,9 @@ const userSchema = new mongoose.Schema({
     profile: {
         type: String,
     },
-    photo: {
+    photo: [{
         type: String,
-    },
+    }],
     clgName: {
         type: String,
         index: true

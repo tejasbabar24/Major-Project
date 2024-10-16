@@ -5,11 +5,16 @@ import { Classroom } from "../models/classroom.models.js";
 import { User } from "../models/user.models.js";
 import { uploadOnCloudinary } from "../utils/cloudinary.js"
 
+const generateClassCode=()=>{
+
+    return code;
+}
+
 const createClass = asyncHandler(async (req, res) => {
-    const { classname, subject, section, year, owner } = req.body;
+    const { classname, subject, section, year } = req.body;
 
     if (
-        [classname, subject].some((field) =>
+        [classname, subject,section,year].some((field) =>
             field?.trim() === "")
     ) {
         throw new ApiError(400, "All fields are required")
@@ -20,7 +25,8 @@ const createClass = asyncHandler(async (req, res) => {
         subject,
         section,
         year,
-        owner: req.user._id
+        owner: req.user._id,
+        classCode:""
     })
 
     const createdClassroom = await Classroom.findById(classroom._id);

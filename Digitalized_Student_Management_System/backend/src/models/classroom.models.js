@@ -36,6 +36,9 @@ const classroomSchema = new Schema({
             ref: "User"
         }
     ],
+    classCode:{
+        type:String,
+    }
     // assignment:[
     //     {
     //         title: { type: String, required: true },
