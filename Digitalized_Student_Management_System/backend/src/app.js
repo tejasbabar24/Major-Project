@@ -16,9 +16,13 @@ app.use(express.static("public"))
 app.use(cookieParser())
 
 //routes import do not change
-import userRouter from "./routes/user.routes.js";
+import teacherRouter from "./routes/teacher.routes.js";
+import studentRouter from "./routes/student.routes.js";
+import classroomRouter from "./routes/classroom.routes.js";
 
 //routes declaration
-app.use("/users", userRouter)
+app.use("/faculty", teacherRouter)
+app.use("/student", studentRouter)
+app.use("/class", classroomRouter)
 
 export { app }

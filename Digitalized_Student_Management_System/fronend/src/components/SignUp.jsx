@@ -73,6 +73,7 @@ function SignUp() {
       }, 3000);
 
       if(role=='Student'){
+
       const formData = new FormData();
       formData.append('username', Stud_username);
       formData.append('email', Stud_email);
@@ -84,7 +85,7 @@ function SignUp() {
         formData.append('photo', image);
             });
     
-      axios.post(`http://localhost:8000/users/student-register`, formData, {
+      axios.post(`http://localhost:8000/student/register`, formData, {
         headers: {
           'Content-Type': 'multipart/form-data'
         }
@@ -97,7 +98,8 @@ function SignUp() {
         })
         .catch(err => console.log(err));
       }
-      axios.post(`http://localhost:8000/users/register`, { username: Teach_username, email: Teach_email, password: Teach_password, role })
+      
+      axios.post(`http://localhost:8000/faculty/register`, { username: Teach_username, email: Teach_email, password: Teach_password, role })
         .then(result => {
           console.log(result)
           if (result) dispatch(login(result.data))

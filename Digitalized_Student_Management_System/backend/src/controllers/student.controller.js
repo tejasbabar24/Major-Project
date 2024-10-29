@@ -1,7 +1,7 @@
 import { asyncHandler } from "../utils/asyncHandler.js";
 import { ApiError } from "../utils/ApiError.js";
 import { ApiResponse } from "../utils/ApiResponse.js"
-import { User } from "../models/user.models.js";
+import { Student } from "../models/student.models.js";
 import { uploadOnCloudinary } from "../utils/cloudinary.js"
 import jwt from "jsonwebtoken";
 
@@ -12,7 +12,7 @@ const options = {
 
 const generateAccessAndRefreshTokens = async (userId) => {
     try {
-        const user = await User.findById(userId);
+        const user = await Student.findById(userId);
         const accessToken = user.generateAccessToken();
         const refreshToken = user.generateRefreshToken();
 
@@ -35,44 +35,7 @@ const registerUser = asyncHandler(async (req, res) => {
         throw new ApiError(400, "All fields are required")
     }
 
-    const existedUser = await User.findOne({
-        $or: [{ email }, { username }]
-    })
-
-    if (existedUser) {
-        throw new ApiError(409, "User with email or username already exists")
-    }
-
-    const user = await User.create({
-        username: username.toLowerCase(),
-        role,
-        email,
-        password,
-    })
-
-    const createdUser = await User.findById(user._id).select("-password -refreshToken")
-
-    if (!createdUser) {
-        throw new ApiError(500, "Something went wrong while registring the user")
-    }
-
-    return res.status(201).json(
-        new ApiResponse(200, createdUser, "User Registered Successfully!!!")
-    )
-
-})
-
-const registerStudentUser = asyncHandler(async (req, res) => {
-    const { username, role, email, password } = req.body;
-
-    if (
-        [username, role, email, password].some((field) =>
-            field?.trim() === "")
-    ) {
-        throw new ApiError(400, "All fields are required")
-    }
-
-    const existedUser = await User.findOne({
+    const existedUser = await Student.findOne({
         $or: [{ email }, { username }]
     })
 
@@ -98,7 +61,7 @@ const registerStudentUser = asyncHandler(async (req, res) => {
         throw new ApiError(400, "Image file is required")
     }
 
-    const user = await User.create({
+    const user = await Student.create({
         username: username.toLowerCase(),
         role,
         email,
@@ -106,7 +69,7 @@ const registerStudentUser = asyncHandler(async (req, res) => {
         photo: photo.url
     })
 
-    const createdUser = await User.findById(user._id).select("-password -refreshToken")
+    const createdUser = await Student.findById(user._id).select("-password -refreshToken")
 
     if (!createdUser) {
         throw new ApiError(500, "Something went wrong while registring the user")
@@ -120,14 +83,14 @@ const registerStudentUser = asyncHandler(async (req, res) => {
 })
 
 const loginUser = asyncHandler(async (req, res) => {
-    const { email, username, password } = req.body;
+    const { username, password } = req.body;
 
-    if (!(username || email)) {
+    if (!(username )) {
         throw new ApiError(400, "Username Or Email Is Required");
     }
 
-    const user = await User.findOne({
-        $or: [{ username }, { email }]
+    const user = await Student.findOne({
+        $or: [{ username }, { email:username }]
     })
 
     if (!user) {
@@ -141,7 +104,7 @@ const loginUser = asyncHandler(async (req, res) => {
 
     const { accessToken, refreshToken } = await generateAccessAndRefreshTokens(user._id);
 
-    const loggedInUser = await User.findById(user._id).select("-password -refreshToken");
+    const loggedInUser = await Student.findById(user._id).select("-password -refreshToken");
 
     return res
         .status(200)
@@ -159,7 +122,7 @@ const loginUser = asyncHandler(async (req, res) => {
 })
 
 const logOutUser = asyncHandler(async (req, res) => {
-    await User.findByIdAndUpdate(
+    await Student.findByIdAndUpdate(
         req.user._id,
         {
             $set: {
@@ -190,7 +153,7 @@ const refreshAccessToken = asyncHandler(async (req, res) => {
 
         const decodedTOken = jwt.verify(incomingRefreshToken, process.env.REFRESH_TOKEN_SECRET);
 
-        const user = await User.findById(decodedTOken?._id);
+        const user = await Student.findById(decodedTOken?._id);
 
         if (incomingRefreshToken !== user?.refreshToken) {
             throw new ApiError(401, "Refresh Token Is Expired Or Used");
@@ -221,7 +184,7 @@ const changeCurrentPassword = asyncHandler(async (req, res) => {
         throw new ApiError(401, "New Password And Confirm Password Should Match");
     }
 
-    const user = await User.findById(req.user?._id);
+    const user = await Student.findById(req.user?._id);
 
     const isPasswordValid = await user.isPasswordCorrect(oldPassword);
 
@@ -257,7 +220,7 @@ const updateAccountDetails = asyncHandler(async (req, res) => {
         throw new ApiError("All Fields Are Required");
     }
 
-    const user = await User.findByIdAndUpdate(
+    const user = await Student.findByIdAndUpdate(
         req.user?._id,
         {
             $set: {
@@ -287,7 +250,7 @@ const setProfilePhoto = asyncHandler(async (req, res) => {
         throw new ApiError("Error While Uploading Profile");
     }
 
-    const user = await User.findByIdAndUpdate(
+    const user = await Student.findByIdAndUpdate(
         req.user?._id,
         {
             $set: {
@@ -308,7 +271,6 @@ const setProfilePhoto = asyncHandler(async (req, res) => {
 
 export {
     registerUser,
-    registerStudentUser,
     loginUser,
     logOutUser,
     refreshAccessToken,

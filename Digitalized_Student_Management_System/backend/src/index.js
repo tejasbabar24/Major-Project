@@ -1,7 +1,6 @@
 import dotenv from "dotenv";
 import connectDB from "./db/index.js";
 import { app } from "./app.js";
-import { User } from "./models/user.models.js"
 import cors from 'cors'
 
 app.use(cors({
@@ -21,9 +20,5 @@ connectDB()
     })
 
 
-app.post('/register', (req, res) => {
-    User.create(req.body)
-        .then(users => res.json(users))
-        .catch(err => res.json(err))
-})
+
 

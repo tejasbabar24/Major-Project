@@ -2,7 +2,7 @@ import mongoose from "mongoose";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 
-const userSchema = new mongoose.Schema({
+const teacherSchema = new mongoose.Schema({
 
     username: {
         type: String,
@@ -27,9 +27,6 @@ const userSchema = new mongoose.Schema({
     profile: {
         type: String,
     },
-    photo: [{
-        type: String,
-    }],
     clgName: {
         type: String,
         index: true
@@ -43,18 +40,18 @@ const userSchema = new mongoose.Schema({
     }
 }, { timestamps: true })
 
-userSchema.pre("save", async function (next) {
+teacherSchema.pre("save", async function (next) {
     if (!this.isModified("password")) return next();
 
     this.password = await bcrypt.hash(this.password, 10)
     next()
 })
 
-userSchema.methods.isPasswordCorrect = async function (password) {
+teacherSchema.methods.isPasswordCorrect = async function (password) {
     return await bcrypt.compare(password, this.password)
 }
 
-userSchema.methods.generateAccessToken = function () {
+teacherSchema.methods.generateAccessToken = function () {
     return jwt.sign({
         _id: this._id,
         email: this.email,
@@ -67,7 +64,7 @@ userSchema.methods.generateAccessToken = function () {
     )
 }
 
-userSchema.methods.generateRefreshToken = function () {
+teacherSchema.methods.generateRefreshToken = function () {
     return jwt.sign({
         _id: this.id,
     },
@@ -77,4 +74,4 @@ userSchema.methods.generateRefreshToken = function () {
     )
 }
 
-export const User = mongoose.model("User", userSchema);
+export const Teacher = mongoose.model("Teacher", teacherSchema);

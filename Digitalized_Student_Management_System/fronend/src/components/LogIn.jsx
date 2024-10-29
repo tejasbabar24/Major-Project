@@ -47,8 +47,25 @@ function LogIn() {
 
   const handleSubmit = (e) => {
     e.preventDefault();
+
+    if(role=='Student'){
+      axios
+      .post(`http://localhost:8000/student/login`, { username:username.toLowerCase(), password })
+      .then((result) => {
+        console.log(result);
+        if (result.data) {
+          dispatch(login(result.data))
+          navigate("/home");
+        } else {
+          alert("creadentials mismatched");
+        }
+      })
+      .catch((err) => alert(err));
+  }
+
+    
     axios
-      .post(`http://localhost:8000/users/login`, { username:username.toLowerCase(), password })
+      .post(`http://localhost:8000/faculty/login`, { username:username.toLowerCase(), password })
       .then((result) => {
         console.log(result);
         if (result.data) {

@@ -1,4 +1,5 @@
 import mongoose,{Schema} from "mongoose";
+import { Classroom } from "./classroom.models";
 
 const assignmentSchema=new Schema({
     title:{
@@ -15,6 +16,14 @@ const assignmentSchema=new Schema({
         type:String,
         required:true
     },
+    classId:{
+        type:chema.Types.ObjectId,
+        ref:Classroom,
+        required:true
+    },
+    classCode:{
+        type:String
+    }
 },{timestamps:true})
 
 
