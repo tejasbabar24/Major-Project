@@ -17,9 +17,12 @@ import ListItemText from '@mui/material/ListItemText';
 import InboxIcon from '@mui/icons-material/MoveToInbox';
 import MailIcon from '@mui/icons-material/Mail';
 import TextField from '@mui/material/TextField';
-import Button from './Button';
+import Button from '../Button';
 import Buttons from '@mui/material/Button';
-import { MdOutlineAdd } from "react-icons/md"
+import { MdOutlineAdd } from "react-icons/md";
+import ClassCard from './ClassCard';
+import user from '../../assets/classCards/user.png';
+
 
 const drawerWidth = 240;
 
@@ -49,31 +52,25 @@ const AppBar = styled(MuiAppBar, {
 export default function ClassroomHomePage() {
   const [open, setOpen] = React.useState(false);
   const [rightDrawerOpen, setRightDrawerOpen] = React.useState(false); 
-  const [joinDrawerOpen, setJoinDrawerOpen ]  = React.useState(false); 
+  const [joinDrawerOpen, setJoinDrawerOpen] = React.useState(false); 
 
-  // States to store the values for classroom
   const [className, setClassName] = React.useState('');
   const [subject, setSubject] = React.useState('');
+  const [section, setSection] = React.useState('');
+  const [year, setYear] = React.useState('');
 
-  // store the join drawer states
   const [joinId, setJoinId] = React.useState('');
- 
-
-
 
   const showData = (e) => {
-    e.preventDefault(); // Prevent default form submission
-    console.log(className);
-    console.log(subject);
-    console.log(joinId);
-
+    e.preventDefault(); 
+    console.log(className, subject, joinId, section, year);
   };
 
   return (
     <Box sx={{ display: 'flex' }}>
       <CssBaseline />
       <AppBar position="fixed">
-        <Toolbar sx={{ display: 'flex', justifyContent: 'space-between' }}> 
+        <Toolbar sx={{ display: 'flex', justifyContent: 'space-between', backgroundColor: '#8E6AC4' }}> 
           <IconButton
             color="inherit"
             aria-label="open drawer"
@@ -82,36 +79,34 @@ export default function ClassroomHomePage() {
           >
             <MenuIcon />
           </IconButton>
-          <Typography variant="h6" noWrap component="div">
-            CLASSROOM
+          <Typography variant="h4" noWrap component="div">
+            StudyRoom
           </Typography>
-        <div>
-          <IconButton
-            color="inherit"
-            aria-label="open right drawer"
-            onClick={() => setRightDrawerOpen(!rightDrawerOpen)}
-            edge="end"
-          >
-            <Buttons variant="contained" sx={{ fontSize: "15px"  }}>
-              Create Class  <MdOutlineAdd />
-            </Buttons>
+          <div>
+            <IconButton
+              color="inherit"
+              aria-label="open right drawer"
+              onClick={() => setRightDrawerOpen(!rightDrawerOpen)}
+              edge="end"
+            >
+              <Buttons variant="contained" sx={{ fontSize: "15px" , backgroundColor: '#3A2B51'}}>
+                Create Class <MdOutlineAdd />
+              </Buttons>
+            </IconButton>
 
-          </IconButton>
-
-          <IconButton
-            color="inherit"
-            aria-label="open right drawer"
-            onClick={() => setJoinDrawerOpen(!joinDrawerOpen)}
-            edge="end"
-          >
-            <Buttons variant="contained" sx={{ fontSize: "15px"  }}>
-              Join Class  <MdOutlineAdd />
-            </Buttons>
-
-          </IconButton>
+            <IconButton
+              color="inherit"
+              aria-label="open right drawer"
+              onClick={() => setJoinDrawerOpen(!joinDrawerOpen)}
+              edge="end"
+            >
+              <Buttons variant="contained" sx={{ fontSize: "15px",  backgroundColor: '#3A2B51' }}>
+                Join Class <MdOutlineAdd />
+              </Buttons>
+            </IconButton>
           </div>
         </Toolbar>
-</AppBar>
+      </AppBar>
 
       <Drawer
         sx={{
@@ -154,12 +149,27 @@ export default function ClassroomHomePage() {
           ))}
         </List>
       </Drawer>
-          
-      <Main open={open} />
+
+      <Main open={open}>
+        <Box sx={{ mt: 8 }}>
+          <div className='grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-4 gap-5'>
+            <ClassCard name={"Software Testing"} createdBy={"sadaphule"} image={user}/>
+            <ClassCard name={"Computer Network "} createdBy={"A wankar"} image={user}/>
+            <ClassCard name={"Data Analytics Using R"} createdBy={"V patil"} image={user}/>
+            <ClassCard name={"Data Structures"} createdBy={"lokhande"} image={user}/>
+            <ClassCard name={"Computer Security"} createdBy={"R molawade"} image={user}/>
+            <ClassCard name={"Computer science"}  createdBy={"Mysterio"} image={user}/>
+            <ClassCard name={"physics"} createdBy={"unknown"} image={user}/>
+            <ClassCard name={"mathematics"} createdBy={" A patil"} image={user}/>
+            <ClassCard name={"Biology"} createdBy={"sunny leone"} image={user}/>
+          </div>
+        </Box>
+      </Main>
 
       <Drawer
         sx={{
           width: drawerWidth,
+          marginLeft:0,
           flexShrink: 0,
           '& .MuiDrawer-paper': {
             width: drawerWidth,
@@ -171,10 +181,12 @@ export default function ClassroomHomePage() {
         open={rightDrawerOpen}
       >
         <Divider />
-        <form onSubmit={showData} className=' p-5 flex justify-center flex-col'  > 
-          <TextField label={'Enter Class Name'} id="classname" margin="normal" onChange={(e) => setClassName(e.target.value)} />
-          <TextField label={'Enter Subject'} id="subject" margin="normal" onChange={(e) => setSubject(e.target.value)} />
-          <Button type='submit' classname='w-18 h-6.6 text-white text-sm text-center'>Create</Button>
+        <form onSubmit={showData} className='p-5 flex justify-center flex-col'> 
+          <TextField label={' Class Name'} id="classname" margin="normal" onChange={(e) => setClassName(e.target.value)} />
+          <TextField label={' Subject'} id="subject" margin="normal" onChange={(e) => setSubject(e.target.value)} />
+          <TextField label={' Section'} id="section" margin="normal" onChange={(e) => setSection(e.target.value)} />
+          <TextField label={' Year'} id="year" margin="normal" onChange={(e) => setYear(e.target.value)} />
+          <Button type='submit' className='w-18 h-6.6 text-white text-sm text-center'>Create</Button>
         </form>   
       </Drawer>
 
@@ -192,12 +204,10 @@ export default function ClassroomHomePage() {
         open={joinDrawerOpen}
       >
         <Divider />
-        <form  className=' p-5 flex justify-center flex-col'> 
+        <form className='p-5 flex justify-center flex-col'> 
           <TextField label={'Enter Class Code '} id="classname" margin="normal" onChange={(e) => setJoinId(e.target.value)} />
-          
-          <Button type='submit' classname='w-18 h-6.6 text-white text-sm text-center'>Join</Button>
+          <Button type='submit' className='w-18 h-6.6 text-white text-sm text-center'>Join</Button>
         </form>   
-         
       </Drawer>
     </Box>
   );
