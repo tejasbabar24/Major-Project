@@ -14,6 +14,8 @@ import { useSelector } from 'react-redux';
 
 function Home() {
     const userData = useSelector(state => state.auth.userData);
+    console.log(userData);
+    
   return (
     <div className="w-full flex bg-gray-200">
       <Sidebar/>
@@ -22,8 +24,8 @@ function Home() {
         
         <div className='py-4 px-6 flex justify-between'>
         <div className=''>
-          <h1 className='font-bold'>{`userData.activeItem`}</h1>
-          <h2 className=''>{`userData.username`}</h2>
+          <h1 className='font-bold'>{userData.role}</h1>
+          <h2 className=''>{userData.username}</h2>
         </div>
 
         <div className='flex items-center gap-x-3'>

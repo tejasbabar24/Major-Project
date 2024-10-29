@@ -131,7 +131,12 @@ function Sidebar() {
       active:true
     },
   ]
-  const renderArr = []
+  const renderArr =
+  userData.role === "Student" 
+  ? studItems 
+  : userData.role === "Teacher" 
+  ? navItems 
+  : [];
   return (
     <div className='flex'>
       <div className='w-64 bg-gray-700  min-h-screen'>
@@ -145,8 +150,6 @@ function Sidebar() {
       <nav>
         <ul className='pl-3 mt-4'>
           {
-            userData.activeItem === "Student" ? renderArr = studItems : userData.activeItem === "Teacher" ? renderArr = navItems : null
-            (
             renderArr.map((item)=>
               item.active ? (
                 <li className='flex my-2 text-white items-center my-4 hover:bg-gray-500' key={item.name}>
@@ -159,7 +162,7 @@ function Sidebar() {
                   </button>
                 </li>
               ) : null
-            ))
+            )
           }
         </ul>
       </nav>

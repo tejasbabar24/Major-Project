@@ -174,7 +174,7 @@ function SignUp() {
                   onChange={(e) => set_Stud_password(e.target.value)} />
 
                 <label htmlFor="" className=' text-gray-600 text-sm pl-5'>Select Min-3 images for face identity</label>
-                <input type="file"
+                <Input type="file"
                   accept="image/*"
                   multiple
                   className='text-stone-950 text-sm  rounded mt-2 w-full border-solid border-r-2 border-b-2 bg-white  '

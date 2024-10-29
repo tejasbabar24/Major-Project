@@ -48,11 +48,11 @@ function LogIn() {
   const handleSubmit = (e) => {
     e.preventDefault();
     axios
-      .post(`http://localhost:8000/users/login`, { username:username.toLowerCase(), password })
+      .post(`http://localhost:8000/users/login`,{username:username.toLowerCase(), password })
       .then((result) => {
-        console.log(result);
+        console.log(result.data.data.user);
         if (result.data) {
-          dispatch(login(result.data))
+          dispatch(login(result.data.data.user))
           navigate("/home");
         } else {
           alert("creadentials mismatched");
