@@ -75,7 +75,7 @@ function Home() {
       },
       {
         name:"My Classes",
-        slug:"/classroom",
+        slug:"/class-list",
         logo: ClassListLogo,
         active:true
       },
@@ -152,6 +152,7 @@ function Home() {
           renderArr.map((item)=>
             item.active ? (
               <Card
+              key={item.slug}
               label={item.name}
               logo={item.logo}
               slug={item.slug}

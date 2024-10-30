@@ -10,6 +10,7 @@ import {createBrowserRouter} from 'react-router-dom'
 import { RouterProvider } from 'react-router-dom'
 import Home from './pages/HOD/HodHome.jsx'
 import ClassroomHomePage from './components/classroom/ClassroomHomePage.jsx'
+import AuthLayout from './components/AuthLayout.jsx'
 
 const router = createBrowserRouter([
   {
@@ -25,50 +26,66 @@ const router = createBrowserRouter([
       {
         path:"/home",
         element:(
-          <Home/>
+          <AuthLayout authentication>
+            <Home/>
+          </AuthLayout>
         )
       },
       {
         path:"/signup",
         element:(
+          <AuthLayout authentication={false}>
             <SignupPage/>
+          </AuthLayout>
         )
       },
       {
         //path:"/add-faculty" 
-        path:"/classroom"  ,
+        path:"/classroom",
         element:(
+          <AuthLayout authentication>
             <ClassroomHomePage/>
+          </AuthLayout>
         )
       },
       {
         path:"/class-list",
         element:(
-            <Home/>
+          <AuthLayout authentication>
+          <ClassroomHomePage/>
+        </AuthLayout>
         )
       },
       {
         path:"/exam",
         element:(
-            <Home/>
+          <AuthLayout authentication>
+          <Home/>
+        </AuthLayout>
         )
       },
       {
         path:"/exam-result",
         element:(
-            <Home/>
+          <AuthLayout authentication>
+          <Home/>
+        </AuthLayout>
         )
       },
       {
         path:"/timetable",
         element:(
-            <Home/>
+          <AuthLayout authentication>
+          <Home/>
+        </AuthLayout>
         )
       },
       {
         path:"/homework",
         element:(
-            <Home/>
+          <AuthLayout authentication>
+          <Home/>
+        </AuthLayout>
         )
       },
       

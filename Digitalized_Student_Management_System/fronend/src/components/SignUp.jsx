@@ -18,12 +18,12 @@ function SignUp() {
   const [stud_images, set_Stud_images] = useState([]);
   const [role, setRole] = useState('Teacher');
   // teacher states
-  const [Teach_username, set_Teach_username] = useState();
+  const [Teach_username, set_Teach_username] = useState('');
   const [Teach_email, set_Teach_email] = useState();
   const [Teach_password, set_Teach_password] = useState();
 
   // Student states 
-  const [Stud_username, set_Stud_username] = useState();
+  const [Stud_username, set_Stud_username] = useState('');
   const [Stud_email, set_Stud_email] = useState();
   const [Stud_password, set_Stud_password] = useState();
 
