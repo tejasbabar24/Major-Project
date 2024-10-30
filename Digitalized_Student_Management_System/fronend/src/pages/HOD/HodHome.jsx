@@ -15,7 +15,113 @@ import { useSelector } from 'react-redux';
 function Home() {
     const userData = useSelector(state => state.auth.userData);
     console.log(userData);
-    
+    const navItems = [
+      {
+        name:"Add Faculty",
+        slug:"/add-faculty",
+        logo: FacultLogo,
+        active:true
+      },
+      {
+        name:"Class List",
+        slug:"/classroom",
+        logo: ClassListLogo,
+        active:true
+      },
+      {
+        name:"Attendance",
+        slug:"/attendance",
+        logo: StudentLogo,
+        active:true
+      },
+      {
+        name:"Exam",
+        slug:"/exam",
+        logo: ExamLogo,
+        active:true
+      },
+      {
+        name:"Timetable",
+        slug:"/timetable",
+        logo: TimetableLogo,
+        active:true
+      },
+      {
+        name:"Homework",
+        slug:"/homework",
+        logo: HomeworkLogo,
+        active:true
+      },
+      {
+        name:"Notice",
+        slug:"/notice",
+        logo: NotifyLogo,
+        active:true
+      },
+      {
+        name:"Exam Result",
+        slug:"/exam-result",
+        logo: ResultLogo,
+        active:true
+      },
+    ]
+      const studItems = [
+      
+      {
+        name:"Join Class",
+        slug:"/classroom",
+        logo: FacultLogo,
+        active:true
+      },
+      {
+        name:"My Classes",
+        slug:"/classroom",
+        logo: ClassListLogo,
+        active:true
+      },
+      {
+        name:"My Attendance",
+        slug:"/attendance",
+        logo: StudentLogo,
+        active:true
+      },
+      {
+        name:"Exam",
+        slug:"/exam",
+        logo: ExamLogo,
+        active:true
+      },
+      {
+        name:"View Timetable",
+        slug:"/timetable",
+        logo: TimetableLogo,
+        active:true
+      },
+      {
+        name:"Homework",
+        slug:"/homework",
+        logo: HomeworkLogo,
+        active:true
+      },
+      {
+        name:"View Notice",
+        slug:"/notice",
+        logo: NotifyLogo,
+        active:true
+      },
+      {
+        name:"Exam Result",
+        slug:"/exam-result",
+        logo: ResultLogo,
+        active:true
+      },
+    ]
+    const renderArr =
+    userData.role === "Student" 
+    ? studItems 
+    : userData.role === "Teacher" 
+    ? navItems 
+    : [];
   return (
     <div className="w-full flex bg-gray-200">
       <Sidebar/>
@@ -41,47 +147,18 @@ function Home() {
         <div className='mx-6 my-10'>
         <div className='grid grid-cols-4 gap-5'>
         
-        <Card 
-        label="Add Faculty"
-        logo={FacultLogo}
-        slug='add-faculty'
-        />
-        <Card
-          logo={ClassListLogo}
-          slug="class-list"
-          className=''
-          label="Class List"
-        />
-        <Card
-          logo={StudentLogo}
-          slug='attendance'
-          label="Attendance"
-        />
-        <Card
-          logo={ExamLogo}
-          label="Exam"
-          slug='exam'
-        />
-         <Card
-          logo={TimetableLogo}
-          label="Timetable"
-          slug='timetable'
-        />
-        <Card
-          logo={HomeworkLogo}
-          label="Homework"
-          slug='homework'
-        />
-        <Card
-          logo={NotifyLogo}
-          label="Notice"
-          slug='notice'
-        />
-        <Card
-          logo={ResultLogo}
-          label="Exam Result"
-          slug='exam-result'
-        />
+
+        {
+          renderArr.map((item)=>
+            item.active ? (
+              <Card
+              label={item.name}
+              logo={item.logo}
+              slug={item.slug}
+              />
+            ) : null
+          )
+        }
         
 
         </div>

@@ -93,7 +93,7 @@ function SignUp() {
         .then(result => {
           console.log(stud_images);
           console.log(Stud_email, Stud_password, Stud_username, stud_images);
-          if (result) dispatch(login(result.data));
+          if (result) dispatch(login(result.data.data));
           navigate('/home');
         })
         .catch(err => console.log(err));
@@ -102,7 +102,7 @@ function SignUp() {
       axios.post(`http://localhost:8000/faculty/register`, { username: Teach_username, email: Teach_email, password: Teach_password, role })
         .then(result => {
           console.log(result)
-          if (result) dispatch(login(result.data))
+          if (result) dispatch(login(result.data.data))
           navigate('/home')
         })
         .catch(err => console.log(err))
