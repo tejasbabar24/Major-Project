@@ -75,7 +75,7 @@ function SignUp() {
       if(role=='Student'){
 
       const formData = new FormData();
-      formData.append('username', Stud_username);
+      formData.append('username', Stud_username.toLowerCase());
       formData.append('email', Stud_email);
       formData.append('password', Stud_password);
       formData.append('role', role);
@@ -91,7 +91,6 @@ function SignUp() {
         }
       }) 
         .then(result => {
-          console.log(stud_images);
           console.log(Stud_email, Stud_password, Stud_username, stud_images);
           if (result) dispatch(login(result.data));
           navigate('/home');
@@ -99,14 +98,13 @@ function SignUp() {
         .catch(err => console.log(err));
       }
       
-      axios.post(`http://localhost:8000/faculty/register`, { username: Teach_username, email: Teach_email, password: Teach_password, role })
+      axios.post(`http://localhost:8000/faculty/register`, { username: Teach_username.toLowerCase(), email: Teach_email, password: Teach_password, role })
         .then(result => {
           console.log(result)
           if (result) dispatch(login(result.data))
           navigate('/home')
         })
-        .catch(err => console.log(err))
-      
+        .catch(err => console.log(err.message))
     }
   
 

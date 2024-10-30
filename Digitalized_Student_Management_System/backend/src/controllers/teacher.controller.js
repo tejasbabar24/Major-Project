@@ -36,7 +36,7 @@ const registerUser = asyncHandler(async (req, res) => {
     }
 
     const existedUser = await Teacher.findOne({
-        $or: [{ email }, { username }]
+        $or: [{ username }, { email }]
     })
 
     if (existedUser) {
