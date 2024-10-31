@@ -21,6 +21,7 @@ const generateClassCode = async () => {
 const createClass = asyncHandler(async (req, res) => {
     const { classname, subject, section, year } = req.body;
 
+    console.log(classname, subject, section, year);
     if (
         [classname, subject, section, year].some((field) =>
             field?.trim() === "")
@@ -59,9 +60,15 @@ const joinClass = asyncHandler(async (req, res) => {
         throw new ApiError("Class Code Is Required")
     }
 
-    const classroom = Classroom.findOne({ classCode })
+    const classroom =await Classroom.findOne({ classCode })
 
-    const student = Student.findByIdAndUpdate(
+    const existMember=classroom.members.includes(req.user?._id);
+    
+    if(existMember){
+        throw new ApiError(400,"Already Joined")
+    }
+
+    const student = await Student.findByIdAndUpdate(
         req.user?._id,
         {
             $set: {
@@ -69,10 +76,19 @@ const joinClass = asyncHandler(async (req, res) => {
                 classCode
             }
         }).select('-password -refreshToken');
+    
+    await classroom.updateOne({
+        $push:{
+            members:student._id
+        }
+    })
+    
+    const updatedStudent=await Student.findById(student._id)
+    const updatedCLass=await Classroom.findById(classroom._id)
 
     return res
         .status(200)
-        .json(new ApiResponse(200, { student, classroom }, "Class Joined Successfully"))
+        .json(new ApiResponse(200, { student:updatedStudent, classroom:updatedCLass }, "Class Joined Successfully"))
 })
 
 const postAssignment = asyncHandler(async (req, res) => {

@@ -7,9 +7,8 @@ import jwt from "jsonwebtoken";
 
 const options = {
     httpOnly: true,
-    secure: true,         // Use this only if your server is HTTPS
-    sameSite: "lax",       // Can be 'strict' or 'none' as needed
-    maxAge: 24 * 60 * 60 * 1000  // 1 day
+    secure: true,
+    sameSite: "none",      
 }
 
 const generateAccessAndRefreshTokens = async (userId) => {

@@ -57,7 +57,7 @@ export default function ClassroomHomePage() {
   const [open, setOpen] = React.useState(false);
   const [joinDrawerOpen, setJoinDrawerOpen] = React.useState(false);
 
-  const [className, setClassName] = React.useState('');
+  const [classname, setClassName] = React.useState('');
   const [subject, setSubject] = React.useState('');
   const [section, setSection] = React.useState('');
   const [year, setYear] = React.useState('');
@@ -65,13 +65,25 @@ export default function ClassroomHomePage() {
 
 const handleSubmit =(e)=>{
   e.preventDefault();
-  axios.post(`http://localhost:8000/class/create-class`,{className,subject,section,year})
+  axios.post(`http://localhost:8000/class/create-class`,{classname,subject,section,year})
         .then(result=>{
           console.log(result)
         })
         .catch(err=>{console.log(err.message)})
 }
 
+const join=(e)=>{
+  e.preventDefault();
+  axios
+    .post(`http://localhost:8000/class/join-class`,{classCode:joinId})
+    .then(result=>{
+      console.log(result.data.message)
+      console.log(result.data.data.student)
+      console.log(result.data.data.classroom)
+
+    })
+    .catch(err=>{console.log(err.message)})
+}
  
   return (
     <Box sx={{ display: 'flex' }}>
@@ -190,10 +202,7 @@ const handleSubmit =(e)=>{
           </form>
           <Divider />
           <p className='pt-3 ml-14 text-xl'>Join Class</p>
-          <form onSubmit={(e) => {
-            e.preventDefault();
-            console.log('Joining Class:', { joinId });
-          }} className='p-5 pt-0 flex justify-center flex-col'>
+          <form onSubmit={join} className='p-5 pt-0 flex justify-center flex-col'>
             <TextField label={'Enter Class Code'} margin="normal" onChange={(e) => setJoinId(e.target.value)} />
             <Button type='submit' className='w-18 h-8  text-white text-sm text-center bg-purple-500'>Join</Button>
           </form>

@@ -45,8 +45,11 @@ function LogIn() {
     }
   };
 
+  axios.defaults.withCredentials = true;
+
   const handleSubmit = (e) => {
     e.preventDefault();
+
 
     if (role == "Student") {
       axios
@@ -69,7 +72,7 @@ function LogIn() {
       axios
       .post(`http://localhost:8000/faculty/login`, { username:username.toLowerCase(), password })
       .then((result) => {
-        console.log(result.message);
+        console.log(result.data.message);
 
         // const decoded_accessToken=jwtDecode(result.data.data.accessToken);
         // const decoded_refreshToken=jwtDecode(result.data.data.refreshToken);
