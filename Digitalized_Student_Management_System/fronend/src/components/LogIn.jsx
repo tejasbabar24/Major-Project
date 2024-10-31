@@ -34,9 +34,7 @@ function LogIn() {
 
   const switchImage = () => {
     switch (role) {
-      case "HOD":
-        return HODLogo;
-      case "Faculty":
+      case "Teacher":
         return FacultyLogo;
       case "Student":
         return StudentLogo;
@@ -50,8 +48,24 @@ function LogIn() {
   const handleSubmit = (e) => {
     e.preventDefault();
 
-    if(role=='Student'){
+    if (role == "Student") {
       axios
+        .post(`http://localhost:8000/student/login`, {
+          username: username.toLowerCase(),
+          password,
+        })
+        .then((result) => {
+          if (result.data) {
+            dispatch(login(result.data.data.user));
+            navigate("/home");
+          } else {
+            alert("creadentials mismatched");
+          }
+        })
+        .catch((err) => alert(err));
+    } else if (role === "Teacher") {
+      axios
+
       .post(`http://localhost:8000/student/login`, { username:username.toLowerCase(), password })
       .then((result) => {
         console.log(result);
@@ -86,6 +100,7 @@ function LogIn() {
         }
       })
       .catch((err) => alert(err));
+
   };
 
   return (
@@ -110,27 +125,15 @@ function LogIn() {
         <ol className="w-40 text-right mr-0 text-white">
           <li
             className={`mt-5 p-2 cursor-pointer rounded-l-md border-black border-l-2 border-b-2 ${
-              role === "HOD" ? "bg-slate-100 text-black" : "bg-purple-500"
+              role === "Faculty" ? "bg-slate-100 text-black" : "bg-purple-500"
             }`}
-            onClick={() => handleItemClick("HOD")}
-          >
-            HOD
-          </li>
-          <li
-            className={`mt-5 p-2 cursor-pointer rounded-l-md border-black border-l-2 border-b-2 ${
-              role === "Faculty"
-                ? "bg-slate-100 text-black"
-                : "bg-purple-500"
-            }`}
-            onClick={() => handleItemClick("Faculty")}
+            onClick={() => handleItemClick("Teacher")}
           >
             Faculty
           </li>
           <li
             className={`mt-5 p-2 cursor-pointer rounded-l-md border-black border-l-2 border-b-2 ${
-              role === "Student"
-                ? "bg-slate-100 text-black"
-                : "bg-purple-500"
+              role === "Student" ? "bg-slate-100 text-black" : "bg-purple-500"
             }`}
             onClick={() => handleItemClick("Student")}
           >
@@ -138,9 +141,7 @@ function LogIn() {
           </li>
           <li
             className={`mt-5 p-2 cursor-pointer rounded-l-md border-black border-l-2 border-b-2 ${
-              role === "Parent"
-                ? "bg-slate-100 text-black"
-                : "bg-purple-500"
+              role === "Parent" ? "bg-slate-100 text-black" : "bg-purple-500"
             }`}
             onClick={() => handleItemClick("Parent")}
           >
