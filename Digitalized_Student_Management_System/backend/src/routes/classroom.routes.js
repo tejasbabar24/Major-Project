@@ -4,7 +4,6 @@ import {
     joinClass,
     postAssignment
 } from "../controllers/classroom.controller.js"
-import { upload } from "../middlewares/multer.middleware.js";
 import { verifyJWT } from "../middlewares/auth.middleware.js";
 import { stud_verifyJWT } from "../middlewares/auth_stud.middleware.js";
 

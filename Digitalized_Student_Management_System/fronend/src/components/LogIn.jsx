@@ -5,7 +5,7 @@ import FacultyLogo from "../assets/Faculty.png";
 import HODLogo from "../assets/student.png";
 import backgroundImage from "../assets/loginBackground.jpg";
 import axios from "axios";
-
+import Cookies from "universal-cookie";
 import "aos/dist/aos.css";
 import AOS from "aos";
 import { motion } from "framer-motion";
@@ -14,8 +14,10 @@ import Input from "./Input";
 import Button from "./Button";
 import { login } from "../store/authSlice";
 import { useDispatch } from "react-redux";
+import { jwtDecode } from "jwt-decode";
 
 function LogIn() {
+  const cookies=new Cookies();
   const [role, setRole] = useState("Student");
   const dispatch = useDispatch();
   const [username, setusername] = useState();
@@ -59,17 +61,23 @@ function LogIn() {
         } else {
           alert("creadentials mismatched");
         }
+        cookie
       })
       .catch((err) => alert(err));
   }
 
     
     axios
-
       .post(`http://localhost:8000/faculty/login`, { username:username.toLowerCase(), password })
-
       .then((result) => {
-        console.log(result.data.data.user);
+        console.log(result.message);
+
+        // const decoded_accessToken=jwtDecode(result.data.data.accessToken);
+        // const decoded_refreshToken=jwtDecode(result.data.data.refreshToken);
+
+        // cookies.set("accessToken",decoded_accessToken);
+        // cookies.set("refreshToken",decoded_refreshToken);
+        
         if (result.data) {
           dispatch(login(result.data.data.user))
           navigate("/home");

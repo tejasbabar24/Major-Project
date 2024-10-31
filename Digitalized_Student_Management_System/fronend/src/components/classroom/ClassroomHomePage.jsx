@@ -23,6 +23,7 @@ import { MdOutlineAdd } from "react-icons/md";
 import ClassCard from './ClassCard'; // Ensure you have this component
 import user from '../../assets/classCards/user.png'; // Ensure you have this asset
 import classBackground from '../../assets/classCards/classbackground.jpg'; // Ensure you have this asset
+import axios from 'axios';
 
 const drawerWidth = 240;
 
@@ -62,12 +63,16 @@ export default function ClassroomHomePage() {
   const [year, setYear] = React.useState('');
   const [joinId, setJoinId] = React.useState('');
 
-  const showData = (e) => {
-    e.preventDefault(); // Prevent the default form submission
-    console.log('Creating Class:', { className, subject, section, year });
-    console.log('Joining Class:', { joinId });
-  };
+const handleSubmit =(e)=>{
+  e.preventDefault();
+  axios.post(`http://localhost:8000/class/create-class`,{className,subject,section,year})
+        .then(result=>{
+          console.log(result)
+        })
+        .catch(err=>{console.log(err.message)})
+}
 
+ 
   return (
     <Box sx={{ display: 'flex' }}>
       <CssBaseline />
@@ -176,7 +181,7 @@ export default function ClassroomHomePage() {
         <Divider />
         <p className='pt-2 ml-14 text-xl'>Create Class</p>
         <div className='flex flex-col'>
-          <form onSubmit={showData} className='pl-5 pr-5 pb-5 flex justify-center flex-col'>
+          <form onSubmit={handleSubmit} className='pl-5 pr-5 pb-5 flex justify-center flex-col'>
             <TextField label={' Class Name'} margin="normal" onChange={(e) => setClassName(e.target.value)} />
             <TextField label={' Subject'} margin="normal" onChange={(e) => setSubject(e.target.value)} />
             <TextField label={' Section'} margin="normal" onChange={(e) => setSection(e.target.value)} />

@@ -100,7 +100,7 @@ function SignUp() {
       
       axios.post(`http://localhost:8000/faculty/register`, { username: Teach_username.toLowerCase(), email: Teach_email, password: Teach_password, role })
         .then(result => {
-          console.log(result)
+          console.log(result.message)
           if (result) dispatch(login(result.data.data))
           navigate('/home')
         })
