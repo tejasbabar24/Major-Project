@@ -63,25 +63,10 @@ function LogIn() {
           }
         })
         .catch((err) => alert(err));
-    } else if (role === "Teacher") {
+
+    } 
+    else if (role === "Teacher") {
       axios
-
-      .post(`http://localhost:8000/student/login`, { username:username.toLowerCase(), password })
-      .then((result) => {
-        console.log(result);
-        if (result.data) {
-          dispatch(login(result.data))
-          navigate("/home");
-        } else {
-          alert("creadentials mismatched");
-        }
-        cookie
-      })
-      .catch((err) => alert(err));
-  }
-
-    
-    axios
       .post(`http://localhost:8000/faculty/login`, { username:username.toLowerCase(), password })
       .then((result) => {
         console.log(result.message);
@@ -102,6 +87,10 @@ function LogIn() {
       .catch((err) => alert(err));
 
   };
+  }
+
+    
+   
 
   return (
     <div className="flex flex-row w-full h-screen font-merriweather">
