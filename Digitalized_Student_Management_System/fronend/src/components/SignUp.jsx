@@ -52,8 +52,6 @@ function SignUp() {
   const switchImage = () => {
     switch (role) {
       case 'Teacher':
-        return HODLogo;
-      case 'Faculty':
         return FacultyLogo;
       case 'Student':
         return StudentLogo;
@@ -91,20 +89,18 @@ function SignUp() {
         }
       }) 
         .then(result => {
-          console.log(Stud_email, Stud_password, Stud_username, stud_images);
           if (result) dispatch(login(result.data.data));
           navigate('/home');
         })
-        .catch(err => console.log(err));
+        .catch(err => alert(err));
       }
       
       axios.post(`http://localhost:8000/faculty/register`, { username: Teach_username.toLowerCase(), email: Teach_email, password: Teach_password, role })
         .then(result => {
-          console.log(result)
           if (result) dispatch(login(result.data.data))
           navigate('/home')
         })
-        .catch(err => console.log(err.message))
+        .catch(err => alert(err.message))
     }
   
 
@@ -205,9 +201,6 @@ function SignUp() {
     }
   }
 
-useEffect(() => {
-    console.log(stud_images);
-  }, [stud_images]);
 
   return (
     <div className="flex flex-row w-full h-screen font-merriweather">

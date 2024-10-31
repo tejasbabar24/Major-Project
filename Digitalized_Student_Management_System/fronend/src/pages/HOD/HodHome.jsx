@@ -14,7 +14,6 @@ import { useSelector } from 'react-redux';
 
 function Home() {
     const userData = useSelector(state => state.auth.userData);
-    console.log(userData);
     const navItems = [
       {
         name:"Add Faculty",
