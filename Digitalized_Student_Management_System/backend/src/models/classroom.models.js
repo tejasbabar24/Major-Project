@@ -27,8 +27,7 @@ const classroomSchema = new Schema({
         index: true,
     },
     owner: {
-        type: Schema.Types.ObjectId,
-        ref: "Teacher"
+        type: String,
     },
     members: [
         {

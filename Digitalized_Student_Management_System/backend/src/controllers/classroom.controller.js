@@ -18,17 +18,6 @@ const generateClassCode = async () => {
 
 }
 
-const getOwnerName=asyncHandler(async(req,res)=>{
-    const {classCode}=req.body;
-
-    const classInfo=await Classroom.findOne({classCode})
-
-    const owner=await Teacher.findById(classInfo.owner)
-
-    return owner.username;
-
-})
-
 const createClass = asyncHandler(async (req, res) => {
     const { classname, subject, section, year } = req.body;
 
@@ -43,12 +32,14 @@ const createClass = asyncHandler(async (req, res) => {
     const code = await generateClassCode();
     console.log(code);
 
+    const user=await Teacher.findById(req.user._id);
+
     const classroom = await Classroom.create({
         classname,
         subject,
         section,
         year,
-        owner: await Teacher.findById(req.user._id),
+        owner: user.username,
         classCode: code
     })
 
@@ -79,10 +70,10 @@ const joinClass = asyncHandler(async (req, res) => {
         throw new ApiError(400,"Already Joined")
     }
 
-    const student = await Teacher.findByIdAndUpdate(
+    const student = await Student.findByIdAndUpdate(
         req.user?._id,
         {
-            $set: {
+            $push: {
                 classId: classroom._id,
                 classCode
             }
@@ -94,7 +85,7 @@ const joinClass = asyncHandler(async (req, res) => {
         }
     })
     
-    const updatedStudent=await Teacher.findById(student._id)
+    const updatedStudent=await Student.findById(student._id)
     const updatedCLass=await Classroom.findById(classroom._id)
 
     return res
@@ -149,6 +140,7 @@ const getJoinedClasses=asyncHandler(async(req,res)=>{
 
         var classArr=[];
 
+        var owner;
         for (const element of stud.classId) {
             const classInfo = await Classroom.findById(element);
             
@@ -170,15 +162,15 @@ const getJoinedClasses=asyncHandler(async(req,res)=>{
 
 const getCreatedClasses=asyncHandler(async(req,res)=>{
 
-    const classes = await Classroom.find({owner:req.user?._id})
+    const user=await Teacher.findById(req.user._id);
 
-    
+    const classes = await Classroom.find({owner:user.username})
+
         return res
                   .status(200)
                   .json(new ApiResponse(200, { classes }, "Retrived"))
 
 })
-
 
 
 export { createClass, joinClass, postAssignment ,getJoinedClasses,getCreatedClasses}

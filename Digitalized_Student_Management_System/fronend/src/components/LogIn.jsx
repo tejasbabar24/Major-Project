@@ -70,9 +70,10 @@ function LogIn() {
     } 
     else if (role === "Teacher") {
       axios
-      .post(`http://localhost:8000/faculty/login`, { email:username, password })
+      .post(`http://localhost:8000/faculty/login`, { username:username.toLowerCase(), password })
       .then((result) => {
         console.log(result.data.message);
+
         
         if (result.data) {
           dispatch(login(result.data.data.user))
