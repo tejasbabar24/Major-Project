@@ -37,7 +37,7 @@ const registerUser = asyncHandler(async (req, res) => {
     }
 
     const existedUser = await Teacher.findOne({
-        $or: [{ username }, { email }]
+        $or: [ { email }]
     })
 
     if (existedUser) {
@@ -121,14 +121,14 @@ const registerStudentUser = asyncHandler(async (req, res) => {
 })
 
 const loginUser = asyncHandler(async (req, res) => {
-    const { username, password } = req.body;
+    const { email, password } = req.body;
 
-    if (!(username )) {
+    if (!(email,password )) {
         throw new ApiError(400, "Username Or Email Is Required");
     }
 
     const user = await Teacher.findOne({
-        $or: [{ username }, { email:username }]
+        $or: [ { email }]
     })
 
     if (!user) {

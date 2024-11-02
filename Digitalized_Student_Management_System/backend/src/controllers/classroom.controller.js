@@ -2,7 +2,7 @@ import { asyncHandler } from "../utils/asyncHandler.js";
 import { ApiError } from "../utils/ApiError.js";
 import { ApiResponse } from "../utils/ApiResponse.js";
 import { Classroom } from "../models/classroom.models.js";
-// import { Teacher } from "../models/teacher.models.js";
+import { Teacher } from "../models/teacher.models.js";
 import { uploadOnCloudinary } from "../utils/cloudinary.js"
 import { v4 as uuidv4 } from "uuid";
 import { Student } from "../models/student.models.js";
@@ -17,6 +17,17 @@ const generateClassCode = async () => {
     return hashArray.slice(0, 6).map(x => x.toString(16).padStart(2, '0')).join('');
 
 }
+
+const getOwnerName=asyncHandler(async(req,res)=>{
+    const {classCode}=req.body;
+
+    const classInfo=await Classroom.findOne({classCode})
+
+    const owner=await Teacher.findById(classInfo.owner)
+
+    return owner.username;
+
+})
 
 const createClass = asyncHandler(async (req, res) => {
     const { classname, subject, section, year } = req.body;
@@ -37,7 +48,7 @@ const createClass = asyncHandler(async (req, res) => {
         subject,
         section,
         year,
-        owner: req.user._id,
+        owner: await Teacher.findById(req.user._id),
         classCode: code
     })
 
@@ -68,7 +79,7 @@ const joinClass = asyncHandler(async (req, res) => {
         throw new ApiError(400,"Already Joined")
     }
 
-    const student = await Student.findByIdAndUpdate(
+    const student = await Teacher.findByIdAndUpdate(
         req.user?._id,
         {
             $set: {
@@ -83,7 +94,7 @@ const joinClass = asyncHandler(async (req, res) => {
         }
     })
     
-    const updatedStudent=await Student.findById(student._id)
+    const updatedStudent=await Teacher.findById(student._id)
     const updatedCLass=await Classroom.findById(classroom._id)
 
     return res
@@ -127,4 +138,47 @@ const postAssignment = asyncHandler(async (req, res) => {
         )
 })
 
-export { createClass, joinClass, postAssignment }
+const getJoinedClasses=asyncHandler(async(req,res)=>{
+
+
+        const stud=await Student.findById(req.user?._id);
+        
+        if(!stud){
+            throw new ApiError(400,"Student does not exist")
+        }
+
+        var classArr=[];
+
+        for (const element of stud.classId) {
+            const classInfo = await Classroom.findById(element);
+            
+            if (!classInfo) {
+                throw new ApiError(400, "Classroom does not exist");
+            }
+            
+            classArr.push(classInfo);
+        }
+        
+        console.log(classArr)
+
+        return res
+                  .status(200)
+                  .json(new ApiResponse(200, { classArr }, "Retrived"))
+
+    
+})
+
+const getCreatedClasses=asyncHandler(async(req,res)=>{
+
+    const classes = await Classroom.find({owner:req.user?._id})
+
+    
+        return res
+                  .status(200)
+                  .json(new ApiResponse(200, { classes }, "Retrived"))
+
+})
+
+
+
+export { createClass, joinClass, postAssignment ,getJoinedClasses,getCreatedClasses}
