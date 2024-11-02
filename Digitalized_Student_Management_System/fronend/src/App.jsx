@@ -7,7 +7,6 @@ import Sidebar from '../../fronend/src/components/Sidebar/Sidebar.jsx'
 
 
 function App() {
-  const [count, setCount] = useState(0)
 
   return (
     <div className="w-full">

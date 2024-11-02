@@ -54,9 +54,9 @@ const AppBar = styled(MuiAppBar, {
 }));
 
 export default function ClassroomHomePage() {
+  
   const [open, setOpen] = React.useState(false);
   const [joinDrawerOpen, setJoinDrawerOpen] = React.useState(false);
-
   const [classname, setClassName] = React.useState('');
   const [subject, setSubject] = React.useState('');
   const [section, setSection] = React.useState('');
