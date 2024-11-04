@@ -67,11 +67,41 @@ export default function ClassroomHomePage() {
   const [year, setYear] = React.useState("");
   const [joinId, setJoinId] = React.useState("");
 
-
+  const clearFields = ()=>{
+      setClassName('')
+      setSubject('')
+      setSection('')
+      setYear('')
+      setJoinId('')
+  }
   useEffect(()=>{
-    //Query 
-  },[])  
+    clearFields()
+  },[joinDrawerOpen])
 
+  if (userData.role === "Teacher") {
+    useEffect(()=>{
+      axios
+      .get('http://localhost:8000/class/created-classes')
+      .then((result)=>{
+        setCreatedClasses(result.data.data.classes);  
+      })
+      .catch((err)=>{
+        console.log(err);
+      })
+    },[createdClasses])  
+  }else if(userData.role === "Student"){
+    useEffect(()=>{
+      axios
+      .get('http://localhost:8000/class/joined-classes')
+      .then((result)=>{
+        setJoinedClasses(result.data.data.classArr);  
+      })
+      .catch((err)=>{
+        console.log(err);
+      })
+    },[joinedClasses]) 
+  }
+  
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -88,6 +118,7 @@ export default function ClassroomHomePage() {
       .catch((err) => {
         console.log(err.message);
       });
+      setJoinDrawerOpen(false)
   };
 
   const join = (e) => {
@@ -102,6 +133,7 @@ export default function ClassroomHomePage() {
       .catch((err) => {
         console.log(err.message);
       });
+      setJoinDrawerOpen(false)
   };
 
   return (
@@ -190,17 +222,17 @@ export default function ClassroomHomePage() {
         <Box sx={{ mt: 8, padding: "16px" }}>
           <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-4 gap-5">
             {
-              createdClasses.map((item)=>{
-                <ClassCard classData={item} image={user}/>
-              })
-            }
-            {
-              joinedClasses.map((item)=>{
-                <ClassCard classData={item} image={user}/>
-              })
+              userData.role === "Teacher" ? 
+              (createdClasses.map((item)=>(
+                <ClassCard key={item.classname} classData={item} image={user}/>
+              ))) : userData.role === "Student" ? (
+                joinedClasses.map((item)=>(
+                  <ClassCard key={item.classname} classData={item} image={user}/>
+                ))
+              ) : null
             }
 
-            <ClassCard
+            {/* <ClassCard
               name={"Software Testing"}
               createdBy={"sadaphule"}
               image={user}
@@ -240,7 +272,7 @@ export default function ClassroomHomePage() {
               name={"Biology"}
               createdBy={"sunny leone"}
               image={user}
-            />
+            /> */}
           </div>
         </Box>
       </Main>
@@ -273,21 +305,25 @@ export default function ClassroomHomePage() {
             <TextField
               label={" Class Name"}
               margin="normal"
+              value={classname}
               onChange={(e) => setClassName(e.target.value)}
             />
             <TextField
               label={" Subject"}
               margin="normal"
+              value={subject}
               onChange={(e) => setSubject(e.target.value)}
             />
             <TextField
               label={" Section"}
               margin="normal"
+              value={section}
               onChange={(e) => setSection(e.target.value)}
             />
             <TextField
               label={" Year"}
               margin="normal"
+              value={year}
               onChange={(e) => setYear(e.target.value)}
             />
             <Button
@@ -298,7 +334,7 @@ export default function ClassroomHomePage() {
             </Button>
           </form>
 </div>
-          ) : (
+          ) : userData.role === "Student" ? (
             <div>
               <p className="pt-3 ml-14 text-xl">Join Class</p>
           <form
@@ -307,7 +343,8 @@ export default function ClassroomHomePage() {
           >
             <TextField
               label={"Enter Class Code"}
-              margin="normal"
+              margin="normal" 
+              value={joinId}
               onChange={(e) => setJoinId(e.target.value)}
             />
             <Button
@@ -318,7 +355,7 @@ export default function ClassroomHomePage() {
             </Button>
           </form>
         </div>
-          )
+          ) : null
         }
           <Divider />
           
