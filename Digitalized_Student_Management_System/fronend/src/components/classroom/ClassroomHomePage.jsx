@@ -27,6 +27,8 @@ import axios from "axios";
 import { useDispatch, useSelector } from "react-redux";
 import { useEffect } from "react";
 import { addClass } from "../../store/classSlice";
+import { useNavigate } from "react-router";
+import { Icon } from "@mui/material";
 
 const drawerWidth = 240;
 
@@ -67,6 +69,7 @@ export default function ClassroomHomePage() {
   const [section, setSection] = React.useState("");
   const [year, setYear] = React.useState("");
   const [joinId, setJoinId] = React.useState("");
+  const navigate = useNavigate()
   const dispatch = useDispatch()
   
   const clearFields = ()=>{
@@ -197,26 +200,17 @@ export default function ClassroomHomePage() {
       >
         <Divider />
         <List>
-          {["Inbox", "Starred", "Send email", "Drafts"].map((text, index) => (
-            <ListItem key={text} disablePadding>
-              <ListItemButton>
-                <ListItemIcon>
-                  {index % 2 === 0 ? <InboxIcon /> : <MailIcon />}
+          {createdClasses.map((item) => (
+            <ListItem key={item.classCode} disablePadding>
+              <ListItemButton onClick={()=>navigate(`/class/${item.classCode}`)}>
+                <ListItemIcon className="mr-3">
+                <img 
+                  src={user} 
+                  alt="User Profile" 
+                  className="w-12 h-12 rounded-full mb-2  border solid white " 
+                />
                 </ListItemIcon>
-                <ListItemText primary={text} />
-              </ListItemButton>
-            </ListItem>
-          ))}
-        </List>
-        <Divider />
-        <List>
-          {["All mail", "Trash", "Spam"].map((text, index) => (
-            <ListItem key={text} disablePadding>
-              <ListItemButton>
-                <ListItemIcon>
-                  {index % 2 === 0 ? <InboxIcon /> : <MailIcon />}
-                </ListItemIcon>
-                <ListItemText primary={text} />
+                <ListItemText primary={item.classname.toUpperCase()} />
               </ListItemButton>
             </ListItem>
           ))}
@@ -229,10 +223,10 @@ export default function ClassroomHomePage() {
             {
               userData.role === "Teacher" ? 
               (createdClasses.map((item)=>(
-                <ClassCard key={item.classname} classData={item} image={user}/>
+                <ClassCard key={item.classCode} classData={item} image={user}/>
               ))) : userData.role === "Student" ? (
                 joinedClasses.map((item)=>(
-                  <ClassCard key={item.classname} classData={item} image={user}/>
+                  <ClassCard key={item.classCode} classData={item} image={user}/>
                 ))
               ) : null
             }
