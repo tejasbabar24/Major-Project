@@ -24,8 +24,9 @@ import ClassCard from "./ClassCard"; // Ensure you have this component
 import user from "../../assets/classCards/user.png"; // Ensure you have this asset
 import classBackground from "../../assets/classCards/classbackground.jpg"; // Ensure you have this asset
 import axios from "axios";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { useEffect } from "react";
+import { addClass } from "../../store/classSlice";
 
 const drawerWidth = 240;
 
@@ -66,7 +67,8 @@ export default function ClassroomHomePage() {
   const [section, setSection] = React.useState("");
   const [year, setYear] = React.useState("");
   const [joinId, setJoinId] = React.useState("");
-
+  const dispatch = useDispatch()
+  
   const clearFields = ()=>{
       setClassName('')
       setSubject('')
@@ -83,7 +85,8 @@ export default function ClassroomHomePage() {
       axios
       .get('http://localhost:8000/class/created-classes')
       .then((result)=>{
-        setCreatedClasses(result.data.data.classes);  
+        setCreatedClasses(result.data.data.classes);
+        dispatch(addClass(createdClasses))
       })
       .catch((err)=>{
         console.log(err);
@@ -94,7 +97,9 @@ export default function ClassroomHomePage() {
       axios
       .get('http://localhost:8000/class/joined-classes')
       .then((result)=>{
-        setJoinedClasses(result.data.data.classArr);  
+        setJoinedClasses(result.data.data.classArr);
+        dispatch(addClass(joinedClasses))
+
       })
       .catch((err)=>{
         console.log(err);

@@ -3,7 +3,7 @@ import { createRoot } from 'react-dom/client'
 import App from './App.jsx'
 import './index.css'
 import store from './store/store.js'
-import { Provider } from 'react-redux'
+import { Provider, useSelector } from 'react-redux'
 import LoginPage from './pages/LoginPage.jsx'
 import SignupPage from './pages/SignupPage.jsx'
 import {createBrowserRouter} from 'react-router-dom'
@@ -11,6 +11,9 @@ import { RouterProvider } from 'react-router-dom'
 import Home from './pages/HOD/HodHome.jsx'
 import ClassroomHomePage from './components/classroom/ClassroomHomePage.jsx'
 import AuthLayout from './components/AuthLayout.jsx'
+import Class from './components/classroom/Class.jsx'
+
+
 
 const router = createBrowserRouter([
   {
@@ -53,6 +56,14 @@ const router = createBrowserRouter([
         element:(
           <AuthLayout authentication>
           <ClassroomHomePage/>
+        </AuthLayout>
+        )
+      },
+      {
+        path:"/class/:slug",
+        element:(
+          <AuthLayout authentication>
+          <Class/>
         </AuthLayout>
         )
       },

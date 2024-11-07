@@ -1,8 +1,9 @@
 import React from 'react';
 import classCardLogo from '../../assets/classCards/classCardLogo.jpg';
-
+import {Link} from "react-router-dom"
 function ClassCard({classData,image}) {
   return (
+    <Link to={`/class/${classData.classCode}`}>    
     <div className="border border-solid rounded-lg shadow-lg overflow-hidden transition-transform duration-300 transform hover:scale-105">
       <div
         className="bg-cover bg-center h-44 w-full" 
@@ -21,6 +22,7 @@ function ClassCard({classData,image}) {
         </div>
       </div>
     </div>
+    </Link>
   );
 }
 
