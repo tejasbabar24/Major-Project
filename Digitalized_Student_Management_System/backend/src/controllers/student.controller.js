@@ -4,6 +4,7 @@ import { ApiResponse } from "../utils/ApiResponse.js"
 import { Student } from "../models/student.models.js";
 import { uploadOnCloudinary } from "../utils/cloudinary.js"
 import jwt from "jsonwebtoken";
+import axios from "axios";
 
 const options = {
     httpOnly: true,
@@ -44,8 +45,6 @@ const registerUser = asyncHandler(async (req, res) => {
         throw new ApiError(409, "User with email or username already exists")
     }
 
-    ;
-
     let photoLocalPaths=[];
 
     if (req.files && Array.isArray(req.files.photo) && req.files.photo.length > 0) {
@@ -57,6 +56,7 @@ const registerUser = asyncHandler(async (req, res) => {
     if (photoLocalPaths.length===0) {
         throw new ApiError(400, " Image file is required");
     }
+
     const uploadedphotos = await Promise.all(
         photoLocalPaths.map(async (path)=>{
             const photo=await uploadOnCloudinary(path);
@@ -67,6 +67,7 @@ const registerUser = asyncHandler(async (req, res) => {
         })
     );
 
+    const encode = await axios.post("http://localhost:5000/encode", { img: uploadedphotos});
 
     const user = await Student.create({
         username: username.toLowerCase(),
