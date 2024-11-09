@@ -27,13 +27,12 @@ const classroomSchema = new Schema({
         index: true,
     },
     owner: {
-        type: Schema.Types.ObjectId,
-        ref: "User"
+        type: String,
     },
     members: [
         {
             type: mongoose.Schema.Types.ObjectId,
-            ref: "User"
+            ref: "Student"
         }
     ],
     classCode:{

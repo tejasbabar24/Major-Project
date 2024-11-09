@@ -14,7 +14,7 @@ import BookLogo from '../../assets/HodHomePageLogo/book.png'
 import { useSelector } from 'react-redux'
 
 function Sidebar() {
-  //const navigate = useNavigate();
+  const navigate = useNavigate();
     const role = "HOD";
     const name = "DhulShettee"
     const userData = useSelector(state => state.auth.userData);
@@ -34,7 +34,7 @@ function Sidebar() {
     },
     {
       name:"Class List",
-      slug:"/class-list",
+      slug:"/classroom",
       logo: ClassListLogo,
       active:true
     },
@@ -90,7 +90,7 @@ function Sidebar() {
     },
     {
       name:"My Classes",
-      slug:"/class-list",
+      slug:"/classroom",
       logo: ClassListLogo,
       active:true
     },
@@ -154,7 +154,7 @@ function Sidebar() {
               item.active ? (
                 <li className='flex my-2 text-white items-center my-4 hover:bg-gray-500' key={item.name}>
                   <img className='w-10 h-10 cursor-pointer' src={item.logo} alt={`${item.name}-logo`} />
-                  <button onClick={()=>/*navigate(item.slug)*/console.log("navigate(item.slug)")
+                  <button onClick={()=>navigate(item.slug)
                   }
                     className='pl-3'
                     >

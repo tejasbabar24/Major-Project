@@ -1,5 +1,5 @@
 import React from 'react'
-import { Link } from 'react-router-dom'
+import { Link} from 'react-router-dom'
 
 function Card({
     logo,
@@ -8,9 +8,7 @@ function Card({
     slug="login"
 }) {
   return (
-    <Link className='bg-white flex justify-center items-center' to={`/${slug}`}>
-        
-
+    <Link className='bg-white flex justify-center items-center' to={`${slug}`}>
         <div className=''>
           <div className='p-10'>
           <div className='flex items-center flex-col'>

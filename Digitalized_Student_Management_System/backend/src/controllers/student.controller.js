@@ -4,10 +4,12 @@ import { ApiResponse } from "../utils/ApiResponse.js"
 import { Student } from "../models/student.models.js";
 import { uploadOnCloudinary } from "../utils/cloudinary.js"
 import jwt from "jsonwebtoken";
+import axios from "axios";
 
 const options = {
     httpOnly: true,
-    secure: true
+    secure: true,
+    sameSite: "none",  
 }
 
 const generateAccessAndRefreshTokens = async (userId) => {
@@ -36,37 +38,43 @@ const registerUser = asyncHandler(async (req, res) => {
     }
 
     const existedUser = await Student.findOne({
-        $or: [{ email }, { username }]
+        $or: [{ username }, { email }]
     })
 
     if (existedUser) {
         throw new ApiError(409, "User with email or username already exists")
     }
 
-    ;
+    let photoLocalPaths=[];
 
-    let photoLocalPath;
     if (req.files && Array.isArray(req.files.photo) && req.files.photo.length > 0) {
-        photoLocalPath = req.files.photo[0].path;
+        photoLocalPaths = req.files.photo.map(file => file.path);
     }
 
-    console.log(photoLocalPath);
+    console.log(photoLocalPaths);
 
-    if (!photoLocalPath) {
+    if (photoLocalPaths.length===0) {
         throw new ApiError(400, " Image file is required");
     }
-    const photo = await uploadOnCloudinary(photoLocalPath);
 
-    if (!photo) {
-        throw new ApiError(400, "Image file is required")
-    }
+    const uploadedphotos = await Promise.all(
+        photoLocalPaths.map(async (path)=>{
+            const photo=await uploadOnCloudinary(path);
+        if (!photo) {
+            throw new ApiError(500, "Failed to upload file ")
+        }
+        return photo.url;
+        })
+    );
+
+    const encode = await axios.post("http://localhost:5000/encode", { img: uploadedphotos});
 
     const user = await Student.create({
         username: username.toLowerCase(),
         role,
         email,
         password,
-        photo: photo.url
+        photo: uploadedphotos
     })
 
     const createdUser = await Student.findById(user._id).select("-password -refreshToken")

@@ -18,12 +18,12 @@ function SignUp() {
   const [stud_images, set_Stud_images] = useState([]);
   const [role, setRole] = useState('Teacher');
   // teacher states
-  const [Teach_username, set_Teach_username] = useState();
+  const [Teach_username, set_Teach_username] = useState('');
   const [Teach_email, set_Teach_email] = useState();
   const [Teach_password, set_Teach_password] = useState();
 
   // Student states 
-  const [Stud_username, set_Stud_username] = useState();
+  const [Stud_username, set_Stud_username] = useState('');
   const [Stud_email, set_Stud_email] = useState();
   const [Stud_password, set_Stud_password] = useState();
 
@@ -52,8 +52,6 @@ function SignUp() {
   const switchImage = () => {
     switch (role) {
       case 'Teacher':
-        return HODLogo;
-      case 'Faculty':
         return FacultyLogo;
       case 'Student':
         return StudentLogo;
@@ -75,7 +73,7 @@ function SignUp() {
       if(role=='Student'){
 
       const formData = new FormData();
-      formData.append('username', Stud_username);
+      formData.append('username', Stud_username.toLowerCase());
       formData.append('email', Stud_email);
       formData.append('password', Stud_password);
       formData.append('role', role);
@@ -91,22 +89,18 @@ function SignUp() {
         }
       }) 
         .then(result => {
-          console.log(stud_images);
-          console.log(Stud_email, Stud_password, Stud_username, stud_images);
-          if (result) dispatch(login(result.data));
+          if (result) dispatch(login(result.data.data));
           navigate('/home');
         })
-        .catch(err => console.log(err));
+        .catch(err => alert(err));
       }
       
-      axios.post(`http://localhost:8000/faculty/register`, { username: Teach_username, email: Teach_email, password: Teach_password, role })
+      axios.post(`http://localhost:8000/faculty/register`, { username: Teach_username.toLowerCase(), email: Teach_email, password: Teach_password, role })
         .then(result => {
-          console.log(result)
-          if (result) dispatch(login(result.data))
+          if (result) dispatch(login(result.data.data))
           navigate('/home')
         })
-        .catch(err => console.log(err))
-      
+        .catch(err => alert(err.message))
     }
   
 
@@ -207,9 +201,6 @@ function SignUp() {
     }
   }
 
-useEffect(() => {
-    console.log(stud_images);
-  }, [stud_images]);
 
   return (
     <div className="flex flex-row w-full h-screen font-merriweather">

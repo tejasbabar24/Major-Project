@@ -5,7 +5,7 @@ import FacultyLogo from "../assets/Faculty.png";
 import HODLogo from "../assets/student.png";
 import backgroundImage from "../assets/loginBackground.jpg";
 import axios from "axios";
-
+import Cookies from "universal-cookie";
 import "aos/dist/aos.css";
 import AOS from "aos";
 import { motion } from "framer-motion";
@@ -14,8 +14,10 @@ import Input from "./Input";
 import Button from "./Button";
 import { login } from "../store/authSlice";
 import { useDispatch } from "react-redux";
+import { jwtDecode } from "jwt-decode";
 
 function LogIn() {
+  const cookies=new Cookies();
   const [role, setRole] = useState("Student");
   const dispatch = useDispatch();
   const [username, setusername] = useState();
@@ -32,9 +34,7 @@ function LogIn() {
 
   const switchImage = () => {
     switch (role) {
-      case "HOD":
-        return HODLogo;
-      case "Faculty":
+      case "Teacher":
         return FacultyLogo;
       case "Student":
         return StudentLogo;
@@ -45,31 +45,36 @@ function LogIn() {
     }
   };
 
+  axios.defaults.withCredentials = true;
+
   const handleSubmit = (e) => {
     e.preventDefault();
 
-    if(role=='Student'){
+
+    if (role == "Student") {
       axios
-      .post(`http://localhost:8000/student/login`, { username:username.toLowerCase(), password })
-      .then((result) => {
-        console.log(result);
-        if (result.data) {
-          dispatch(login(result.data))
-          navigate("/home");
-        } else {
-          alert("creadentials mismatched");
-        }
-      })
-      .catch((err) => alert(err));
-  }
+        .post(`http://localhost:8000/student/login`, {
+          username: username.toLowerCase(),
+          password,
+        })
+        .then((result) => {
+          if (result.data) {
+            dispatch(login(result.data.data.user));
+            navigate("/home");
+          } else {
+            alert("creadentials mismatched");
+          }
+        })
+        .catch((err) => alert(err));
 
-    
-    axios
-
+    } 
+    else if (role === "Teacher") {
+      axios
       .post(`http://localhost:8000/faculty/login`, { username:username.toLowerCase(), password })
-
       .then((result) => {
-        console.log(result.data.data.user);
+        console.log(result.data.message);
+
+        
         if (result.data) {
           dispatch(login(result.data.data.user))
           navigate("/home");
@@ -78,7 +83,12 @@ function LogIn() {
         }
       })
       .catch((err) => alert(err));
+
   };
+  }
+
+    
+   
 
   return (
     <div className="flex flex-row w-full h-screen font-merriweather">
@@ -102,27 +112,15 @@ function LogIn() {
         <ol className="w-40 text-right mr-0 text-white">
           <li
             className={`mt-5 p-2 cursor-pointer rounded-l-md border-black border-l-2 border-b-2 ${
-              role === "HOD" ? "bg-slate-100 text-black" : "bg-purple-500"
+              role === "Faculty" ? "bg-slate-100 text-black" : "bg-purple-500"
             }`}
-            onClick={() => handleItemClick("HOD")}
-          >
-            HOD
-          </li>
-          <li
-            className={`mt-5 p-2 cursor-pointer rounded-l-md border-black border-l-2 border-b-2 ${
-              role === "Faculty"
-                ? "bg-slate-100 text-black"
-                : "bg-purple-500"
-            }`}
-            onClick={() => handleItemClick("Faculty")}
+            onClick={() => handleItemClick("Teacher")}
           >
             Faculty
           </li>
           <li
             className={`mt-5 p-2 cursor-pointer rounded-l-md border-black border-l-2 border-b-2 ${
-              role === "Student"
-                ? "bg-slate-100 text-black"
-                : "bg-purple-500"
+              role === "Student" ? "bg-slate-100 text-black" : "bg-purple-500"
             }`}
             onClick={() => handleItemClick("Student")}
           >
@@ -130,9 +128,7 @@ function LogIn() {
           </li>
           <li
             className={`mt-5 p-2 cursor-pointer rounded-l-md border-black border-l-2 border-b-2 ${
-              role === "Parent"
-                ? "bg-slate-100 text-black"
-                : "bg-purple-500"
+              role === "Parent" ? "bg-slate-100 text-black" : "bg-purple-500"
             }`}
             onClick={() => handleItemClick("Parent")}
           >

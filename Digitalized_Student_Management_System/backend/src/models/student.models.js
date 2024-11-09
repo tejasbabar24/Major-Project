@@ -44,6 +44,11 @@ const studentSchema = new mongoose.Schema({
             index: true
         }
     ],
+    encoding:[
+        {
+            type:String,
+        }
+    ],
     refreshToken: {
         type: String,
     }

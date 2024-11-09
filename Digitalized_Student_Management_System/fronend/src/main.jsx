@@ -3,14 +3,13 @@ import { createRoot } from 'react-dom/client'
 import App from './App.jsx'
 import './index.css'
 import store from './store/store.js'
-import { Provider } from 'react-redux'
+import { Provider, useSelector } from 'react-redux'
 import LoginPage from './pages/LoginPage.jsx'
 import SignupPage from './pages/SignupPage.jsx'
 import {createBrowserRouter} from 'react-router-dom'
 import { RouterProvider } from 'react-router-dom'
 import Home from './pages/HOD/HodHome.jsx'
 import ClassroomHomePage from './components/classroom/ClassroomHomePage.jsx'
-import Viewclassroom from './components/classroom/Viewclassroom.jsx'
 
 const router = createBrowserRouter([
   {
@@ -26,50 +25,64 @@ const router = createBrowserRouter([
       {
         path:"/home",
         element:(
-          <Home/>
+          <AuthLayout authentication>
+            <Home/>
+          </AuthLayout>
         )
       },
       {
         path:"/signup",
         element:(
+          <AuthLayout authentication={false}>
             <SignupPage/>
+          </AuthLayout>
         )
       },
       {
         //path:"/add-faculty" 
-        path:"/classroom"  ,
+        path:"/classroom",
         element:(
+          <AuthLayout authentication>
             <ClassroomHomePage/>
+          </AuthLayout>
         )
       },
       {
         path:"viewclassroom",
         element:(
-           <Viewclassroom/>
+            <Home/>
         )
       },
       {
         path:"/exam",
         element:(
-            <Home/>
+          <AuthLayout authentication>
+          <Home/>
+        </AuthLayout>
         )
       },
       {
         path:"/exam-result",
         element:(
-            <Home/>
+          <AuthLayout authentication>
+          <Home/>
+        </AuthLayout>
         )
       },
       {
         path:"/timetable",
         element:(
-            <Home/>
+          <AuthLayout authentication>
+          <Home/>
+        </AuthLayout>
         )
       },
       {
         path:"/homework",
         element:(
-            <Home/>
+          <AuthLayout authentication>
+          <Home/>
+        </AuthLayout>
         )
       },
       

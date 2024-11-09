@@ -7,7 +7,8 @@ import jwt from "jsonwebtoken";
 
 const options = {
     httpOnly: true,
-    secure: true
+    secure: true,
+    sameSite: "none",      
 }
 
 const generateAccessAndRefreshTokens = async (userId) => {
@@ -36,7 +37,7 @@ const registerUser = asyncHandler(async (req, res) => {
     }
 
     const existedUser = await Teacher.findOne({
-        $or: [{ email }, { username }]
+        $or: [{ username }, { email }]
     })
 
     if (existedUser) {
