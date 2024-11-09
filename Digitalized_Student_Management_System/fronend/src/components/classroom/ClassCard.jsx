@@ -8,7 +8,7 @@ function ClassCard({ name, createdBy, image }) {
         className="bg-cover bg-center h-44 w-full" 
         style={{ backgroundImage: `url(${classCardLogo})` }}
       >
-        <div className="bg-black bg-opacity-50 p-4 mt-0 flex align-middle justify-center">
+        <div className="bg-black bg-opacity-40 p-4 mt-0 flex align-middle justify-center">
           <img 
             src={image} 
             alt="User Profile" 

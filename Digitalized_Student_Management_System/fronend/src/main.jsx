@@ -10,6 +10,7 @@ import {createBrowserRouter} from 'react-router-dom'
 import { RouterProvider } from 'react-router-dom'
 import Home from './pages/HOD/HodHome.jsx'
 import ClassroomHomePage from './components/classroom/ClassroomHomePage.jsx'
+import Viewclassroom from './components/classroom/Viewclassroom.jsx'
 
 const router = createBrowserRouter([
   {
@@ -42,9 +43,9 @@ const router = createBrowserRouter([
         )
       },
       {
-        path:"/class-list",
+        path:"viewclassroom",
         element:(
-            <Home/>
+           <Viewclassroom/>
         )
       },
       {
