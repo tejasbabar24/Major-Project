@@ -7,7 +7,7 @@ function ClassCard({classData,image}) {
     <div className="border border-solid rounded-lg shadow-lg overflow-hidden transition-transform duration-300 transform hover:scale-105">
       <div
         className="bg-cover bg-center h-44 w-full" 
-        style={{ backgroundImage: `url(${classCardLogo})` }}
+        style={{ backgroundImage: `url(${classCardLogo})`}}
       >
         <div className="bg-black bg-opacity-40 p-4 mt-0 flex align-middle justify-center">
           <img 

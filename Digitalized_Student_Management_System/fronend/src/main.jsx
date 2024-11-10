@@ -10,7 +10,8 @@ import {createBrowserRouter} from 'react-router-dom'
 import { RouterProvider } from 'react-router-dom'
 import Home from './pages/HOD/HodHome.jsx'
 import ClassroomHomePage from './components/classroom/ClassroomHomePage.jsx'
-
+import AuthLayout from './components/AuthLayout.jsx'
+import Viewclassroom from './components/classroom/Viewclassroom.jsx'
 const router = createBrowserRouter([
   {
     path:"/",
@@ -38,6 +39,7 @@ const router = createBrowserRouter([
           </AuthLayout>
         )
       },
+
       {
         //path:"/add-faculty" 
         path:"/classroom",
@@ -48,9 +50,19 @@ const router = createBrowserRouter([
         )
       },
       {
-        path:"viewclassroom",
+        path:"/class/:classId",
         element:(
-            <Home/>
+          <AuthLayout authentication>
+            <Viewclassroom/>
+          </AuthLayout>
+        )
+      },
+      {
+        path:"/viewclassroom",
+        element:(
+          <AuthLayout authentication>
+            <Viewclassroom/>
+          </AuthLayout>
         )
       },
       {

@@ -1,9 +1,19 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
+import { useSelector } from 'react-redux';
+import { useParams } from 'react-router'
+
 import "boxicons/css/boxicons.min.css";
 
 function Viewclassroom() {
   const [active, setActive] = useState('stream');
-
+  const {classId} = useParams();    
+  const classData = useSelector(state => state.class.classData)
+  const classInfo = classData.filter((item)=>{
+    return item.classCode === classId
+  })[0]
+  
+  console.log(classInfo);
+  
   const renderComponent = () => {
     switch (active) {
       case 'stream':
@@ -88,10 +98,10 @@ function Viewclassroom() {
         {/* class info*/}
         <div className="bg-blue-600 text-white p-6 rounded-lg flex items-center space-x-4 mb-6">
           <div>
-            <h1 className="text-3xl font-semibold">FYFS</h1>
-            <p className="text-lg">1st Year (1st Shift)</p>
+            <h1 className="text-3xl font-semibold">{classInfo.classname.toUpperCase()}</h1>
+            <p className="text-lg">{classInfo.section.toUpperCase()}</p>
             <p className="text-sm mt-2">
-              Class Code: <span className="font-mono">841dd5b3-539e-4b1d-827a-002ee59b8db5</span>
+              Class Code: <span className="font-mono">{classInfo.classCode}</span>
             </p>
           </div>
         </div>
