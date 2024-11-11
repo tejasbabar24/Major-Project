@@ -90,19 +90,20 @@ function SignUp() {
       }) 
         .then(result => {
           if (result) dispatch(login(result.data.data));
-          navigate('/home');
+          navigate('/');
         })
         .catch(err => alert(err));
       }
-      
+      else if(role ==='Teacher'){
+
       axios.post(`http://localhost:8000/faculty/register`, { username: Teach_username.toLowerCase(), email: Teach_email, password: Teach_password, role })
         .then(result => {
           if (result) dispatch(login(result.data.data))
-          navigate('/home')
+          navigate('/')
         })
         .catch(err => alert(err.message))
+      }
     }
-  
 
   const renderComponent = (item) => {
     switch (item) {

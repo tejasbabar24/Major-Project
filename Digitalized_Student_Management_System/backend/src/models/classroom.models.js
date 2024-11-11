@@ -37,6 +37,10 @@ const classroomSchema = new Schema({
     ],
     classCode:{
         type:String,
+    },
+    attendance:{
+        type:[String],
+        
     }
     // assignment:[
     //     {
