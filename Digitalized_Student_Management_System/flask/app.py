@@ -1,13 +1,26 @@
 import face_recognition
 import requests
 import numpy as np
+import os
+from dotenv import load_dotenv
 from flask_cors import CORS
 from io import BytesIO
 from PIL import Image
 from flask import Flask, request, jsonify
+from pymongo import MongoClient
+
+load_dotenv()
 
 app = Flask(__name__)
 CORS(app)
+
+client = MongoClient(os.getenv('MONGODB_URI'))
+db = client.acadamix 
+
+if db.list_collection_names():
+    print("Database connected successfully.")
+else:
+    print("Database connection failed.")
 
 @app.route('/reg-encode', methods=['POST'])
 def regEncoding():
@@ -37,6 +50,13 @@ def encode(image):
             return encoded_faces[0].tolist()
         else:
             return {"error": "No face found in the image"}
+
+@app.route('/')
+def detection():
+    stud=db.students.find_one({"username":"fs22co042"})
+    
+    print("First encoding element:", stud['encoding'][0])
+    return f"<h1>First encoding element: {stud['encoding'][0]}</h1>"
 
 
 if __name__ == "__main__":

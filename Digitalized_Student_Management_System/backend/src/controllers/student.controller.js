@@ -71,6 +71,7 @@ const registerUser = asyncHandler(async (req, res) => {
     const { data: encodeData } = await axios.post("http://localhost:5001/reg-encode", { img: uploadedphotos });
     
     const encodingErrors = encodeData.filter(result => result.error);
+    
     if (encodingErrors.length > 0) {
         throw new ApiError(500, `Face encoding failed: ${encodingErrors.map(err => err.error).join(", ")}`);
     }
