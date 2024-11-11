@@ -231,47 +231,7 @@ export default function ClassroomHomePage() {
               ) : null
             }
 
-            {/* <ClassCard
-              name={"Software Testing"}
-              createdBy={"sadaphule"}
-              image={user}
-            />
-            <ClassCard
-              name={"Computer Network "}
-              createdBy={"A wankar"}
-              image={user}
-            />
-            <ClassCard
-              name={"Data Analytics Using R"}
-              createdBy={"V patil"}
-              image={user}
-            />
-            <ClassCard
-              name={"Data Structures"}
-              createdBy={"lokhande"}
-              image={user}
-            />
-            <ClassCard
-              name={"Computer Security"}
-              createdBy={"R molawade"}
-              image={user}
-            />
-            <ClassCard
-              name={"Computer science"}
-              createdBy={"Mysterio"}
-              image={user}
-            />
-            <ClassCard name={"Physics"} createdBy={"unknown"} image={user} />
-            <ClassCard
-              name={"Mathematics"}
-              createdBy={"A patil"}
-              image={user}
-            />
-            <ClassCard
-              name={"Biology"}
-              createdBy={"sunny leone"}
-              image={user}
-            /> */}
+           
           </div>
         </Box>
       </Main>
@@ -357,7 +317,6 @@ export default function ClassroomHomePage() {
           ) : null
         }
           <Divider />
-          
       </Drawer>
     </Box>
   );
