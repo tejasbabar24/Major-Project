@@ -143,7 +143,11 @@ export default function ClassroomHomePage() {
       });
       setJoinDrawerOpen(false)
   };
-
+  const renderClass =
+        userData.role === "Teacher" ? 
+        createdClasses 
+        : userData.role === "Student" ? 
+        joinedClasses : null
   return (
     <Box sx={{ display: "flex" }}>
       <CssBaseline />
@@ -200,7 +204,8 @@ export default function ClassroomHomePage() {
       >
         <Divider />
         <List>
-          {createdClasses.map((item) => (
+          {
+          renderClass.map((item) => (
             <ListItem key={item.classCode} disablePadding>
               <ListItemButton onClick={()=>navigate(`/class/${item.classCode}`)}>
                 <ListItemIcon className="mr-3">

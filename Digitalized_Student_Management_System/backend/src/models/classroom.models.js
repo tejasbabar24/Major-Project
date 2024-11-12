@@ -41,16 +41,14 @@ const classroomSchema = new Schema({
     attendance:{
         type:[String],
         
-    }
-    // assignment:[
-    //     {
-    //         title: { type: String, required: true },
-    //         description: String,
-    //         dueDate: Date,
-    //         file:String,
-    //         timestamps:true
-    //     }
-    // ]
+    },
+    assignment:[
+        {
+            title: { type: String, required: true },
+            file:String,
+            timestamps:true
+        }
+    ]
 }, { timestamps: true });
 
 export const Classroom = mongoose.model("Classroom", classroomSchema);

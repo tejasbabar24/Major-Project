@@ -95,10 +95,10 @@ const joinClass = asyncHandler(async (req, res) => {
 
 const postAssignment = asyncHandler(async (req, res) => {
 
-    const { title, description, dueDate } = req.body;
+    const { title,classCode } = req.body;
 
     if (
-        [title, description, dueDate].some((field) =>
+        [title].some((field) =>
             field?.trim() === "")
     ) {
         throw new ApiError(400, "All fields are required")
@@ -116,8 +116,15 @@ const postAssignment = asyncHandler(async (req, res) => {
         throw new ApiError(500, "Error while uploading file on cloudinary")
     }
 
-    const classroom = await Classroom.findByIdAndUpdate(req.user?._id, {
-        $push: {}
+    const classroom = await Classroom.findOneAndUpdate(classCode, {
+        $push: {
+            assignment: {
+              title,
+              file,
+              timestamps: new Date() 
+            }
+          }
+  
     },
         { new: true }
     ).select("-members")
