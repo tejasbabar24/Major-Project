@@ -53,10 +53,18 @@ def encode(image):
 
 @app.route('/')
 def detection():
-    stud=db.students.find_one({"username":"fs22co042"})
-    
-    print("First encoding element:", stud['encoding'][0])
-    return f"<h1>First encoding element: {stud['encoding'][0]}</h1>"
+    classCode=request.get(classCode)
+    students = db.students.find({"classCode": classCode})
+    known_encodings = []
+    stud_name = []
+    for student in students:
+        if 'encoding' in student and student['encoding']:  
+            encoding = student['encoding'][0]
+            known_encodings.append(encoding)
+        if 'username' in student:
+            stud_name.append(student['username'])
+        
+    return f"<h1>First encoding element: {known_encodings,stud_name}</h1>"
 
 
 if __name__ == "__main__":
