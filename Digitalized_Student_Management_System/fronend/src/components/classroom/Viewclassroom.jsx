@@ -1,18 +1,32 @@
 import React, { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
 import { useParams } from 'react-router'
-
+import axios from "axios"
 import "boxicons/css/boxicons.min.css";
 
 function Viewclassroom() {
   const [active, setActive] = useState('stream');
+  const [students,setStudents] = useState([])
   const {classId} = useParams();    
   const classData = useSelector(state => state.class.classData)
   const classInfo = classData.filter((item)=>{
     return item.classCode === classId
   })[0]
   
-  console.log(classInfo);
+  // console.log(classId);
+
+  useEffect(()=>{
+    axios.
+    post("http://localhost:8000/class/joined-students",{classCode:classId}).
+    then((result)=>{
+      setStudents(result.data.data.students)
+    })
+    .catch((err)=>{
+      console.log(err);
+    })
+
+  },[])
+  console.log(students);
   
   const renderComponent = () => {
     switch (active) {
@@ -45,7 +59,7 @@ function Viewclassroom() {
       case 'students':
         return (
           <div className="bg-white rounded-lg shadow p-4 mt-4 max-h-80 overflow-y-auto">
-            <h2 className="text-2xl font-semibold">Teachers</h2>
+            <h2 className="text-2xl font-semibold">Teacher</h2>
             <ol className=' list-disc pl-8 '>
               <li>Wankar</li>
               <li>Molawade</li>
@@ -53,20 +67,11 @@ function Viewclassroom() {
             </ol>
             <h2 className="text-2xl font-semibold mt-4">Students</h2>
                <ol className="list-disc pl-8">
-                <li>Shrey</li>
-                <li>Rucha</li>
-                <li>Janhvi</li>
-                <li>Swapnil</li>
-                <li>Tejas</li>
-                <li>Sahil</li>
-                <li>Aarya</li>
-                <li>Anshika</li>
-                <li>Arnav</li>
-                <li>Shrey</li>
-                <li>Rucha</li>
-                <li>Janhvi</li>
-                <li>Swapnil</li>
-                <li>Tejas</li>
+                {
+                  students.map((student)=>(
+                    <li key={student.username} >{student.username}</li>
+                  ))
+                }
               </ol>
             </div>
           

@@ -3,6 +3,7 @@ import {
     createClass,
     getCreatedClasses,
     getJoinedClasses,
+    getJoinedStudents,
     joinClass,
     postAssignment
 } from "../controllers/classroom.controller.js"
@@ -21,6 +22,8 @@ router.route('/post-assignment').patch()
 router.route('/joined-classes').get(stud_verifyJWT,getJoinedClasses)
 
 router.route('/created-classes').get(verifyJWT,getCreatedClasses)
+
+router.route('/joined-students').post(getJoinedStudents)
 
 export default router;
 
