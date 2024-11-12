@@ -21,7 +21,7 @@ const generateClassCode = async () => {
 const createClass = asyncHandler(async (req, res) => {
     const { classname, subject, section, year } = req.body;
 
-    console.log(classname, subject, section, year);
+    // console.log(classname, subject, section, year);
     if (
         [classname, subject, section, year].some((field) =>
             field?.trim() === "")
@@ -30,7 +30,7 @@ const createClass = asyncHandler(async (req, res) => {
     }
 
     const code = await generateClassCode();
-    console.log(code);
+    // console.log(code);
 
     const user=await Teacher.findById(req.user._id);
 
@@ -172,5 +172,26 @@ const getCreatedClasses=asyncHandler(async(req,res)=>{
 
 })
 
+const getJoinedStudents = asyncHandler(async(req,res)=>{
+    const {classCode} = req.body    
+    if (!classCode) {
+        throw new ApiError("Class Code Is Required")
+    }
 
-export { createClass, joinClass, postAssignment ,getJoinedClasses,getCreatedClasses}
+    const classroom =await Classroom.findOne({ classCode })
+    const members = classroom.members
+    
+    
+    const students = await Promise.all(
+        members.map(async(studId)=>{
+            const studInfo = await Student.findById(studId).select("username profile")
+            return studInfo
+        })
+    )
+    
+    return res.status(200)
+                .json(new ApiResponse(200,{students},"Retrived"))
+    
+})
+
+export { createClass, joinClass, postAssignment ,getJoinedClasses,getCreatedClasses,getJoinedStudents}
