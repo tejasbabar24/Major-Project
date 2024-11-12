@@ -80,14 +80,22 @@ const DragAndDropFileUpload = () => {
       Object.assign(file, { preview: URL.createObjectURL(file) })
     );
 
-    setFiles(newFiles);
+    // Append new files to the existing files array
+    setFiles((prevFiles) => [...prevFiles, ...newFiles]);
 
+    newFiles.forEach((file) => {
+        console.log("File name:", file.name); // Log the file name here
+      });
+
+
+    // Initialize upload progress for the new files
     newFiles.forEach((file) => {
       setUploadProgress((prevProgress) => ({
         ...prevProgress,
         [file.name]: 0,
       }));
 
+      // Simulate the upload process and update progress
       const interval = setInterval(() => {
         setUploadProgress((prevProgress) => {
           const newProgress = Math.min(prevProgress[file.name] + 10, 100);
@@ -101,11 +109,12 @@ const DragAndDropFileUpload = () => {
 
   const { getRootProps, getInputProps, isDragActive } = useDropzone({
     onDrop,
-    multiple:true,
+    multiple: true,
     accept: '/*',
   });
 
   useEffect(() => {
+    // Clean up the object URLs when files are removed or the component unmounts
     return () => files.forEach((file) => URL.revokeObjectURL(file.preview));
   }, [files]);
 
@@ -121,14 +130,13 @@ const DragAndDropFileUpload = () => {
       <FilePreviewContainer>
         {files.map((file) => (
           <FilePreview key={file.name}>
-          <div className=' flex flex-row'>
-           <PreviewImage src={file.preview} alt="preview" />
-            <FileName>{file.name}</FileName>
-          </div>
+            <div className="flex flex-row">
+              <PreviewImage src={file.preview} alt="preview" />
+              <FileName>{file.name}</FileName>
+            </div>
             <ProgressBarContainer>
               <Progress width={uploadProgress[file.name] || 0}>
-                {uploadProgress[file.name] < 100 &&
-                  `${uploadProgress[file.name]}%`}
+                {uploadProgress[file.name] < 100 && `${uploadProgress[file.name]}%`}
               </Progress>
             </ProgressBarContainer>
           </FilePreview>
