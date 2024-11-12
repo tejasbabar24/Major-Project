@@ -22,7 +22,7 @@ function Home() {
         active:true
       },
       {
-        name:"Class List",
+        name:"StudyRoom",
         slug:"/classroom",
         logo: ClassListLogo,
         active:true

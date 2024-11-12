@@ -12,6 +12,7 @@ import Home from './pages/HOD/HodHome.jsx'
 import ClassroomHomePage from './components/classroom/ClassroomHomePage.jsx'
 import AuthLayout from './components/AuthLayout.jsx'
 import Viewclassroom from './components/classroom/Viewclassroom.jsx'
+import Noticeboard from './components/noticeboard/noticeboard.jsx'
 const router = createBrowserRouter([
   {
     path:"/",
@@ -58,10 +59,10 @@ const router = createBrowserRouter([
         )
       },
       {
-        path:"/viewclassroom",
+        path:"/notice",
         element:(
           <AuthLayout authentication>
-            <Viewclassroom/>
+            <Noticeboard/>
           </AuthLayout>
         )
       },
