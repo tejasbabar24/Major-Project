@@ -1,7 +1,11 @@
 import face_recognition
 import requests
-import numpy as np
+import cv2
+import csv
+import dlib
 import os
+import numpy as np
+from datetime import datetime
 from dotenv import load_dotenv
 from flask_cors import CORS
 from io import BytesIO
@@ -17,10 +21,10 @@ CORS(app)
 client = MongoClient(os.getenv('MONGODB_URI'))
 db = client.acadamix 
 
-if db.list_collection_names():
-    print("Database connected successfully.")
-else:
-    print("Database connection failed.")
+detector = dlib.get_frontal_face_detector()
+new_path = "./photos"
+now = datetime.now()
+current_date = now.strftime("%Y-%m-%d")
 
 @app.route('/reg-encode', methods=['POST'])
 def regEncoding():
@@ -51,21 +55,96 @@ def encode(image):
         else:
             return {"error": "No face found in the image"}
 
-@app.route('/')
+def save(img,name,bbox,width=180,height=227):
+    x,y,w,h=bbox
+    imgCrop = img[y:h,x:w]
+    imgCrop = cv2.resize(imgCrop,(width,height))
+    cv2.imwrite(name+".jpg",imgCrop)
+
+def crop(img,bbox,width=180,height=227):
+    x,y,w,h=bbox
+    imgCrop = img[y:h,x:w]
+    imgCrop = cv2.resize(imgCrop,(width,height))
+    return imgCrop
+
+def faces(images):  
+    encodedFaces = []
+    for count,img in enumerate(images):
+        image = Image.open(img)
+        image = np.array(image) 
+        frame = cv2.cvtColor(image, cv2.COLOR_RGB2BGR)
+        gray = cv2.cvtColor(frame,cv2.COLOR_BGR2GRAY)
+        faces = detector(gray)
+        fit = 20
+        for counter,face in enumerate(faces):
+            print(counter)
+            x1,y1 = face.left(),face.top()
+            x2,y2 = face.right(),face.bottom()
+            save(image,new_path+str(count)+"/"+str(counter),(x1,y1,x2,y2))
+            encodedFaces.append(encode(crop(image,(x1,y1,x2,y2))))
+    print("Encoding done of cropped faces")
+    return encodedFaces
+
+
+@app.route('/face_recognition',methods=['POST'])
 def detection():
-    classCode=request.get(classCode)
-    students = db.students.find({"classCode": classCode})
+
+    f = open(current_date+'.csv','w+',newline='')
+    lnwriter = csv.writer(f)
+    Code = request.form.get('classCode')
+    
+    if 'image' not in request.files:
+        return jsonify({"error": "No image part"}), 400
+    
+    img = request.files.getlist('image')
+    
+    students = db.students.find({"classCode": Code})
     known_encodings = []
     stud_name = []
+    
     for student in students:
         if 'encoding' in student and student['encoding']:  
             encoding = student['encoding'][0]
             known_encodings.append(encoding)
+            print(len(known_encodings))
         if 'username' in student:
             stud_name.append(student['username'])
-        
-    return f"<h1>First encoding element: {known_encodings,stud_name}</h1>"
+    
+    print(stud_name)
+    known_encodings = [np.array(encoding) for encoding in known_encodings]
+    face_names = []
+    
+    face_encodings = faces(img)
 
+    print(len(face_encodings))
+    
+    counter = 0
+    print(type(known_encodings))
+    print(type(face_encodings))
+    for face_encoding in face_encodings:
+        tolerance_threshold = 0.5
+        name=""
+        
+        face_encoding = np.array(face_encoding)
+        face_distance = face_recognition.face_distance(known_encodings,face_encoding)
+        matches = face_distance < tolerance_threshold
+        
+        print(str(counter)+". "+str(matches)+ " : "+str(face_distance))
+        
+        best_match_index = np.argmin(face_distance)
+        counter = counter + 1
+        
+        if matches[best_match_index]:
+            name = stud_name[best_match_index]
+            face_names.append(name)
+        if name in stud_name:
+            print(face_names)
+            current_time = now.strftime("%H-%M-%S")
+            lnwriter.writerow([name,current_time])
+            print(name+" Present")
+
+    f.close()    
+    return f"<h1>First encoding element: {face_names}</h1>"
 
 if __name__ == "__main__":
     app.run(debug=True,port=5001)
