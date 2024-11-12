@@ -3,9 +3,14 @@ import { useSelector } from 'react-redux';
 import { useParams } from 'react-router'
 import axios from "axios"
 import "boxicons/css/boxicons.min.css";
+import { Avatar, Button, TextField } from '@mui/material';
 
 function Viewclassroom() {
-  const [active, setActive] = useState('stream');
+  const [showInput,setShowInput] = useState(false)
+  const [inputValue,setInput] = useState('')
+  const [image, setImage] = useState(null);
+
+  const [active, setActive] = useState('assignment');
   const [students,setStudents] = useState([])
   const {classId} = useParams();    
   const classData = useSelector(state => state.class.classData)
@@ -14,7 +19,15 @@ function Viewclassroom() {
   })[0]
   
   // console.log(classId);
-
+  const handleChange = (e)=>{
+    if (e.target.files[0]) {
+      setImage(e.target.files[0]);
+    }
+  }
+  const handleUpload = ()=>{
+    console.log("upload");
+    
+  }
   useEffect(()=>{
     axios.
     post("http://localhost:8000/class/joined-students",{classCode:classId}).
@@ -30,30 +43,74 @@ function Viewclassroom() {
   
   const renderComponent = () => {
     switch (active) {
-      case 'stream':
+      case 'assignment':
         return (
-          <div className="flex space-x-4 mt-4">
+          // <div className="flex space-x-4 mt-4">
             
-            <div className="bg-white rounded-lg shadow p-4 w-1/8">
+          <div className="p-4 overflow-hidden -mt-[2.4rem] ml-4">
+            {/* <div className="bg-white rounded-lg shadow p-4 w-1/8">
               <h2 className="text-lg font-semibold">Upcoming</h2>
               <p className="text-gray-600 mt-2">No work due</p>
-            </div>
+            </div> */}
             
-            <div className="flex-1 bg-white rounded-lg shadow p-4 flex items-center">
+            {/* <div className="flex-1 bg-white rounded-lg shadow p-4 flex items-center">
               <i className="bx bx-user-circle text-4xl"></i>
               <input
                 type="text"
                 placeholder="Announce something to class"
                 className="w-full bg-gray-100 p-2 rounded-lg focus:outline-none"
               />
+            </div> */}
+            <div className="shadow-md rounded-md overflow-hidden min-h-[4.5rem] mb-6 mt-6 ">
+              <div className="p-7 w-[70vw] bg-white">
+                {showInput ? (
+                  <form className="flex flex-col items-start">
+                    <TextField
+                      id="filled-multiline-flexible"
+                      multiline
+                      label="Announce Something to class"
+                      variant="filled"
+                      value={inputValue}
+                      className="w-[50vw]"
+                      onChange={(e) => setInput(e.target.value)
+                      }
+                    />
+                    <div className="flex justify-between w-[50vw] mt-5">
+                      <input
+                        onChange={handleChange}
+                        variant="outlined"
+                        color="primary"
+                        type="file"
+                      />
+
+                      <div>
+                        <Button onClick={() => setShowInput(false)}>
+                          Cancel
+                        </Button>
+
+                        <Button
+                          onClick={handleUpload}
+                          color="primary"
+                          variant="contained"
+                        >
+                          Post
+                        </Button>
+                      </div>
+                    </div>
+                  </form>
+                ) : (
+                  <div
+                    className="flex items-center cursor-pointer !important"
+                    onClick={() => setShowInput(true)}
+                  >
+                    <Avatar />
+                    <div className='ml-4'>Post Assignment</div>
+                  </div>
+                )}
+              </div>
             </div>
-          </div>
-        );
-      case 'assignment':
-        return (
-          <div className="bg-white rounded-lg shadow p-4 mt-4">
-            <h2 className="text-lg font-semibold">Assignments</h2>
-            <p className="text-gray-600 mt-2">No assignments yet</p>
+            {/* <Announcements  classData={classData} /> */}
+            {/* </div> */}
           </div>
         );
       case 'students':
@@ -114,16 +171,11 @@ function Viewclassroom() {
           <div className="bg-white rounded-lg shadow p-4">
             <ol className="flex gap-x-20 justify-center">
               <li
-                className={`cursor-pointer ${active === 'stream' ? 'font-bold text-blue-600' : ''}`}
-                onClick={() => setActive('stream')}
-              >
-                Stream
-              </li>
-              <li
                 className={`cursor-pointer ${active === 'assignment' ? 'font-bold text-blue-600' : ''}`}
                 onClick={() => setActive('assignment')}
               >
                 <i className="bx bx-clipboard"></i> Assignment
+
               </li>
               <li
                 className={`cursor-pointer ${active === 'students' ? 'font-bold text-blue-600' : ''}`}
