@@ -104,30 +104,31 @@ const postAssignment = asyncHandler(async (req, res) => {
         throw new ApiError(400, "All fields are required")
     }
 
-    const fileLocalPath = req.file?.path;
+    const LocalPath = req.file?.path;
 
-    if (!fileLocalPath) {
+    if (!LocalPath) {
         throw new ApiError(401, "File not uploaded");
     }
 
-    const file = uploadOnCloudinary(fileLocalPath);
+    const uploaded = await uploadOnCloudinary(LocalPath);
 
-    if (!file) {
+    if (!uploaded) {
         throw new ApiError(500, "Error while uploading file on cloudinary")
     }
 
-    const classroom = await Classroom.findOneAndUpdate(classCode, {
-        $push: {
-            assignment: {
-              title,
-              file,
-              timestamps: new Date() 
-            }
-          }
-  
-    },
+    const classroom = await Classroom.findOneAndUpdate(
+        { classCode },
+        {
+            $push: {
+                assignment: {
+                    title,
+                    file: uploaded.url,
+                    createdat: new Date(),
+                },
+            },
+        },
         { new: true }
-    ).select("-members")
+    ).select("-members");    
 
     return res
         .status(200)

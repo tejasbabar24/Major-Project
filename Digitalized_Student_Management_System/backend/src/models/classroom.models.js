@@ -46,7 +46,7 @@ const classroomSchema = new Schema({
         {
             title: { type: String, required: true },
             file:String,
-            timestamps:true
+            createdat:Date
         }
     ]
 }, { timestamps: true });

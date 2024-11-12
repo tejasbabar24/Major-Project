@@ -5,6 +5,7 @@ import axios from "axios"
 import "boxicons/css/boxicons.min.css";
 import { Avatar, Button, TextField } from '@mui/material';
 
+
 function Viewclassroom() {
   const [showInput,setShowInput] = useState(false)
   const [inputValue,setInput] = useState('')
@@ -24,9 +25,16 @@ function Viewclassroom() {
       setImage(e.target.files[0]);
     }
   }
+
   const handleUpload = ()=>{
-    console.log("upload");
-    
+    console.log(image)
+    axios.post('http://localhost:8000/class//post-assignment',{title:inputValue,file:image})
+    .then(result=>{
+     console.log(result.data.message)
+    })
+    .catch(error=>{
+     console.log(error)
+    })
   }
   useEffect(()=>{
     axios.
@@ -41,6 +49,7 @@ function Viewclassroom() {
   },[])
   console.log(students);
   
+
   const renderComponent = () => {
     switch (active) {
       case 'assignment':
@@ -64,7 +73,7 @@ function Viewclassroom() {
             <div className="shadow-md rounded-md overflow-hidden min-h-[4.5rem] mb-6 mt-6 ">
               <div className="p-7 w-[70vw] bg-white">
                 {showInput ? (
-                  <form className="flex flex-col items-start">
+                  <form className="flex flex-col items-start" >
                     <TextField
                       id="filled-multiline-flexible"
                       multiline
