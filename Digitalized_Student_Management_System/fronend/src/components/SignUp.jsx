@@ -89,20 +89,23 @@ function SignUp() {
         }
       }) 
         .then(result => {
-          if (result) dispatch(login(result.data.data));
-          navigate('/home');
+          if (result.data.data) dispatch(login(result.data.data));
+          setLoading(false)
+          navigate('/');
         })
         .catch(err => alert(err));
       }
-      
+      else if(role ==='Teacher'){
+
       axios.post(`http://localhost:8000/faculty/register`, { username: Teach_username.toLowerCase(), email: Teach_email, password: Teach_password, role })
         .then(result => {
           if (result) dispatch(login(result.data.data))
-          navigate('/home')
+          setLoading(false)
+          navigate('/')
         })
         .catch(err => alert(err.message))
+      }
     }
-  
 
   const renderComponent = (item) => {
     switch (item) {
@@ -152,7 +155,7 @@ function SignUp() {
         return (
           <div className=''>
             <form action="" className='flex flex-col' onSubmit={handleSubmit}>
-              <div >
+              <div>
                 <Input type="email"
                   placeholder='Enter Email'
                   className='text-stone-950 p-2 pl-10 rounded w-full border-solid border-r-2 border-b-2 m-3'
