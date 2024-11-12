@@ -67,14 +67,28 @@ const registerUser = asyncHandler(async (req, res) => {
         })
     );
 
-    const encode = await axios.post("http://localhost:5000/encode", { img: uploadedphotos});
+    console.log(uploadedphotos)
+    const { data: encodeData } = await axios.post("http://localhost:5001/reg-encode", { img: uploadedphotos });
+    
+    const encodingErrors = encodeData.filter(result => result.error);
+    
+    if (encodingErrors.length > 0) {
+        throw new ApiError(500, `Face encoding failed: ${encodingErrors.map(err => err.error).join(", ")}`);
+    }
+
+    const faceEncodings = encodeData.filter(result => !result.error);
+
+    if (faceEncodings.length === 0) {
+        throw new ApiError(500, "No valid face encodings found");
+    }
 
     const user = await Student.create({
         username: username.toLowerCase(),
         role,
         email,
         password,
-        photo: uploadedphotos
+        photo: uploadedphotos,
+        encoding:faceEncodings
     })
 
     const createdUser = await Student.findById(user._id).select("-password -refreshToken")
