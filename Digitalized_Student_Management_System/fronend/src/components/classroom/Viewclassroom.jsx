@@ -61,15 +61,13 @@ function Viewclassroom() {
           <div className="bg-white rounded-lg shadow p-4 mt-4 max-h-80 overflow-y-auto">
             <h2 className="text-2xl font-semibold">Teacher</h2>
             <ol className=' list-disc pl-8 '>
-              <li>Wankar</li>
-              <li>Molawade</li>
-              <li>Komatwar</li>
+              <li>{classInfo.owner.toUpperCase()}</li>
             </ol>
             <h2 className="text-2xl font-semibold mt-4">Students</h2>
                <ol className="list-disc pl-8">
                 {
                   students.map((student)=>(
-                    <li key={student.username} >{student.username}</li>
+                    <li key={student.username} >{student.username.toUpperCase()}</li>
                   ))
                 }
               </ol>
