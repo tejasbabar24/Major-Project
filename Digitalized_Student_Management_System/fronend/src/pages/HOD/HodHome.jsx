@@ -10,26 +10,114 @@ import "boxicons/css/boxicons.min.css";
 import { RxCross2 } from "react-icons/rx";
 
 function Home() {
-  const [isSidebarOpen, setSidebarOpen] = useState(false);  // State to toggle sidebar
-  const userData = useSelector(state => state.auth.userData);
-  const navigate = useNavigate();
-
-  const navItems = [
-    { name: "Add Faculty", slug: "/add-faculty", logo: FacultLogo, active: true, roles: ["Teacher"] },
-    { name: "Join Class", slug: "/classroom", logo: FacultLogo, active: true, roles: ["Student"] },
-    { name: "Class List", slug: "/classroom", logo: ClassListLogo, active: true, roles: ["Teacher", "Student"] },
-    { name: "Attendance", slug: "/attendance", logo: StudentLogo, active: true, roles: ["Teacher", "Student"] },
-    { name: "Exam", slug: "/exam", logo: ExamLogo, active: true, roles: ["Teacher", "Student"] },
-    { name: "Timetable", slug: "/timetable", logo: TimetableLogo, active: true, roles: ["Teacher", "Student"] },
-    { name: "Homework", slug: "/homework", logo: HomeworkLogo, active: true, roles: ["Teacher", "Student"] },
-    { name: "Notice", slug: "/notice", logo: NotifyLogo, active: true, roles: ["Teacher", "Student"] },
-    { name: "Exam Result", slug: "/exam-result", logo: ResultLogo, active: true, roles: ["Teacher", "Student"] },
-  ];
-
-  const renderArr = userData && userData.role
-    ? navItems.filter(item => item.roles.includes(userData.role))
+    const userData = useSelector(state => state.auth.userData);
+    const navItems = [
+      {
+        name:"Add Faculty",
+        slug:"/add-faculty",
+        logo: FacultLogo,
+        active:true
+      },
+      {
+        name:"Class List",
+        slug:"/classroom",
+        logo: ClassListLogo,
+        active:true
+      },
+      {
+        name:"Attendance",
+        slug:"/attendance",
+        logo: StudentLogo,
+        active:true
+      },
+      {
+        name:"Exam",
+        slug:"/exam",
+        logo: ExamLogo,
+        active:true
+      },
+      {
+        name:"Timetable",
+        slug:"/timetable",
+        logo: TimetableLogo,
+        active:true
+      },
+      {
+        name:"Homework",
+        slug:"/homework",
+        logo: HomeworkLogo,
+        active:true
+      },
+      {
+        name:"Notice",
+        slug:"/notice",
+        logo: NotifyLogo,
+        active:true
+      },
+      {
+        name:"Exam Result",
+        slug:"/exam-result",
+        logo: ResultLogo,
+        active:true
+      },
+    ]
+      const studItems = [
+      
+      {
+        name:"Join Class",
+        slug:"/classroom",
+        logo: FacultLogo,
+        active:true
+      },
+      {
+        name:"My Classes",
+        slug:"/class-list",
+        logo: ClassListLogo,
+        active:true
+      },
+      {
+        name:"My Attendance",
+        slug:"/attendance",
+        logo: StudentLogo,
+        active:true
+      },
+      {
+        name:"Exam",
+        slug:"/exam",
+        logo: ExamLogo,
+        active:true
+      },
+      {
+        name:"View Timetable",
+        slug:"/timetable",
+        logo: TimetableLogo,
+        active:true
+      },
+      {
+        name:"Homework",
+        slug:"/homework",
+        logo: HomeworkLogo,
+        active:true
+      },
+      {
+        name:"View Notice",
+        slug:"/notice",
+        logo: NotifyLogo,
+        active:true
+      },
+      {
+        name:"Exam Result",
+        slug:"/exam-result",
+        logo: ResultLogo,
+        active:true
+      },
+    ]
+    const renderArr =
+    userData.role === "Student" 
+    ? studItems 
+    : userData.role === "Teacher" 
+    ? navItems 
     : [];
-
   return (
     <div className="w-full min-h-screen flex flex-col md:flex-row bg-gradient-to-br from-blue-100 to-indigo-200">
       
