@@ -1,22 +1,25 @@
 import axios from 'axios';
 import fs from 'fs';
-import path, { format } from 'path';
+import path from 'path';
 
-const downloadFromCloudinary=async(cloudinaryUrl,downloadDir = 'C:/Downloads')=>{
+const downloadFromCloudinary = async (cloudinaryUrl, downloadDir = 'C:/Downloads') => {
   try {
+    // Ensure the download directory exists
+    if (!fs.existsSync(downloadDir)) {
+      fs.mkdirSync(downloadDir, { recursive: true });
+    }
 
     const urlObj = new URL(cloudinaryUrl);
-    const fileNameWithFormat = path.basename(urlObj.pathname); 
+    const fileNameWithFormat = path.basename(urlObj.pathname);
     const [fileName, fileFormat] = fileNameWithFormat.split('.');
-    const downloadPath = path.join(downloadDir, `${fileName}.${fileFormat}`);   
+    const downloadPath = path.join(downloadDir, `${fileName}.${fileFormat}`);
 
     const response = await axios({
       url: cloudinaryUrl,
       method: 'GET',
-      responseType: 'stream'
+      responseType: 'stream',
     });
 
-    
     const writer = fs.createWriteStream(downloadPath);
     response.data.pipe(writer);
 
@@ -25,12 +28,15 @@ const downloadFromCloudinary=async(cloudinaryUrl,downloadDir = 'C:/Downloads')=>
         console.log(`File downloaded successfully to ${downloadPath}`);
         resolve(downloadPath);
       });
-      writer.on('error', reject);
+      writer.on('error', (err) => {
+        console.error('Error writing file:', err);
+        reject(err);
+      });
     });
   } catch (error) {
     console.error('Error downloading file:', error);
     throw error;
   }
-}
+};
 
 export { downloadFromCloudinary };
