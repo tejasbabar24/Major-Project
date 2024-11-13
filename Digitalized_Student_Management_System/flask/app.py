@@ -163,6 +163,8 @@ def detection():
     classIn=db.classrooms.update_one(
     {"classCode": Code}, {"$push": {"attendance":attendance_record }})
     
+    # os.remove(f.name)
+
     f.close()
     response = {
             "status": "success",
