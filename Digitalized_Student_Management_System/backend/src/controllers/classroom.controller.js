@@ -123,7 +123,57 @@ const postAssignment = asyncHandler(async (req, res) => {
                 assignment: {
                     title,
                     file: uploaded.url,
-                    createdat: new Date(),
+                    createdAt: new Date(),
+                },
+            },
+        },
+        { new: true }
+    ).select("-members");    
+
+    return res
+        .status(200)
+        .json(
+            new ApiResponse(200, classroom, "File uploaded successfully")
+        )
+});
+
+const postNotice = asyncHandler(async (req, res) => {
+
+    const { description,classname } = req.body;
+
+    const exitClass=await Teacher.findOne({owner:req.user?._id});
+
+    if(!exitClass){
+        throw new ApiError(400,"Class does not exits")
+    }
+
+    if (
+        [description].some((field) =>
+            field?.trim() === "")
+    ) {
+        throw new ApiError(400, "All fields are required")
+    }
+
+    const LocalPath = req.file?.path;
+
+    if (!LocalPath) {
+        throw new ApiError(401, "File not uploaded");
+    }
+
+    const uploaded = await uploadOnCloudinary(LocalPath);
+
+    if (!uploaded) {
+        throw new ApiError(500, "Error while uploading file on cloudinary")
+    }
+
+    const classroom = await Classroom.findOneAndUpdate(
+        { classname },
+        {
+            $push: {
+                assignment: {
+                    description,    
+                    file: uploaded.url,
+                    createdAt: new Date(),
                 },
             },
         },
@@ -202,4 +252,4 @@ const getJoinedStudents = asyncHandler(async(req,res)=>{
     
 })
 
-export { createClass, joinClass, postAssignment ,getJoinedClasses,getCreatedClasses,getJoinedStudents}
+export { createClass, joinClass, postAssignment ,getJoinedClasses,getCreatedClasses,getJoinedStudents,postNotice}
