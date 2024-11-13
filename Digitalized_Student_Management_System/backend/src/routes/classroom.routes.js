@@ -20,7 +20,7 @@ router.route('/create-class').post(verifyJWT, createClass);
 router.route('/join-class').post(stud_verifyJWT,joinClass);
 
 router.route('/post-assignment').post(
-    upload.single('file'),
+    upload.single('attachment'),
     postAssignment)
 
 router.route('/notice').post(

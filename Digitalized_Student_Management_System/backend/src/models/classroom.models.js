@@ -45,7 +45,7 @@ const classroomSchema = new Schema({
     assignment:[
         {
             title: { type: String, required: true },
-            file:String,
+            attachment:String,
             createdAt:Date
         }
     ],

@@ -20,15 +20,22 @@ function Viewclassroom() {
   })[0]
   
   // console.log(classId);
-  const handleChange = (e)=>{
-    if (e.target.files[0]) {
+  const handleChange = (e) => {
+    if (e.target.files && e.target.files[0]) {
       setImage(e.target.files[0]);
+      console.log(image)
     }
-  }
+  };
 
+  
   const handleUpload = ()=>{
     console.log(image)
-    axios.post('http://localhost:8000/class/post-assignment',{title:inputValue,classCode:classId,file:image})
+    const formData = new FormData();
+    formData.append('title', inputValue);
+    formData.append('classCode', classId);
+    formData.append('attachment', image);
+
+    axios.post('http://localhost:8000/class/post-assignment',formData)
     .then(result=>{
      console.log(result.data.data)
     })
@@ -36,6 +43,7 @@ function Viewclassroom() {
      console.log(error)
     })
   }
+  
   useEffect(()=>{
     axios.
     post("http://localhost:8000/class/joined-students",{classCode:classId}).

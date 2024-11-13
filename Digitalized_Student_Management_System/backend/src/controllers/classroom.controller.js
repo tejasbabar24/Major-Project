@@ -103,7 +103,11 @@ const postAssignment = asyncHandler(async (req, res) => {
     ) {
         throw new ApiError(400, "All fields are required")
     }
-
+    
+    
+    console.log(title)
+    console.log(classCode)
+    console.log(req.file)
     const LocalPath = req.file?.path;
 
     if (!LocalPath) {
@@ -122,7 +126,7 @@ const postAssignment = asyncHandler(async (req, res) => {
             $push: {
                 assignment: {
                     title,
-                    file: uploaded.url,
+                    attachment: uploaded.url,
                     createdAt: new Date(),
                 },
             },
