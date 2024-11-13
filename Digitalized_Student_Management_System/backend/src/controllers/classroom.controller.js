@@ -6,6 +6,7 @@ import { Teacher } from "../models/teacher.models.js";
 import { filesUploadOnCloudinary, uploadOnCloudinary } from "../utils/cloudinary.js"
 import { v4 as uuidv4 } from "uuid";
 import { Student } from "../models/student.models.js";
+import { downloadFromCloudinary } from "../utils/cloudinary_download.js";
 
 const generateClassCode = async () => {
     const uuid = uuidv4()
@@ -135,6 +136,18 @@ const postAssignment = asyncHandler(async (req, res) => {
         .json(
             new ApiResponse(200, classroom, "File uploaded successfully")
         )
+});
+
+const downloadAssginment=asyncHandler(async(req,res)=>{
+    const {url}=req.body;
+
+    if(!url){
+        throw new ApiError(400,"No url")
+    }
+
+    downloadFromCloudinary(url);
+
+    res.status(200).json(new ApiResponse(200,"File Downloaded"));
 });
 
 const postNotice = asyncHandler(async (req, res) => {
@@ -300,4 +313,5 @@ export { createClass,
          getJoinedStudents,
          postNotice,
          postResult,
+         downloadAssginment
         }
