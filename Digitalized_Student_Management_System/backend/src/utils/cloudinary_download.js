@@ -2,7 +2,7 @@ import axios from 'axios';
 import fs from 'fs';
 import path, { format } from 'path';
 
-const downloadFromCloudinary=async(cloudinaryUrl,name,format,downloadDir = 'C:/Downloads')=>{
+const downloadFromCloudinary=async(cloudinaryUrl,downloadDir = 'C:/Downloads')=>{
   try {
 
     const urlObj = new URL(cloudinaryUrl);
