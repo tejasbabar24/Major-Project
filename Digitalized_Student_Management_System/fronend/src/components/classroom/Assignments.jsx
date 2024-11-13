@@ -1,6 +1,9 @@
 import React, { useEffect, useState } from 'react';
 import { Avatar } from '@mui/material';
 import axios from "axios"
+import { toast, ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+
 function Announcements({ classData, assignment }) {
   // Format the createdAt date
   const formattedDate = new Date(assignment.createdAt).toLocaleDateString('en-US', {
@@ -28,10 +31,28 @@ function Announcements({ classData, assignment }) {
   const downloadFile = ()=>{
     axios.post('http://localhost:8000/class/download-assignment',{url:assignment.attachment})
     .then((result)=>{
-      console.log(result.data);
+      if(result.data.data){
+        toast.success("File downloaded successfully!", {
+          position: "top-right",
+          autoClose: 3000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+        });
+      }
     })
     .catch((err)=>{
-      console.log(err);
+      toast.error("Failed to download the file.", {
+        position: "top-right",
+        autoClose: 3000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+      });
     })
   }
   const renderPreview = () => {
@@ -41,8 +62,9 @@ function Announcements({ classData, assignment }) {
       case 'pdf':
         return (
           <iframe
+            onClick={downloadFile}
             src={assignment.attachment}
-            className='h-36 w-36'
+            className='h-36 w-36 cursor-pointer'
             style={{ border: 'none' }}
             title="PDF Preview"
           />
@@ -64,6 +86,7 @@ function Announcements({ classData, assignment }) {
 
   return (
     <div className="p-4 space-y-6 mt-6">
+      <ToastContainer />
       <div
         className="bg-white shadow-lg rounded-xl overflow-hidden border border-gray-200 transition transform hover:-translate-y-1 hover:shadow-2xl"
       >
