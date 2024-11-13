@@ -1,12 +1,14 @@
 import axios from 'axios';
 import fs from 'fs';
 import path, { format } from 'path';
-import cloudinary from '../config/cloudinaryConfig.js';
 
-const downloadFromCloudinary=async(cloudinaryUrl, name,format,downloadDir = 'C:/Downloads')=>{
+const downloadFromCloudinary=async(cloudinaryUrl,name,format,downloadDir = 'C:/Downloads')=>{
   try {
 
-    const downloadPath = path.join(downloadDir, `${name}.${format}`);
+    const urlObj = new URL(cloudinaryUrl);
+    const fileNameWithFormat = path.basename(urlObj.pathname); 
+    const [fileName, fileFormat] = fileNameWithFormat.split('.');
+    const downloadPath = path.join(downloadDir, `${fileName}.${fileFormat}`);   
 
     const response = await axios({
       url: cloudinaryUrl,
@@ -14,7 +16,7 @@ const downloadFromCloudinary=async(cloudinaryUrl, name,format,downloadDir = 'C:/
       responseType: 'stream'
     });
 
-    // Save file locally
+    
     const writer = fs.createWriteStream(downloadPath);
     response.data.pipe(writer);
 
@@ -31,4 +33,4 @@ const downloadFromCloudinary=async(cloudinaryUrl, name,format,downloadDir = 'C:/
   }
 }
 
-export default downloadFromCloudinary;
+export { downloadFromCloudinary };

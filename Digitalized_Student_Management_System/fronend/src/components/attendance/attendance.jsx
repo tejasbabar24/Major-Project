@@ -18,7 +18,7 @@ import DragAndDropFileUpload from '../dragNdrop/DragNdrop.jsx';
 import { useSelector } from "react-redux";
 import { useEffect } from "react";
 import attendancelogo from'./attendancelogo.png'
-
+import Button from "../Button";
 const drawerWidth = 300;
 
 const Main = styled("main", { shouldForwardProp: (prop) => prop !== "open" })(
@@ -99,8 +99,8 @@ export default function Attendance() {
           open={open}
         >
           <Divider />
-          <Typography variant="h6" className="pt-2 ml-6">
-            Publish Notice
+          <Typography variant="h6" sx={{marginLeft:'30%'}}>
+              Your Classes
           </Typography>
         </Drawer>
       
@@ -108,15 +108,16 @@ export default function Attendance() {
       <Main open={open}>
         <Box sx={{ mt: 8, padding: "16px" }}>
           {role === 'Teacher' && ( // Only show for Teacher role
-          <div className=" flex items-center">
+          <div className=" flex items-center justify-center mt-16 ">
           <div>
-            <img src={attendancelogo} alt="" />
+            <img src={attendancelogo} alt=""  className="h-100 w-26"/>
           </div>
             <div className="w-56 "   >
-              <form>
+              <form className="flex flex-col justify-center">
                 <FormControl sx={{ m: 1, minWidth: 120 }} size="small">
                   <InputLabel id="demo-select-small-label">Classes</InputLabel>
                   <Select
+                  sx={{ width:'200px'}}
                     labelId="demo-select-small-label"
                     id="demo-select-small"
                     value={classes}
@@ -128,8 +129,12 @@ export default function Attendance() {
                     <MenuItem value="SYSS">SYSS</MenuItem>
                     <MenuItem value="TYFS">TYFS</MenuItem>
                   </Select>
+                  <h3 className=" mt-4">Select Images to Upload</h3>
                 </FormControl>
                 <DragAndDropFileUpload />
+                <Button type="submit" className="w-18 h-8 mt-4 text-white text-sm text-center bg-purple-500">
+                     Upload Attendance
+               </Button>
               </form>
             </div>
             </div>  
