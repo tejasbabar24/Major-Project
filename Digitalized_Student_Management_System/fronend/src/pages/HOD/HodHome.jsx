@@ -8,6 +8,9 @@ import {
 import { useNavigate } from 'react-router';
 import "boxicons/css/boxicons.min.css";
 import { RxCross2 } from "react-icons/rx";
+import { FiLogOut } from "react-icons/fi";
+import axios from 'axios'
+
 
 function Home() {
   const [isSidebarOpen, setSidebarOpen] = useState(false);  // State to toggle sidebar
@@ -30,6 +33,30 @@ function Home() {
     ? navItems.filter(item => item.roles.includes(userData.role))
     : [];
 
+
+  const handleLogout = ()=>{
+    if(userData.role === "Student"){
+
+      axios.post('http://localhost:8000/student/logout')
+      .then((result)=>{
+        console.log(result);
+        navigate('/')
+      })
+      .catch((err)=>{
+        console.log(err);
+      })
+    }
+    else if(userData.role === "Teacher"){
+      axios.post('http://localhost:8000/faculty/logout')
+      .then((result)=>{
+        console.log(result);
+        navigate('/')
+      })
+      .catch((err)=>{
+        console.log(err);
+      })
+    }
+  }
   return (
     <div className="w-full min-h-screen flex flex-col md:flex-row bg-gradient-to-br from-blue-100 to-indigo-200">
       
@@ -92,7 +119,8 @@ function Home() {
           </div>
           <div className="flex items-center gap-x-3 md:gap-x-4 mt-4 md:mt-0">
             <img className="w-10 h-10 md:w-12 md:h-12 rounded-full border-2 border-indigo-300 cursor-pointer hover:scale-105 transition-transform duration-200" src={ProfileLogo} alt="profile" />
-            <img className="cursor-pointer w-6 h-6 md:w-8 md:h-8 opacity-70 hover:opacity-100 transition-opacity duration-200" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAB4AAAAeCAYAAAA7MK6iAAAAAXNSR0IArs4c6QAAAW1JREFUSEvtlrsuRUEUhr8jHkAUElFqEbXC5QHwEhrR8BoSUVGIzoO4NCQiwTMIEQpaBPMne5Ix9hzrzOzYpziT7GbPzPrWZdbM36Gl0WmJS9+BR4AZYKgwI5/ALfAS26mLeAvYBoYLoX77uwNvAvuhvRg8Adw1BAzNfDnwGPDsf8bgeeC0mlTk14VOzAK7lY0F4CwFXgSOq8kl4KQQnLQXRzwAp1I9B0y67+iPUphTrf7VgdDQwfrVf9WcN3gAbAAfCQfMYOtZCg1eACvOgaeazWZwGHE3J8I20boHYBW4jDaZweFCa/R+3Zu7fNaiuv8LWHVeBw4Dj83g3FTrKlSdz3NTbU1vGMkVsFzVOd6fFbGlndTHqqvqWzfMYOuVqQtkClAfdxuNg3NK8uPRGTwSrQmBceDeWsAe1kn6yPZjSoHov4TZTgMK0zMk9iSj9kJHU7p6FJiGYt0teXvjwK9xdvpO0PdQvrylrUX8DZOyaB9ap/VCAAAAAElFTkSuQmCC" />
+            {/* <img className="cursor-pointer w-6 h-6 md:w-8 md:h-8 opacity-70 hover:opacity-100 transition-opacity duration-200" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAB4AAAAeCAYAAAA7MK6iAAAAAXNSR0IArs4c6QAAAW1JREFUSEvtlrsuRUEUhr8jHkAUElFqEbXC5QHwEhrR8BoSUVGIzoO4NCQiwTMIEQpaBPMne5Ix9hzrzOzYpziT7GbPzPrWZdbM36Gl0WmJS9+BR4AZYKgwI5/ALfAS26mLeAvYBoYLoX77uwNvAvuhvRg8Adw1BAzNfDnwGPDsf8bgeeC0mlTk14VOzAK7lY0F4CwFXgSOq8kl4KQQnLQXRzwAp1I9B0y67+iPUphTrf7VgdDQwfrVf9WcN3gAbAAfCQfMYOtZCg1eACvOgaeazWZwGHE3J8I20boHYBW4jDaZweFCa/R+3Zu7fNaiuv8LWHVeBw4Dj83g3FTrKlSdz3NTbU1vGMkVsFzVOd6fFbGlndTHqqvqWzfMYOuVqQtkClAfdxuNg3NK8uPRGTwSrQmBceDeWsAe1kn6yPZjSoHov4TZTgMK0zMk9iSj9kJHU7p6FJiGYt0teXvjwK9xdvpO0PdQvrylrUX8DZOyaB9ap/VCAAAAAElFTkSuQmCC" /> */}
+            <FiLogOut onClick={handleLogout} className="cursor-pointer w-6 h-6 md:w-8 md:h-8 opacity-70 hover:opacity-100 transition-opacity duration-200" />
           </div>
         </div>
 
