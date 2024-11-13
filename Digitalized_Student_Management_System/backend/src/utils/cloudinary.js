@@ -2,7 +2,6 @@ import { v2 as cloudinary } from 'cloudinary';
 import fs from "fs";
 import dotenv from "dotenv";
 import axios from 'axios';
-import fs from 'fs';
 import path from 'path';
 
 dotenv.config();
