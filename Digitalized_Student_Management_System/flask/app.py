@@ -99,19 +99,17 @@ def detection():
     img = request.files.getlist('image')
     
     students = db.students.find({"classCode": Code})
-    known_encodings = []
-    stud_name = []
-    
+      
+    student_data = {}
     for student in students:
         if 'encoding' in student and student['encoding']:  
             encoding = student['encoding'][0]
-            known_encodings.append(encoding)
-            print(len(known_encodings))
-        if 'username' in student:
-            stud_name.append(student['username'])
+            if 'username' in student:
+                username = student['username']
+                student_data[username] = encoding
     
-    print(stud_name)
-    known_encodings = [np.array(encoding) for encoding in known_encodings]
+    known_encodings = [np.array(encoding) for encoding in student_data.values()]
+    stud_name = list(student_data.keys())
     face_names = []
     
     face_encodings = faces(img)
@@ -136,6 +134,8 @@ def detection():
         
         if matches[best_match_index]:
             name = stud_name[best_match_index]
+            if name in face_names:
+                continue
             face_names.append(name)
         if name in stud_name:
             print(face_names)
