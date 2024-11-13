@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import Card from '../../components/Card'; 
 import { useSelector } from 'react-redux';
 import {
-  teacherAttendance, ClassListLogo, FacultLogo, HomeworkLogo, TimetableLogo,
+  teacherAttendance, ClassListLogo, CreateClass, HomeworkLogo, TimetableLogo,
   ExamLogo, NotifyLogo, ResultLogo, ProfileLogo, BookLogo ,sideBarLogo,studentAttendance
 } from '../../assets/HodHomePageLogo';
 import { useNavigate } from 'react-router';
@@ -18,8 +18,8 @@ function Home() {
   const navigate = useNavigate();
 
   const navItems = [
-    { name: "Create Class", slug: "/classroom", logo: FacultLogo, active: true, roles: ["Teacher"] },
-    { name: "Join Class", slug: "/classroom", logo: FacultLogo, active: true, roles: ["Student"] },
+    { name: "Create Class", slug: "/classroom", logo: CreateClass, active: true, roles: ["Teacher"] },
+    { name: "Join Class", slug: "/classroom", logo: CreateClass, active: true, roles: ["Student"] },
     { name: "Class List", slug: "/classroom", logo: ClassListLogo, active: true, roles: ["Teacher", "Student"] },
     { name: "Attendance", slug: "/attendance", logo: userData.role ==="Teacher" ? teacherAttendance : studentAttendance, active: true, roles: ["Teacher", "Student"] },
     { name: "Exam", slug: "/exam", logo: ExamLogo, active: true, roles: ["Teacher", "Student"] },
