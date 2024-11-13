@@ -28,9 +28,9 @@ function Viewclassroom() {
 
   const handleUpload = ()=>{
     console.log(image)
-    axios.post('http://localhost:8000/class//post-assignment',{title:inputValue,classCode:classId,file:image})
+    axios.post('http://localhost:8000/class/post-assignment',{title:inputValue,classCode:classId,file:image})
     .then(result=>{
-     console.log(result.data.message)
+     console.log(result.data.data)
     })
     .catch(error=>{
      console.log(error)
