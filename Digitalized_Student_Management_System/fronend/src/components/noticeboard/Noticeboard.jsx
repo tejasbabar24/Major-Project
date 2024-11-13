@@ -56,52 +56,49 @@ export default function Noticeboard() {
   const [role, setRole] = React.useState(userData.role);
   const [classes, setClasses] = React.useState("");
   const [uploadFiles, setUploadedFiles] = React.useState([]);
-  const [createdClasses,setCreatedClasses]=React.useState([]);
+  const [createdClasses, setCreatedClasses] = React.useState([]);
 
-
-    const handleFilesUploaded = (files) => {
-      setUploadedFiles(files[0]);
+  const handleFilesUploaded = (files) => {
+    setUploadedFiles(files[0]);
   };
 
   useEffect(() => {
-    
-    axios.get('http://localhost:8000/class/created-classes')
-    .then((result)=>{
-      setCreatedClasses(result.data.data.classes);
-    })
-    .catch((err)=>{
-      console.log(err);
-    })
-    
+    axios
+      .get("http://localhost:8000/class/created-classes")
+      .then((result) => {
+        setCreatedClasses(result.data.data.classes);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
   }, [createdClasses]);
 
   const clearFields = () => {
     setDescription("");
+    setUploadedFiles([]);
+    setClasses("");
+    setOpen(false);
   };
 
   const handleChange = (event) => {
     setClasses(event.target.value);
   };
 
-  useEffect(() => {
-    setRole(userData.role); // Ensure role updates correctly on user data change
-    clearFields();
-  }, [open, userData]); // Dependency on userData
-
   const handleFormSubmit = (e) => {
     e.preventDefault();
     const formData = new FormData();
-    formData.append('description', description);
-    formData.append('classname',classes);
-    formData.append('attachment', uploadFiles);
-     
-    axios.post('http://localhost:8000/class/notice', formData)
-      .then(result => {
+    formData.append("description", description);
+    formData.append("classname", classes);
+    formData.append("attachment", uploadFiles);
+
+    axios
+      .post("http://localhost:8000/class/notice", formData)
+      .then((result) => {
         console.log(result.data.data);
       })
-      .catch(error => {
-     console.log(error)
-    })
+      .catch((error) => {
+        console.log(error);
+      });
     clearFields();
   };
 
@@ -117,7 +114,10 @@ export default function Noticeboard() {
               onClick={() => setOpen(!open)}
               edge="end"
             >
-              <Buttons variant="contained" sx={{ fontSize: "15px", backgroundColor: "#3A2B51" }}>
+              <Buttons
+                variant="contained"
+                sx={{ fontSize: "15px", backgroundColor: "#3A2B51" }}
+              >
                 Create <MdOutlineAdd />
               </Buttons>
             </IconButton>
@@ -147,7 +147,10 @@ export default function Noticeboard() {
           <Typography variant="h6" className="pt-2 ml-6">
             Publish Notice
           </Typography>
-          <form onSubmit={handleFormSubmit} className="pl-5 pr-5 pb-5 flex flex-col">
+          <form
+            onSubmit={handleFormSubmit}
+            className="pl-5 pr-5 pb-5 flex flex-col"
+          >
             <TextField
               label="Description"
               margin="normal"
@@ -164,15 +167,21 @@ export default function Noticeboard() {
                 label="select class"
                 onChange={handleChange}
               >
-              {
-                  createdClasses.map((item)=>(
-                    <MenuItem key={item.classCode} value={item.classname.toUpperCase()}>{item.classname.toUpperCase()}</MenuItem>
-                  ))
-                }
+                {createdClasses.map((item) => (
+                  <MenuItem
+                    key={item.classCode}
+                    value={item.classname.toUpperCase()}
+                  >
+                    {item.classname.toUpperCase()}
+                  </MenuItem>
+                ))}
               </Select>
             </FormControl>
             <DragAndDropFileUpload onFilesUploaded={handleFilesUploaded} />
-            <Button type="submit" className="w-18 h-8 mt-4 text-white text-sm text-center bg-purple-500">
+            <Button
+              type="submit"
+              className="w-18 h-8 mt-4 text-white text-sm text-center bg-purple-500"
+            >
               Create
             </Button>
           </form>
@@ -182,23 +191,25 @@ export default function Noticeboard() {
       <Main open={open}>
         <Box sx={{ mt: 8, padding: "16px" }}>
           <div className="flex flex-col gap-2">
-            <NoticeCard
-              fileUrls={[noticeboardimgg2, NMA1]}
-              date={"11/12/24"}
-              from={"sadaphule"}
-              to={"SYFS"}
-              desc={
-                "All students are hereby informed that they must need to follow schedule of projects demonstration given by mentors. If you were planned to go out of mumbai and not able to come to institute then you must had shown to mentor. Dont give any excuses as follow up to mentor and submission is needed from ur side."
-              }
-            />
-            <NoticeCard
-              date={"11/12/24"}
-              from={"molawade"}
-              to={"SYFS"}
-              desc={
-                "The project groups who are under my guidance (R. V. Molawade), have to meet me on Thursday along with your project work done and soft copy of blackbook at 11.00am"
-              }
-            />
+            {createdClasses
+              .flatMap((classInfo) =>
+                classInfo.notice.map((notice) => ({
+                  ...notice,
+                  owner: classInfo.owner,
+                  classname: classInfo.classname,
+                }))
+              )
+              .sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt)) // Sort by createdAt (most recent first)
+              .map((sortedNotice) => (
+                <NoticeCard
+                  key={sortedNotice.createdAt}
+                  fileUrls={[sortedNotice.attachment]}
+                  date={sortedNotice.createdAt}
+                  from={sortedNotice.owner}
+                  to={sortedNotice.classname}
+                  desc={sortedNotice.description}
+                />
+              ))}
           </div>
         </Box>
       </Main>
