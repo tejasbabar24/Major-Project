@@ -59,7 +59,10 @@ function Viewclassroom() {
       .catch((error) => {
         console.log(error);
       });
-
+      setShowInput(false);
+      setImage(null);
+      setInput('');
+    }
 
   useEffect(()=>{
     axios.
@@ -71,9 +74,7 @@ function Viewclassroom() {
       console.log(err);
     })
 
-    setShowInput(false);
-    setImage(null);
-    setInput('');
+    
   });
 
   // Render component based on active tab
@@ -209,6 +210,6 @@ function Viewclassroom() {
       </div>
     </div>
   );
-}
+
 }
 export default Viewclassroom;
