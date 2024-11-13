@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { Avatar } from '@mui/material';
 
 function Announcements({ classData, assignment }) {
@@ -9,6 +9,50 @@ function Announcements({ classData, assignment }) {
     day: 'numeric',
     year: 'numeric',
   });
+  const [fileType, setFileType] = useState('');
+
+  useEffect(() => {
+    // Extract file extension to determine file type
+    const extension = assignment.attachment.split('.').pop().toLowerCase();
+    
+    if (['jpg', 'jpeg', 'png', 'gif', 'bmp'].includes(extension)) {
+      setFileType('image');
+    } else if (['pdf'].includes(extension)) {
+      setFileType('pdf');
+    } else if (['mp4', 'webm', 'ogg'].includes(extension)) {
+      setFileType('video');
+    } else {
+      setFileType('unknown');
+    }
+  }, [assignment.attachment])
+
+  const renderPreview = () => {
+    switch (fileType) {
+      case 'image':
+        return <img  src={assignment.attachment} className='h-36 w-36' alt="Image Preview" />;
+      case 'pdf':
+        return (
+          <iframe
+            src={assignment.attachment}
+            className='h-36 w-36'
+            style={{ border: 'none' }}
+            title="PDF Preview"
+          />
+        );
+      case 'video':
+        return (
+          <video className='h-36 w-36'
+          controls>
+            <source src={assignment.attachment} type="video/mp4" />
+            Your browser does not support the video tag.
+          </video>
+        );
+      case 'unknown':
+        return <div>File format not supported for preview</div>;
+      default:
+        return null;
+    }
+  };
 
   return (
     <div className="p-4 space-y-6 mt-6">
@@ -35,11 +79,7 @@ function Announcements({ classData, assignment }) {
           {/* Content Section */}
           <h4 className="text-xl font-medium text-gray-800 mb-2">{assignment.title}</h4>
           {assignment.attachment && (
-            <img
-              className="h-36 w-36 max-w-md rounded-lg object-cover"
-              src={assignment.attachment}
-              alt={assignment.title}
-            />
+            renderPreview()
           )}
         </div>
         {/* Footer Section */}
