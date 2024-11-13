@@ -63,6 +63,13 @@ const classroomSchema = new Schema({
             createdAt:Date
         }
     ],
+    attendance:[
+        {
+            filename:{type:String,required:true},
+            attachment:String,
+            createdAt:Date
+        }
+    ],
 
 }, { timestamps: true });
 
