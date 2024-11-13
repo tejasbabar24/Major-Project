@@ -3,10 +3,10 @@ import { ApiError } from "../utils/ApiError.js";
 import { ApiResponse } from "../utils/ApiResponse.js";
 import { Classroom } from "../models/classroom.models.js";
 import { Teacher } from "../models/teacher.models.js";
-import { uploadOnCloudinary } from "../utils/cloudinary.js"
+import { uploadOnCloudinary,downloadFromCloudinary } from "../utils/cloudinary.js"
 import { v4 as uuidv4 } from "uuid";
 import { Student } from "../models/student.models.js";
-import { downloadFromCloudinary } from "../utils/cloudinary_download.js";
+
 
 const generateClassCode = async () => {
     const uuid = uuidv4()
@@ -138,7 +138,7 @@ const postAssignment = asyncHandler(async (req, res) => {
         )
 });
 
-const downloadAssginment=asyncHandler(async(req,res)=>{
+const download=asyncHandler(async(req,res)=>{
     const {url}=req.body;
 
     if(!url){
@@ -313,5 +313,5 @@ export { createClass,
          getJoinedStudents,
          postNotice,
          postResult,
-         downloadAssginment
+         download
         }
