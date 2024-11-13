@@ -13,6 +13,8 @@ import ClassroomHomePage from './components/classroom/ClassroomHomePage.jsx'
 import AuthLayout from './components/AuthLayout.jsx'
 import Viewclassroom from './components/classroom/Viewclassroom.jsx'
 import Noticeboard from './components/noticeboard/noticeboard.jsx'
+import Attendance from './components/attendance/attendance.jsx'
+
 const router = createBrowserRouter([
   {
     path:"/",
@@ -67,10 +69,10 @@ const router = createBrowserRouter([
         )
       },
       {
-        path:"/exam",
+        path:"/attendance",
         element:(
           <AuthLayout authentication>
-          <Home/>
+          <Attendance/>
         </AuthLayout>
         )
       },

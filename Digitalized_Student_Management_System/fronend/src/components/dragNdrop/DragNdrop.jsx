@@ -1,6 +1,7 @@
 import React, { useCallback, useState, useEffect } from 'react';
 import { useDropzone } from 'react-dropzone';
 import styled, { keyframes } from 'styled-components';
+import filelogo from '../noticeboard/filelogo.png'
 
 const fadeIn = keyframes`
   from {
@@ -71,7 +72,7 @@ const Progress = styled.div`
   border-radius: inherit;
 `;
 
-const DragAndDropFileUpload = () => {
+const DragAndDropFileUpload = ({ onFilesUploaded }) => {
   const [files, setFiles] = useState([]);
   const [uploadProgress, setUploadProgress] = useState({});
 
@@ -80,41 +81,36 @@ const DragAndDropFileUpload = () => {
       Object.assign(file, { preview: URL.createObjectURL(file) })
     );
 
-    // Append new files to the existing files array
-    setFiles((prevFiles) => [...prevFiles, ...newFiles]);
+    setFiles((prevFiles) => {
+      const updatedFiles = [...prevFiles, ...newFiles];
+      // Call the parent callback function with the updated files array
+      onFilesUploaded(updatedFiles);
+      return updatedFiles;
+    });
 
-    newFiles.forEach((file) => {
-        console.log("File name:", file.name); // Log the file name here
-      });
-
-
-    // Initialize upload progress for the new files
     newFiles.forEach((file) => {
       setUploadProgress((prevProgress) => ({
         ...prevProgress,
         [file.name]: 0,
       }));
 
-      // Simulate the upload process and update progress
       const interval = setInterval(() => {
         setUploadProgress((prevProgress) => {
           const newProgress = Math.min(prevProgress[file.name] + 10, 100);
           if (newProgress === 100) clearInterval(interval);
-
           return { ...prevProgress, [file.name]: newProgress };
         });
       }, 200);
     });
-  }, []);
+  }, [onFilesUploaded]);
 
   const { getRootProps, getInputProps, isDragActive } = useDropzone({
     onDrop,
     multiple: true,
-    accept: '/*',
+    accept: '*/*',
   });
 
   useEffect(() => {
-    // Clean up the object URLs when files are removed or the component unmounts
     return () => files.forEach((file) => URL.revokeObjectURL(file.preview));
   }, [files]);
 
@@ -131,7 +127,7 @@ const DragAndDropFileUpload = () => {
         {files.map((file) => (
           <FilePreview key={file.name}>
             <div className="flex flex-row">
-              <PreviewImage src={file.preview} alt="preview" />
+              <PreviewImage src={file.preview || filelogo} alt="preview" />
               <FileName>{file.name}</FileName>
             </div>
             <ProgressBarContainer>
