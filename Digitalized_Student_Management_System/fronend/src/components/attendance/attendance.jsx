@@ -19,6 +19,7 @@ import { useSelector } from "react-redux";
 import { useEffect, useState } from "react";
 import attendancelogo from './attendancelogo.png';
 import AttendanceCard from "./attendanceCard.jsx";
+import axios from "axios";
 
 const drawerWidth = 300;
 
@@ -53,8 +54,10 @@ export default function Attendance() {
   const [dupRole , setDupRole] = useState(''); 
   const [uploadedFiles, setUploadedFiles] = useState([]);
   const [selectedClass, setSelectedClass] = useState(null);
+  const [createdClasses, setCreatedClasses] = React.useState([]);
+  const [joinedClasses, setJoinedClasses] = React.useState([]);
 
-  const handleFilesUploaded = (files) => setUploadedFiles(files[0]);
+  const handleFilesUploaded = (files) => setUploadedFiles(files);
 
   const handleClassChange = (event) => setClasses(event.target.value);
 
@@ -67,9 +70,55 @@ export default function Attendance() {
      // Assuming you want to set this on click
   };
 
-  useEffect(() => {
-    if (userData?.role) setRole(userData.role);
-  }, [userData]);
+  const uploadAttendance=(e)=>{
+    e.preventDefault();
+    const classDetails=createdClasses.find((item)=>item.classname===classes.toLowerCase())
+
+    const formData = new FormData();
+    formData.append("classCode", classDetails.classCode);
+    uploadedFiles.forEach((image, index) => {
+      formData.append('image', image);
+          });
+
+    console.log(uploadedFiles)
+    console.log(classDetails.classCode)
+    axios.post('http://localhost:5001/face_recognition',formData,{
+      headers: {
+        'Content-Type': 'multipart/form-data'
+      },
+      withCredentials: true,  
+    }) 
+    .then((result) => {
+      console.log(result.data.message);
+    })
+    .catch((error) => {
+      console.log(error);
+    });
+  }
+
+  if (userData.role === "Teacher") {
+    useEffect(() => {
+      axios
+        .get("http://localhost:8000/class/created-classes")
+        .then((result) => {
+          setCreatedClasses(result.data.data.classes);
+        })
+        .catch((err) => {
+          console.log(err);
+        });
+    }, [createdClasses]); 
+  }else if(userData.role === "Student"){
+    useEffect(()=>{
+      axios
+      .get('http://localhost:8000/class/joined-classes')
+      .then((result)=>{
+        setJoinedClasses(result.data.data.classArr);
+      })
+      .catch((err)=>{
+        console.log(err);
+      })
+    },[joinedClasses]) 
+  }
 
   return (
     <Box sx={{ display: "flex" }}>
@@ -139,7 +188,7 @@ export default function Attendance() {
             <div className="flex items-center justify-center mt-16">
               <img src={attendancelogo} alt="Attendance Logo" className="h-100 w-26" />
               <div className="w-56">
-                <form className="flex flex-col justify-center">
+                <form className="flex flex-col justify-center" onSubmit={uploadAttendance}>
                   <FormControl sx={{ m: 1, minWidth: 120 }} size="small">
                     <InputLabel id="select-class-label">Classes</InputLabel>
                     <Select
@@ -150,10 +199,15 @@ export default function Attendance() {
                       onChange={handleClassChange}
                       sx={{ width: '200px' }}
                     >
-                      <MenuItem value="ALL">ALL</MenuItem>
-                      <MenuItem value="SYFS">SYFS</MenuItem>
-                      <MenuItem value="SYSS">SYSS</MenuItem>
-                      <MenuItem value="TYFS">TYFS</MenuItem>
+                    
+                     {createdClasses.map((item) => (
+                    <MenuItem
+                    key={item.classCode}
+                    value={item.classname.toUpperCase()}
+                     >
+                    {item.classname.toUpperCase()}
+                  </MenuItem>
+                ))}
                     </Select>
                     <Typography variant="subtitle2" sx={{ mt: 2 }}>
                       Select Images to Upload

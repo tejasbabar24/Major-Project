@@ -19,7 +19,7 @@ from pymongo import MongoClient
 load_dotenv()
 
 app = Flask(__name__)
-CORS(app)
+CORS(app,supports_credentials=True, origins=["http://localhost:5173","http://localhost:8000"])
 
 cloudinary.config(
     cloud_name=os.getenv('CLOUDINARY_CLOUD_NAME'),
