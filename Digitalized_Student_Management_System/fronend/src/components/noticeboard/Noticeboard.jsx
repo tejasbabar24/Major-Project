@@ -56,30 +56,28 @@ export default function Noticeboard() {
   const [role, setRole] = React.useState(userData.role);
   const [classes, setClasses] = React.useState("");
   const [uploadFiles, setUploadedFiles] = React.useState([]);
-  const [createdClasses,setCreatedClasses]=React.useState([]);
+  const [createdClasses, setCreatedClasses] = React.useState([]);
 
-
-    const handleFilesUploaded = (files) => {
-      setUploadedFiles(files[0]);
+  const handleFilesUploaded = (files) => {
+    setUploadedFiles(files[0]);
   };
 
   useEffect(() => {
-    
-    axios.get('http://localhost:8000/class/created-classes')
-    .then((result)=>{
-      setCreatedClasses(result.data.data.classes);
-    })
-    .catch((err)=>{
-      console.log(err);
-    })
-    
+    axios
+      .get("http://localhost:8000/class/created-classes")
+      .then((result) => {
+        setCreatedClasses(result.data.data.classes);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
   }, [createdClasses]);
 
   const clearFields = () => {
     setDescription("");
-    setUploadedFiles([])
-    setClasses("")
-    setOpen(false)
+    setUploadedFiles([]);
+    setClasses("");
+    setOpen(false);
   };
 
   const handleChange = (event) => {
@@ -89,17 +87,18 @@ export default function Noticeboard() {
   const handleFormSubmit = (e) => {
     e.preventDefault();
     const formData = new FormData();
-    formData.append('description', description);
-    formData.append('classname',classes);
-    formData.append('attachment', uploadFiles);
-     
-    axios.post('http://localhost:8000/class/notice', formData)
-      .then(result => {
+    formData.append("description", description);
+    formData.append("classname", classes);
+    formData.append("attachment", uploadFiles);
+
+    axios
+      .post("http://localhost:8000/class/notice", formData)
+      .then((result) => {
         console.log(result.data.data);
       })
-      .catch(error => {
-     console.log(error)
-    })
+      .catch((error) => {
+        console.log(error);
+      });
     clearFields();
   };
 
@@ -115,7 +114,10 @@ export default function Noticeboard() {
               onClick={() => setOpen(!open)}
               edge="end"
             >
-              <Buttons variant="contained" sx={{ fontSize: "15px", backgroundColor: "#3A2B51" }}>
+              <Buttons
+                variant="contained"
+                sx={{ fontSize: "15px", backgroundColor: "#3A2B51" }}
+              >
                 Create <MdOutlineAdd />
               </Buttons>
             </IconButton>
@@ -145,7 +147,10 @@ export default function Noticeboard() {
           <Typography variant="h6" className="pt-2 ml-6">
             Publish Notice
           </Typography>
-          <form onSubmit={handleFormSubmit} className="pl-5 pr-5 pb-5 flex flex-col">
+          <form
+            onSubmit={handleFormSubmit}
+            className="pl-5 pr-5 pb-5 flex flex-col"
+          >
             <TextField
               label="Description"
               margin="normal"
@@ -162,15 +167,21 @@ export default function Noticeboard() {
                 label="select class"
                 onChange={handleChange}
               >
-              {
-                  createdClasses.map((item)=>(
-                    <MenuItem key={item.classCode} value={item.classname.toUpperCase()}>{item.classname.toUpperCase()}</MenuItem>
-                  ))
-                }
+                {createdClasses.map((item) => (
+                  <MenuItem
+                    key={item.classCode}
+                    value={item.classname.toUpperCase()}
+                  >
+                    {item.classname.toUpperCase()}
+                  </MenuItem>
+                ))}
               </Select>
             </FormControl>
             <DragAndDropFileUpload onFilesUploaded={handleFilesUploaded} />
-            <Button type="submit" className="w-18 h-8 mt-4 text-white text-sm text-center bg-purple-500">
+            <Button
+              type="submit"
+              className="w-18 h-8 mt-4 text-white text-sm text-center bg-purple-500"
+            >
               Create
             </Button>
           </form>
@@ -180,21 +191,25 @@ export default function Noticeboard() {
       <Main open={open}>
         <Box sx={{ mt: 8, padding: "16px" }}>
           <div className="flex flex-col gap-2">
-            {
-              createdClasses.map((classInfo)=>(
-                classInfo.notice.map((notice)=>(
-                  <NoticeCard
-                  fileUrls={[notice.attachment]}
-                  date={notice.createdAt}
-                  from={classInfo.owner}
-                  to={classInfo.classname}
-                  desc={
-                  notice.description
-                  }
-            />
-                ))
-              ))
-            }
+            {createdClasses
+              .flatMap((classInfo) =>
+                classInfo.notice.map((notice) => ({
+                  ...notice,
+                  owner: classInfo.owner,
+                  classname: classInfo.classname,
+                }))
+              )
+              .sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt)) // Sort by createdAt (most recent first)
+              .map((sortedNotice) => (
+                <NoticeCard
+                  key={sortedNotice.createdAt}
+                  fileUrls={[sortedNotice.attachment]}
+                  date={sortedNotice.createdAt}
+                  from={sortedNotice.owner}
+                  to={sortedNotice.classname}
+                  desc={sortedNotice.description}
+                />
+              ))}
           </div>
         </Box>
       </Main>

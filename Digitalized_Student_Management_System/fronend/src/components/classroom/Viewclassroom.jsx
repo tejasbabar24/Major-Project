@@ -128,10 +128,17 @@ function Viewclassroom() {
             </div>
               ) : null
             }
-            {classInfo.assignment &&
+            {/* {classInfo.assignment &&
               classInfo.assignment.map((item, index) => (
                 <Announcements key={index} assignment={item} classData={classInfo} />
-              ))}
+              ))} */}
+              {classInfo.assignment &&
+       [...classInfo.assignment]
+    .sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt)) // Sort in descending order
+    .map((item, index) => (
+      <Announcements key={index} assignment={item} classData={classInfo} />
+    ))}
+
           </div>
         );
       case 'students':
