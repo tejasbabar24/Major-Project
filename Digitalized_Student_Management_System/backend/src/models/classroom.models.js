@@ -52,7 +52,14 @@ const classroomSchema = new Schema({
     notice:[
         {
             description:{type:String,required:true},
-            file:String,
+            attachment:String,
+            createdAt:Date
+        }
+    ],
+    result:[
+        {
+            description:{type:String,required:true},
+            attachment:String,
             createdAt:Date
         }
     ],

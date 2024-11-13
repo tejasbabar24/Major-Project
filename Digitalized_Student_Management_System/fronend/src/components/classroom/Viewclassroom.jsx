@@ -23,13 +23,12 @@ function Viewclassroom() {
   const handleChange = (e) => {
     if (e.target.files && e.target.files[0]) {
       setImage(e.target.files[0]);
-      console.log(image)
     }
   };
 
   
   const handleUpload = ()=>{
-    console.log(image)
+   
     const formData = new FormData();
     formData.append('title', inputValue);
     formData.append('classCode', classId);
@@ -43,7 +42,7 @@ function Viewclassroom() {
      console.log(error)
     })
   }
-  
+
   useEffect(()=>{
     axios.
     post("http://localhost:8000/class/joined-students",{classCode:classId}).

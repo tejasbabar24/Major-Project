@@ -6,7 +6,8 @@ import {
     getJoinedStudents,
     joinClass,
     postAssignment,
-    postNotice
+    postNotice,
+    postResult
 } from "../controllers/classroom.controller.js"
 import { verifyJWT } from "../middlewares/auth.middleware.js";
 import { stud_verifyJWT } from "../middlewares/auth_stud.middleware.js";
@@ -24,8 +25,12 @@ router.route('/post-assignment').post(
     postAssignment)
 
 router.route('/notice').post(
-    upload.single('file'),verifyJWT,
+    upload.single('attachment'),
     postNotice)
+
+router.route('/result').post(
+    upload.single('attachment'),
+    postResult)
 
 router.route('/joined-classes').get(stud_verifyJWT,getJoinedClasses)
 
