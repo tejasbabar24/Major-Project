@@ -4,7 +4,7 @@ import path from 'path';
 
 const downloadFromCloudinary = async (cloudinaryUrl, downloadDir = 'C:/Downloads') => {
   try {
-    // Ensure the download directory exists
+    
     if (!fs.existsSync(downloadDir)) {
       fs.mkdirSync(downloadDir, { recursive: true });
     }
