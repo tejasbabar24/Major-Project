@@ -204,7 +204,7 @@ export default function Noticeboard() {
       )}
 
       <Main open={open}>
-        <Box sx={{ mt: 8, paddingLeft: "320px" }}>
+        <Box sx={{ mt: 8, paddingLeft: userData.role === "Student" ? "320px" : "0px" }}>
           <div className="flex flex-col gap-2">
             { 
               userData.role === "Teacher" ?(
