@@ -55,6 +55,8 @@ export default function Noticeboard() {
   const [description, setDescription] = React.useState("");
   const [role, setRole] = React.useState(userData.role);
   const [classes, setClasses] = React.useState("");
+  const [joinedClasses, setJoinedClasses] = React.useState([]);
+
   const [uploadFiles, setUploadedFiles] = React.useState([]);
   const [createdClasses, setCreatedClasses] = React.useState([]);
 
@@ -62,17 +64,30 @@ export default function Noticeboard() {
     setUploadedFiles(files[0]);
   };
 
-  useEffect(() => {
-    axios
-      .get("http://localhost:8000/class/created-classes")
-      .then((result) => {
-        setCreatedClasses(result.data.data.classes);
+ 
+  if (userData.role === "Teacher") {
+    useEffect(() => {
+      axios
+        .get("http://localhost:8000/class/created-classes")
+        .then((result) => {
+          setCreatedClasses(result.data.data.classes);
+        })
+        .catch((err) => {
+          console.log(err);
+        });
+    }, [createdClasses]); 
+  }else if(userData.role === "Student"){
+    useEffect(()=>{
+      axios
+      .get('http://localhost:8000/class/joined-classes')
+      .then((result)=>{
+        setJoinedClasses(result.data.data.classArr);
       })
-      .catch((err) => {
+      .catch((err)=>{
         console.log(err);
-      });
-  }, [createdClasses]);
-
+      })
+    },[joinedClasses]) 
+  }
   const clearFields = () => {
     setDescription("");
     setUploadedFiles([]);
@@ -191,7 +206,8 @@ export default function Noticeboard() {
       <Main open={open}>
         <Box sx={{ mt: 8, padding: "16px" }}>
           <div className="flex flex-col gap-2">
-            {createdClasses
+            {
+              createdClasses
               .flatMap((classInfo) =>
                 classInfo.notice.map((notice) => ({
                   ...notice,

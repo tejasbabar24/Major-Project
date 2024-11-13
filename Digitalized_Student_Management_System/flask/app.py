@@ -4,6 +4,9 @@ import cv2
 import csv
 import dlib
 import os
+import cloudinary
+import cloudinary.uploader
+import cloudinary.api
 import numpy as np
 from datetime import datetime
 from dotenv import load_dotenv
@@ -17,6 +20,12 @@ load_dotenv()
 
 app = Flask(__name__)
 CORS(app)
+
+cloudinary.config(
+    cloud_name=os.getenv('CLOUDINARY_CLOUD_NAME'),
+    api_key=os.getenv('CLOUDINARY_API_KEY'),
+    api_secret=os.getenv('CLOUDINARY_API_SECRET')
+)
 
 client = MongoClient(os.getenv('MONGODB_URI'))
 db = client.acadamix 
@@ -99,19 +108,17 @@ def detection():
     img = request.files.getlist('image')
     
     students = db.students.find({"classCode": Code})
-    known_encodings = []
-    stud_name = []
-    
+      
+    student_data = {}
     for student in students:
         if 'encoding' in student and student['encoding']:  
             encoding = student['encoding'][0]
-            known_encodings.append(encoding)
-            print(len(known_encodings))
-        if 'username' in student:
-            stud_name.append(student['username'])
+            if 'username' in student:
+                username = student['username']
+                student_data[username] = encoding
     
-    print(stud_name)
-    known_encodings = [np.array(encoding) for encoding in known_encodings]
+    known_encodings = [np.array(encoding) for encoding in student_data.values()]
+    stud_name = list(student_data.keys())
     face_names = []
     
     face_encodings = faces(img)
@@ -136,15 +143,37 @@ def detection():
         
         if matches[best_match_index]:
             name = stud_name[best_match_index]
+            if name in face_names:
+                continue
             face_names.append(name)
         if name in stud_name:
             print(face_names)
             current_time = now.strftime("%H-%M-%S")
             lnwriter.writerow([name,current_time])
             print(name+" Present")
+    
+    upload_result = cloudinary.uploader.upload(f, resource_type="raw")
+    
+    attendance_record = {
+    "filename": f.name,  
+    "attachment": upload_result["secure_url"], 
+    "createdAt": datetime.now()
+    }        
 
-    f.close()    
-    return f"<h1>First encoding element: {face_names}</h1>"
+    classIn=db.classrooms.update_one(
+    {"classCode": Code}, {"$push": {"attendance":attendance_record }})
+    
+    # os.remove(f.name)
+
+    f.close()
+    response = {
+            "status": "success",
+            "message": "File uploaded and attendance record added successfully.",
+            "data": {
+                classIn
+            }
+        }    
+    return jsonify(response),200
 
 if __name__ == "__main__":
     app.run(debug=True,port=5001)
