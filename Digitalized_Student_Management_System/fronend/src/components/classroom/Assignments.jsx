@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { Avatar } from '@mui/material';
-
+import axios from "axios"
 function Announcements({ classData, assignment }) {
   // Format the createdAt date
   const formattedDate = new Date(assignment.createdAt).toLocaleDateString('en-US', {
@@ -25,12 +25,19 @@ function Announcements({ classData, assignment }) {
       setFileType('unknown');
     }
   }, [assignment.attachment])
-
+  const downloadFile = ()=>{
+    axios.post('http://localhost:8000/class/download-assignment',{url:assignment.attachment})
+    .then((result)=>{
+      console.log(result.data);
+    })
+    .catch((err)=>{
+      console.log(err);
+    })
+  }
   const renderPreview = () => {
     switch (fileType) {
       case 'image':
-        return <img className='cursor-pointer h-36 w-36' onClick={()=> {console.log("hello");
-        }} src={assignment.attachment}  alt="Image Preview" />;
+        return <img className='cursor-pointer h-36 w-36' onClick={downloadFile} src={assignment.attachment}  alt="Image Preview" />;
       case 'pdf':
         return (
           <iframe
