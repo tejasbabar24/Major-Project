@@ -77,16 +77,14 @@ export default function Noticeboard() {
 
   const clearFields = () => {
     setDescription("");
+    setUploadedFiles([])
+    setClasses("")
+    setOpen(false)
   };
 
   const handleChange = (event) => {
     setClasses(event.target.value);
   };
-
-  useEffect(() => {
-    setRole(userData.role); // Ensure role updates correctly on user data change
-    clearFields();
-  }, [open, userData]); // Dependency on userData
 
   const handleFormSubmit = (e) => {
     e.preventDefault();
@@ -182,23 +180,21 @@ export default function Noticeboard() {
       <Main open={open}>
         <Box sx={{ mt: 8, padding: "16px" }}>
           <div className="flex flex-col gap-2">
-            <NoticeCard
-              fileUrls={[noticeboardimgg2, NMA1]}
-              date={"11/12/24"}
-              from={"sadaphule"}
-              to={"SYFS"}
-              desc={
-                "All students are hereby informed that they must need to follow schedule of projects demonstration given by mentors. If you were planned to go out of mumbai and not able to come to institute then you must had shown to mentor. Dont give any excuses as follow up to mentor and submission is needed from ur side."
-              }
+            {
+              createdClasses.map((classInfo)=>(
+                classInfo.notice.map((notice)=>(
+                  <NoticeCard
+                  fileUrls={[notice.attachment]}
+                  date={notice.createdAt}
+                  from={classInfo.owner}
+                  to={classInfo.classname}
+                  desc={
+                  notice.description
+                  }
             />
-            <NoticeCard
-              date={"11/12/24"}
-              from={"molawade"}
-              to={"SYFS"}
-              desc={
-                "The project groups who are under my guidance (R. V. Molawade), have to meet me on Thursday along with your project work done and soft copy of blackbook at 11.00am"
-              }
-            />
+                ))
+              ))
+            }
           </div>
         </Box>
       </Main>
