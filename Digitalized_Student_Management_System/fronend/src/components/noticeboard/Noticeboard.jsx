@@ -206,26 +206,49 @@ export default function Noticeboard() {
       <Main open={open}>
         <Box sx={{ mt: 8, padding: "16px" }}>
           <div className="flex flex-col gap-2">
-            {
-              createdClasses
-              .flatMap((classInfo) =>
-                classInfo.notice.map((notice) => ({
-                  ...notice,
-                  owner: classInfo.owner,
-                  classname: classInfo.classname,
-                }))
-              )
-              .sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt)) // Sort by createdAt (most recent first)
-              .map((sortedNotice) => (
-                <NoticeCard
-                  key={sortedNotice.createdAt}
-                  fileUrls={[sortedNotice.attachment]}
-                  date={sortedNotice.createdAt}
-                  from={sortedNotice.owner}
-                  to={sortedNotice.classname}
-                  desc={sortedNotice.description}
-                />
-              ))}
+            { 
+              userData.role === "Teacher" ?(
+
+                createdClasses
+                .flatMap((classInfo) =>
+                  classInfo.notice.map((notice) => ({
+                    ...notice,
+                    owner: classInfo.owner,
+                    classname: classInfo.classname,
+                  }))
+                )
+                .sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt)) // Sort by createdAt (most recent first)
+                .map((sortedNotice) => (
+                  <NoticeCard
+                    key={sortedNotice.createdAt}
+                    fileUrls={[sortedNotice.attachment]}
+                    date={sortedNotice.createdAt}
+                    from={sortedNotice.owner}
+                    to={sortedNotice.classname}
+                    desc={sortedNotice.description}
+                  />
+                ))
+              ): userData.role === "Student" ? (
+                joinedClasses
+                .flatMap((classInfo) =>
+                  classInfo.notice.map((notice) => ({
+                    ...notice,
+                    owner: classInfo.owner,
+                    classname: classInfo.classname,
+                  }))
+                )
+                .sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt)) // Sort by createdAt (most recent first)
+                .map((sortedNotice) => (
+                  <NoticeCard
+                    key={sortedNotice.createdAt}
+                    fileUrls={[sortedNotice.attachment]}
+                    date={sortedNotice.createdAt}
+                    from={sortedNotice.owner}
+                    to={sortedNotice.classname}
+                    desc={sortedNotice.description}
+                  />
+                ))
+              ):null}
           </div>
         </Box>
       </Main>
