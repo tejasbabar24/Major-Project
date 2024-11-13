@@ -94,11 +94,10 @@ def faces(images):
     print("Encoding done of cropped faces")
     return encodedFaces
 
-
 @app.route('/face_recognition',methods=['POST'])
 def detection():
-
-    f = open(current_date+'.csv','w+',newline='')
+    filename=f"{current_date}.csv"
+    f = open(filename,'w+',newline='')
     lnwriter = csv.writer(f)
     Code = request.form.get('classCode')
     
@@ -151,28 +150,25 @@ def detection():
             current_time = now.strftime("%H-%M-%S")
             lnwriter.writerow([name,current_time])
             print(name+" Present")
-    
-    upload_result = cloudinary.uploader.upload(f, resource_type="raw")
+    f.close()
+
+    upload_result = cloudinary.uploader.upload(filename, resource_type="raw")
     
     attendance_record = {
-    "filename": f.name,  
+    "filename": filename,  
     "attachment": upload_result["secure_url"], 
     "createdAt": datetime.now()
     }        
 
-    classIn=db.classrooms.update_one(
+    os.remove(attendance_record["filename"])
+    update_result=db.classrooms.update_one(
     {"classCode": Code}, {"$push": {"attendance":attendance_record }})
-    
-    # os.remove(f.name)
 
-    f.close()
     response = {
             "status": "success",
             "message": "File uploaded and attendance record added successfully.",
-            "data": {
-                classIn
-            }
         }    
+    
     return jsonify(response),200
 
 if __name__ == "__main__":
