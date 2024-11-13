@@ -3,7 +3,7 @@ import { ApiError } from "../utils/ApiError.js";
 import { ApiResponse } from "../utils/ApiResponse.js";
 import { Classroom } from "../models/classroom.models.js";
 import { Teacher } from "../models/teacher.models.js";
-import { uploadOnCloudinary } from "../utils/cloudinary.js"
+import { filesUploadOnCloudinary, uploadOnCloudinary } from "../utils/cloudinary.js"
 import { v4 as uuidv4 } from "uuid";
 import { Student } from "../models/student.models.js";
 
@@ -110,7 +110,7 @@ const postAssignment = asyncHandler(async (req, res) => {
         throw new ApiError(401, "File not uploaded");
     }
 
-    const uploaded = await uploadOnCloudinary(LocalPath);
+    const uploaded = await filesUploadOnCloudinary(LocalPath);
 
     if (!uploaded) {
         throw new ApiError(500, "Error while uploading file on cloudinary")
