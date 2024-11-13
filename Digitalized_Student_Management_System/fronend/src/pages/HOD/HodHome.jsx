@@ -2,8 +2,8 @@ import React, { useState } from 'react';
 import Card from '../../components/Card'; 
 import { useSelector } from 'react-redux';
 import {
-  StudentLogo, ClassListLogo, FacultLogo, HomeworkLogo, TimetableLogo,
-  ExamLogo, NotifyLogo, ResultLogo, ProfileLogo, BookLogo ,sideBarLogo
+  teacherAttendance, ClassListLogo, FacultLogo, HomeworkLogo, TimetableLogo,
+  ExamLogo, NotifyLogo, ResultLogo, ProfileLogo, BookLogo ,sideBarLogo,studentAttendance
 } from '../../assets/HodHomePageLogo';
 import { useNavigate } from 'react-router';
 import "boxicons/css/boxicons.min.css";
@@ -18,10 +18,10 @@ function Home() {
   const navigate = useNavigate();
 
   const navItems = [
-    { name: "Add Faculty", slug: "/add-faculty", logo: FacultLogo, active: true, roles: ["Teacher"] },
+    { name: "Create Class", slug: "/classroom", logo: FacultLogo, active: true, roles: ["Teacher"] },
     { name: "Join Class", slug: "/classroom", logo: FacultLogo, active: true, roles: ["Student"] },
     { name: "Class List", slug: "/classroom", logo: ClassListLogo, active: true, roles: ["Teacher", "Student"] },
-    { name: "Attendance", slug: "/attendance", logo: StudentLogo, active: true, roles: ["Teacher", "Student"] },
+    { name: "Attendance", slug: "/attendance", logo: userData.role ==="Teacher" ? teacherAttendance : studentAttendance, active: true, roles: ["Teacher", "Student"] },
     { name: "Exam", slug: "/exam", logo: ExamLogo, active: true, roles: ["Teacher", "Student"] },
     { name: "Timetable", slug: "/timetable", logo: TimetableLogo, active: true, roles: ["Teacher", "Student"] },
     { name: "Homework", slug: "/homework", logo: HomeworkLogo, active: true, roles: ["Teacher", "Student"] },
