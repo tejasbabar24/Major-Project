@@ -104,10 +104,6 @@ const postAssignment = asyncHandler(async (req, res) => {
         throw new ApiError(400, "All fields are required")
     }
     
-    
-    console.log(title)
-    console.log(classCode)
-    console.log(req.file)
     const LocalPath = req.file?.path;
 
     if (!LocalPath) {
@@ -145,21 +141,15 @@ const postNotice = asyncHandler(async (req, res) => {
 
     const { description,classname } = req.body;
 
-    const exitClass=await Teacher.findOne({owner:req.user?._id});
-
-    if(!exitClass){
-        throw new ApiError(400,"Class does not exits")
-    }
-
     if (
-        [description].some((field) =>
+        [description,classname].some((field) =>
             field?.trim() === "")
     ) {
         throw new ApiError(400, "All fields are required")
     }
 
     const LocalPath = req.file?.path;
-
+    
     if (!LocalPath) {
         throw new ApiError(401, "File not uploaded");
     }
@@ -174,9 +164,9 @@ const postNotice = asyncHandler(async (req, res) => {
         { classname },
         {
             $push: {
-                assignment: {
+                notice: {
                     description,    
-                    file: uploaded.url,
+                    attachment: uploaded.url,
                     createdAt: new Date(),
                 },
             },
@@ -184,6 +174,52 @@ const postNotice = asyncHandler(async (req, res) => {
         { new: true }
     ).select("-members");    
 
+    
+    return res
+        .status(200)
+        .json(
+            new ApiResponse(200, classroom, "File uploaded successfully")
+        )
+})
+
+const postResult = asyncHandler(async (req, res) => {
+
+    const { description,classname } = req.body;
+
+    if (
+        [description,classname].some((field) =>
+            field?.trim() === "")
+    ) {
+        throw new ApiError(400, "All fields are required")
+    }
+
+    const LocalPath = req.file?.path;
+    
+    if (!LocalPath) {
+        throw new ApiError(401, "File not uploaded");
+    }
+
+    const uploaded = await uploadOnCloudinary(LocalPath);
+
+    if (!uploaded) {
+        throw new ApiError(500, "Error while uploading file on cloudinary")
+    }
+
+    const classroom = await Classroom.findOneAndUpdate(
+        { classname },
+        {
+            $push: {
+                result: {
+                    description,    
+                    attachment: uploaded.url,
+                    createdAt: new Date(),
+                },
+            },
+        },
+        { new: true }
+    ).select("-members");    
+
+    
     return res
         .status(200)
         .json(
@@ -256,4 +292,12 @@ const getJoinedStudents = asyncHandler(async(req,res)=>{
     
 })
 
-export { createClass, joinClass, postAssignment ,getJoinedClasses,getCreatedClasses,getJoinedStudents,postNotice}
+export { createClass, 
+         joinClass, 
+         postAssignment,
+         getJoinedClasses,
+         getCreatedClasses,
+         getJoinedStudents,
+         postNotice,
+         postResult,
+        }

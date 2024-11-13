@@ -60,10 +60,21 @@ function Viewclassroom() {
         console.log(error);
       });
 
+
+  useEffect(()=>{
+    axios.
+    post("http://localhost:8000/class/joined-students",{classCode:classId}).
+    then((result)=>{
+      setStudents(result.data.data.students)
+    })
+    .catch((err)=>{
+      console.log(err);
+    })
+
     setShowInput(false);
     setImage(null);
     setInput('');
-  };
+  });
 
   // Render component based on active tab
   const renderComponent = () => {
@@ -199,5 +210,5 @@ function Viewclassroom() {
     </div>
   );
 }
-
+}
 export default Viewclassroom;

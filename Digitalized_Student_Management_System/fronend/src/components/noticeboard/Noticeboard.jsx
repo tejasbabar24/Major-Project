@@ -22,6 +22,7 @@ import DragAndDropFileUpload from "../dragNdrop/DragNdrop.jsx";
 import { useSelector } from "react-redux";
 import { useEffect } from "react";
 import NoticeCard from "./NoticeCard.jsx";
+import axios from "axios";
 
 const drawerWidth = 320;
 
@@ -55,14 +56,24 @@ export default function Noticeboard() {
   const [role, setRole] = React.useState(userData.role);
   const [classes, setClasses] = React.useState("");
   const [uploadFiles, setUploadedFiles] = React.useState([]);
+  const [createdClasses,setCreatedClasses]=React.useState([]);
 
-  const handleFilesUploaded = (files) => {
-    setUploadedFiles(files);
+
+    const handleFilesUploaded = (files) => {
+      setUploadedFiles(files[0]);
   };
 
   useEffect(() => {
-    console.log("Updated uploaded files:", uploadFiles);
-  }, [uploadFiles]);
+    
+    axios.get('http://localhost:8000/class/created-classes')
+    .then((result)=>{
+      setCreatedClasses(result.data.data.classes);
+    })
+    .catch((err)=>{
+      console.log(err);
+    })
+    
+  }, [createdClasses]);
 
   const clearFields = () => {
     setDescription("");
@@ -79,8 +90,18 @@ export default function Noticeboard() {
 
   const handleFormSubmit = (e) => {
     e.preventDefault();
-    // Handle form submission, including the files from uploadFiles
-    console.log("Form submitted with files:", uploadFiles);
+    const formData = new FormData();
+    formData.append('description', description);
+    formData.append('classname',classes);
+    formData.append('attachment', uploadFiles);
+     
+    axios.post('http://localhost:8000/class/notice', formData)
+      .then(result => {
+        console.log(result.data.data);
+      })
+      .catch(error => {
+     console.log(error)
+    })
     clearFields();
   };
 
@@ -143,10 +164,11 @@ export default function Noticeboard() {
                 label="select class"
                 onChange={handleChange}
               >
-                <MenuItem value="ALL">ALL</MenuItem>
-                <MenuItem value={"SYFS"}>SYSS</MenuItem>
-                <MenuItem value={"SYSS"}>SYFS</MenuItem>
-                <MenuItem value={"TYFS"}>TYFS</MenuItem>
+              {
+                  createdClasses.map((item)=>(
+                    <MenuItem key={item.classCode} value={item.classname.toUpperCase()}>{item.classname.toUpperCase()}</MenuItem>
+                  ))
+                }
               </Select>
             </FormControl>
             <DragAndDropFileUpload onFilesUploaded={handleFilesUploaded} />
