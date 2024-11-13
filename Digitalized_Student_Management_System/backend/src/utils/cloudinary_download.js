@@ -33,4 +33,4 @@ const downloadFromCloudinary=async(cloudinaryUrl,name,format,downloadDir = 'C:/D
   }
 }
 
-export default downloadFromCloudinary;
+export { downloadFromCloudinary };
