@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { Avatar } from '@mui/material';
+import { downloadFromCloudinary } from '../../../../backend/src/utils/cloudinary_download';
 
 function Announcements({ classData, assignment }) {
   // Format the createdAt date
@@ -29,7 +30,7 @@ function Announcements({ classData, assignment }) {
   const renderPreview = () => {
     switch (fileType) {
       case 'image':
-        return <img  src={assignment.attachment} className='h-36 w-36' alt="Image Preview" />;
+        return <img onClick={downloadFromCloudinary} src={assignment.attachment} className='h-36 w-36' alt="Image Preview" />;
       case 'pdf':
         return (
           <iframe
