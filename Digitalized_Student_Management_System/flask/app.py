@@ -4,6 +4,9 @@ import cv2
 import csv
 import dlib
 import os
+import cloudinary
+import cloudinary.uploader
+import cloudinary.api
 import numpy as np
 from datetime import datetime
 from dotenv import load_dotenv
@@ -17,6 +20,12 @@ load_dotenv()
 
 app = Flask(__name__)
 CORS(app)
+
+cloudinary.config(
+    cloud_name=os.getenv('CLOUDINARY_CLOUD_NAME'),
+    api_key=os.getenv('CLOUDINARY_API_KEY'),
+    api_secret=os.getenv('CLOUDINARY_API_SECRET')
+)
 
 client = MongoClient(os.getenv('MONGODB_URI'))
 db = client.acadamix 
@@ -142,9 +151,27 @@ def detection():
             current_time = now.strftime("%H-%M-%S")
             lnwriter.writerow([name,current_time])
             print(name+" Present")
+    
+    upload_result = cloudinary.uploader.upload(f, resource_type="raw")
+    
+    attendance_record = {
+    "filename": f.name,  
+    "attachment": upload_result["secure_url"], 
+    "createdAt": datetime.now()
+    }        
 
-    f.close()    
-    return f"<h1>First encoding element: {face_names}</h1>"
+    classIn=db.classrooms.update_one(
+    {"classCode": Code}, {"$push": {"attendance":attendance_record }})
+    
+    f.close()
+    response = {
+            "status": "success",
+            "message": "File uploaded and attendance record added successfully.",
+            "data": {
+                classIn
+            }
+        }    
+    return jsonify(response),200
 
 if __name__ == "__main__":
     app.run(debug=True,port=5001)
