@@ -78,7 +78,6 @@ export default function Attendance() {
     // Assuming you want to set this on click
   };
   const clearFields = () => {
-    setDescription("");
     setUploadedFiles([]);
     setOpen(false)
     setClasses("");
