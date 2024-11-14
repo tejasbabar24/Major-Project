@@ -4,6 +4,7 @@ import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import axios from "axios";
 import { Card, CardContent, CardMedia, Typography, Box } from "@mui/material";
+import { MdOutlineFileDownload } from "react-icons/md";
 
 function AttendanceCard({ date, name, fileUrl }) {
   const formattedDate = new Date(date).toLocaleDateString("en-US", {
@@ -37,8 +38,7 @@ function AttendanceCard({ date, name, fileUrl }) {
   return (
     <>
     <ToastContainer />
-    <Card
-      onClick={downloadFile}
+    <Card      
       sx={{
         maxWidth: 200,
         margin: 2,
@@ -47,12 +47,15 @@ function AttendanceCard({ date, name, fileUrl }) {
         "&:hover": { boxShadow: 6, transform: "scale(1.05)" },
       }}
     >
+     
       <CardMedia
         component="img"
         image={filelogo}
         alt="File Logo"
+        
         sx={{ height: 80, objectFit: "contain", padding: 2 }}
       />
+      
       <CardContent>
         <Typography variant="h6" align="center">
           {name}
@@ -61,6 +64,9 @@ function AttendanceCard({ date, name, fileUrl }) {
           Date: {formattedDate}
         </Typography>
       </CardContent>
+      <div className=" flex justify-center border" onClick={downloadFile}>
+      <MdOutlineFileDownload className=" w-8 h-8"  />
+      </div>
     </Card>
     </>
 

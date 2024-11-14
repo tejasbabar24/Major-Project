@@ -20,6 +20,9 @@ import { useEffect, useState } from "react";
 import attendancelogo from "./attendancelogo.png";
 import AttendanceCard from "./attendanceCard.jsx";
 import axios from "axios";
+import { List, ListItem, ListItemButton, ListItemIcon, ListItemText } from "@mui/material";
+import classBackground from "../../assets/classCards/classbackground.jpg"; // Ensure you have this asset
+import user from "../../assets/classCards/user.png"; // Ensure you have this asset
 
 const drawerWidth = 300;
 
@@ -32,6 +35,9 @@ const Main = styled("main", { shouldForwardProp: (prop) => prop !== "open" })(
       duration: theme.transitions.duration.leavingScreen,
     }),
     marginLeft: open ? 0 : `-${drawerWidth}px`,
+    backgroundImage: `url(${classBackground})`,
+    backgroundSize: "contain",
+    backgroundPosition: "center",
   })
 );
 
@@ -123,27 +129,12 @@ export default function Attendance() {
         });
     }, [joinedClasses]);
   }
-
   return (
     <Box sx={{ display: "flex" }}>
       <CssBaseline />
       <StyledAppBar position="fixed">
         <Toolbar sx={{ backgroundColor: "#8E6AC4" }}>
-          {role === "Teacher" && (
-            <IconButton
-              color="inherit"
-              aria-label="reload page"
-              onClick={() => window.location.reload()}
-              edge="end"
-            >
-              <Button
-                variant="contained"
-                sx={{ fontSize: "15px", backgroundColor: "#3A2B51" }}
-              >
-                Create <MdOutlineAdd />
-              </Button>
-            </IconButton>
-          )}
+          
           <Typography variant="h4" sx={{ marginLeft: "35%" }}>
             Attendance
           </Typography>
@@ -158,7 +149,7 @@ export default function Attendance() {
             width: drawerWidth,
             boxSizing: "border-box",
             marginTop: "64px",
-            backgroundColor: "#AF96D5",
+            backgroundColor: "",
           },
         }}
         variant="persistent"
@@ -166,45 +157,84 @@ export default function Attendance() {
         open={open}
       >
         <Divider />
-        <Typography variant="h6" sx={{ textAlign: "center", paddingTop: 2 }}>
-          Your Classes
-        </Typography>
-
-        <ol className="flex flex-col items-center mt-4 text-lg text-center">
+        
+        
+        <List >
           {userData.role === "Teacher" ? (
             <>
-            <li
-              className="h-8 hover:bg-slate-600 w-full cursor-pointer"
-              onClick={() => handleClassClick("Upload Attendance")}
+            <ListItem
             >
-              Upload Attendance
-            </li>
+              <Button
+              className="cursor-pointer"
+
+                variant="contained"
+            onClick={() => handleClassClick("Upload Attendance")}
+
+                sx={{ fontSize: "15px", backgroundColor: "#3A2B51" }}
+              >
+                Upload Attendance <MdOutlineAdd />
+              </Button>
+            </ListItem>
+            <Typography variant="h6" sx={{ textAlign: "center", paddingTop: 2 }}>
+          Your Classes
+        </Typography>
             {createdClasses.map((item) => (
-              <li
+              <ListItem
                 key={item.classCode}
-                className="h-8 hover:bg-slate-600 w-full cursor-pointer"
+                className="hover:bg-gray-100 cursor-pointer"
                 onClick={() => handleClassClick(item.classname.toUpperCase())}
               >
+                <ListItemIcon className="mr-3">
+                <img 
+                  src={user} 
+                  alt="User Profile" 
+                  className="w-12 h-12 rounded-full mb-2  border solid white " 
+                />
+                </ListItemIcon>
                 {item.classname.toUpperCase()}
-              </li>
+              </ListItem>
             ))}
             </>
 
           ) : userData.role === "Student" ? (joinedClasses.map((item) => (
-            <li
-              key={item.classCode}
-              className="h-8 hover:bg-slate-600 w-full cursor-pointer"
-              onClick={() => handleClassClick(item.classname.toUpperCase())}
-            >
-              {item.classname.toUpperCase()}
-            </li>
+            <ListItem
+                key={item.classCode}
+                className="hover:bg-gray-100 cursor-pointer"
+                onClick={() => handleClassClick(item.classname.toUpperCase())}
+              >
+                <ListItemIcon className="mr-3">
+                <img 
+                  src={user} 
+                  alt="User Profile" 
+                  className="w-12 h-12 rounded-full mb-2  border solid white " 
+                />
+                </ListItemIcon>
+                {item.classname.toUpperCase()}
+              </ListItem>
           )))
           :
             null
         }
 
           
-        </ol>
+        </List>
+        {/* <List>
+          {
+          renderClass.map((item) => (
+            <ListItem key={item.classCode} disablePadding>
+              <ListItemButton onClick={()=>navigate(`/class/${item.classCode}`)}>
+                <ListItemIcon className="mr-3">
+                <img 
+                  src={user} 
+                  alt="User Profile" 
+                  className="w-12 h-12 rounded-full mb-2  border solid white " 
+                />
+                </ListItemIcon>
+                <ListItemText primary={item.classname.toUpperCase()} />
+              </ListItemButton>
+            </ListItem>
+          ))}
+        </List> */}
       </Drawer>
 
       <Main open={open}>
