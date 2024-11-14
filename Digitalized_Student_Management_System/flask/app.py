@@ -152,8 +152,9 @@ def detection():
             print(name+" Present")
     f.close()
 
-    upload_result = cloudinary.uploader.upload(filename, resource_type="raw")
-    
+    original_name = os.path.splitext(os.path.basename(filename))[0]
+    upload_result = cloudinary.uploader.upload(filename, resource_type="raw",public_id=original_name)
+     
     attendance_record = {
     "filename": filename,  
     "attachment": upload_result["secure_url"], 
