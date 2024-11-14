@@ -16,8 +16,6 @@ import Select from "@mui/material/Select";
 import Button from "../Button"; // Custom button component
 import Buttons from "@mui/material/Button";
 import { MdOutlineAdd } from "react-icons/md";
-import noticeboardimgg2 from "./noticeboardimgg2.jpg";
-import NMA1 from "./NMA1.pdf";
 import DragAndDropFileUpload from "../dragNdrop/DragNdrop.jsx";
 import { useSelector } from "react-redux";
 import { useEffect } from "react";
@@ -56,43 +54,37 @@ export default function Noticeboard() {
   const [role, setRole] = React.useState(userData.role);
   const [classes, setClasses] = React.useState("");
   const [joinedClasses, setJoinedClasses] = React.useState([]);
-
   const [uploadFiles, setUploadedFiles] = React.useState([]);
   const [createdClasses, setCreatedClasses] = React.useState([]);
 
-  const handleFilesUploaded = (files) => {
+  const handleFilesUploaded = (files) => {  
     setUploadedFiles(files[0]);
   };
 
- 
-  if (userData.role === "Teacher") {
-    useEffect(() => {
+  useEffect(() => {
+    if (userData.role === "Teacher") {
       axios
         .get("http://localhost:8000/class/created-classes")
         .then((result) => {
           setCreatedClasses(result.data.data.classes);
         })
-        .catch((err) => {
-          console.log(err);
-        });
-    }, [createdClasses]); 
-  }else if(userData.role === "Student"){
-    useEffect(()=>{
+        .catch((err) => console.log(err));
+    } else if (userData.role === "Student") {
       axios
-      .get('http://localhost:8000/class/joined-classes')
-      .then((result)=>{
-        setJoinedClasses(result.data.data.classArr);
-      })
-      .catch((err)=>{
-        console.log(err);
-      })
-    },[joinedClasses]) 
-  }
+        .get("http://localhost:8000/class/joined-classes")
+        .then((result) => {
+          setJoinedClasses(result.data.data.classArr);
+        })
+        .catch((err) => console.log(err));
+    }
+  }, [createdClasses,joinedClasses]);
+
   const clearFields = () => {
     setDescription("");
     setUploadedFiles([]);
     setClasses("");
     setOpen(false);
+    
   };
 
   const handleChange = (event) => {
@@ -109,12 +101,29 @@ export default function Noticeboard() {
     axios
       .post("http://localhost:8000/class/notice", formData)
       .then((result) => {
-        console.log(result.data.data);
+        const newNotice = result.data.data;
+        
+        // Update the state with the new notice
+        if (role === "Teacher") {
+          setCreatedClasses((prevClasses) => {
+            return prevClasses.map((classInfo) =>
+              classInfo.classname === classes
+                ? { ...classInfo, notice: [newNotice, ...classInfo.notice] }
+                : classInfo
+            );
+          });
+        } else if (role === "Student") {
+          setJoinedClasses((prevClasses) => {
+            return prevClasses.map((classInfo) =>
+              classInfo.classname === classes
+                ? { ...classInfo, notice: [newNotice, ...classInfo.notice] }
+                : classInfo
+            );
+          });
+        }
+        clearFields();
       })
-      .catch((error) => {
-        console.log(error);
-      });
-    clearFields();
+      .catch((error) => console.log(error));
   };
 
   return (
@@ -206,49 +215,45 @@ export default function Noticeboard() {
       <Main open={open}>
         <Box sx={{ mt: 8, paddingLeft: userData.role === "Student" ? "320px" : "0px" }}>
           <div className="flex flex-col gap-2">
-            { 
-              userData.role === "Teacher" ?(
-
-                createdClasses
-                .flatMap((classInfo) =>
-                  classInfo.notice.map((notice) => ({
-                    ...notice,
-                    owner: classInfo.owner,
-                    classname: classInfo.classname,
-                  }))
-                )
-                .sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt)) // Sort by createdAt (most recent first)
-                .map((sortedNotice) => (
-                  <NoticeCard
-                    key={sortedNotice.createdAt}
-                    fileUrls={[sortedNotice.attachment]}
-                    date={sortedNotice.createdAt}
-                    from={sortedNotice.owner}
-                    to={sortedNotice.classname}
-                    desc={sortedNotice.description}
-                  />
-                ))
-              ): userData.role === "Student" ? (
-                joinedClasses
-                .flatMap((classInfo) =>
-                  classInfo.notice.map((notice) => ({
-                    ...notice,
-                    owner: classInfo.owner,
-                    classname: classInfo.classname,
-                  }))
-                )
-                .sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt)) // Sort by createdAt (most recent first)
-                .map((sortedNotice) => (
-                  <NoticeCard
-                    key={sortedNotice.createdAt}
-                    fileUrls={[sortedNotice.attachment]}
-                    date={sortedNotice.createdAt}
-                    from={sortedNotice.owner}
-                    to={sortedNotice.classname}
-                    desc={sortedNotice.description}
-                  />
-                ))
-              ):null}
+            {userData.role === "Teacher"
+              ? createdClasses
+                  .flatMap((classInfo) =>
+                    classInfo.notice.map((notice) => ({
+                      ...notice,
+                      owner: classInfo.owner,
+                      classname: classInfo.classname,
+                    }))
+                  )
+                  .sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt)) // Sort by createdAt (most recent first)
+                  .map((sortedNotice) => (
+                    <NoticeCard
+                      key={sortedNotice.createdAt}
+                      fileUrls={[sortedNotice.attachment]}
+                      date={sortedNotice.createdAt}
+                      from={sortedNotice.owner}
+                      to={sortedNotice.classname}
+                      desc={sortedNotice.description}
+                    />
+                  ))
+              : joinedClasses
+                  .flatMap((classInfo) =>
+                    classInfo.notice.map((notice) => ({
+                      ...notice,
+                      owner: classInfo.owner,
+                      classname: classInfo.classname,
+                    }))
+                  )
+                  .sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt)) // Sort by createdAt (most recent first)
+                  .map((sortedNotice) => (
+                    <NoticeCard
+                      key={sortedNotice.createdAt}
+                      fileUrls={[sortedNotice.attachment]}
+                      date={sortedNotice.createdAt}
+                      from={sortedNotice.owner}
+                      to={sortedNotice.classname}
+                      desc={sortedNotice.description}
+                    />
+                  ))}
           </div>
         </Box>
       </Main>
