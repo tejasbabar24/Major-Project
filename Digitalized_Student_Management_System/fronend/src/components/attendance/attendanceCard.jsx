@@ -25,6 +25,7 @@ function AttendanceCard({ date, name, fileUrl }) {
             position: "top-right",
             autoClose: 3000,
           });
+          // window.open(fileUrl);
         }
       })
       .catch(() => {
