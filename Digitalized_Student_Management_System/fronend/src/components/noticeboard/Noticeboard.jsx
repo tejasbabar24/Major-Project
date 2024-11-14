@@ -56,7 +56,7 @@ export default function Noticeboard() {
   const [joinedClasses, setJoinedClasses] = React.useState([]);
   const [uploadFiles, setUploadedFiles] = React.useState([]);
   const [createdClasses, setCreatedClasses] = React.useState([]);
-
+  const [files, setFiles] = React.useState([]);
   const handleFilesUploaded = (files) => {  
     setUploadedFiles(files[0]);
   };
@@ -82,8 +82,9 @@ export default function Noticeboard() {
   const clearFields = () => {
     setDescription("");
     setUploadedFiles([]);
+    setOpen(false)
     setClasses("");
-    setOpen(false);
+    setFiles([])
     
   };
 
@@ -121,11 +122,10 @@ export default function Noticeboard() {
             );
           });
         }
-        clearFields();
       })
       .catch((error) => console.log(error));
+      clearFields()
   };
-
   return (
     <Box sx={{ display: "flex" }}>
       <CssBaseline />
@@ -201,7 +201,7 @@ export default function Noticeboard() {
                 ))}
               </Select>
             </FormControl>
-            <DragAndDropFileUpload onFilesUploaded={handleFilesUploaded} />
+            <DragAndDropFileUpload onFilesUploaded={handleFilesUploaded} files={files} setFiles={setFiles}/>
             <Button
               type="submit"
               className="w-18 h-8 mt-4 text-white text-sm text-center bg-purple-500"

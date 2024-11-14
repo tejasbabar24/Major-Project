@@ -68,14 +68,16 @@ function Viewclassroom() {
     axios.
     post("http://localhost:8000/class/joined-students",{classCode:classId}).
     then((result)=>{
+      console.log(result.data.data.students);
       setStudents(result.data.data.students)
+      
     })
     .catch((err)=>{
       console.log(err);
     })
 
     
-  });
+  },[]);
 
   // Render component based on active tab
   const renderComponent = () => {
@@ -151,7 +153,9 @@ function Viewclassroom() {
             <h2 className="text-2xl font-semibold mt-4">Students</h2>
             <ol className="list-disc pl-8">
               {students.map((student) => (
-                <li key={student.username}>{student.username.toUpperCase()}</li>
+                student &&(
+                  <li key={student?.username}>{student?.username.toUpperCase()}</li>
+                )
               ))}
             </ol>
           </div>

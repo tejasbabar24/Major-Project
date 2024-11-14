@@ -72,8 +72,8 @@ const Progress = styled.div`
   border-radius: inherit;
 `;
 
-const DragAndDropFileUpload = ({ onFilesUploaded }) => {
-  const [files, setFiles] = useState([]);
+const DragAndDropFileUpload = ({ onFilesUploaded,files,setFiles }) => {
+  // const [files, setFiles] = useState([]);
   const [uploadProgress, setUploadProgress] = useState({});
   
   const onDrop = useCallback((acceptedFiles) => {
