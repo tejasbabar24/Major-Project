@@ -63,6 +63,7 @@ export default function Attendance() {
   const [selectedClass, setSelectedClass] = useState(defaultSelect);
   const [createdClasses, setCreatedClasses] = React.useState([]);
   const [joinedClasses, setJoinedClasses] = React.useState([]);
+  const [files, setFiles] = React.useState([]);
 
   const handleFilesUploaded = (files) => setUploadedFiles(files);
 
@@ -76,7 +77,14 @@ export default function Attendance() {
     }
     // Assuming you want to set this on click
   };
-
+  const clearFields = () => {
+    setDescription("");
+    setUploadedFiles([]);
+    setOpen(false)
+    setClasses("");
+    setFiles([])
+    
+  };
   const uploadAttendance = (e) => {
     e.preventDefault();
     const classDetails = createdClasses.find(
@@ -104,6 +112,7 @@ export default function Attendance() {
       .catch((error) => {
         console.log(error);
       });
+      clearFields()
   };
 
   if (userData.role === "Teacher") {
@@ -276,6 +285,8 @@ export default function Attendance() {
                   </FormControl>
                   <DragAndDropFileUpload
                     onFilesUploaded={handleFilesUploaded}
+                    files={files} 
+                    setFiles={setFiles}
                   />
                   <Button
                     type="submit"
