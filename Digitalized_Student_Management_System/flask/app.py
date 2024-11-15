@@ -99,6 +99,8 @@ def detection():
     filename=f"{current_date}.csv"
     f = open(filename,'w+',newline='')
     lnwriter = csv.writer(f)
+    lnwriter.writerow(["Enrollment_Number","Time"])
+
     Code = request.form.get('classCode')
     
     if 'image' not in request.files:
@@ -158,7 +160,7 @@ def detection():
     attendance_record = {
     "filename": filename,  
     "attachment": upload_result["secure_url"], 
-    "createdAt": datetime.now()
+    "createdAt": current_date
     }        
 
     os.remove(attendance_record["filename"])
