@@ -34,7 +34,7 @@ const registerUser = asyncHandler(async (req, res) => {
         [username, role, email, password].some((field) =>
             field?.trim() === "")
     ) {
-        throw new ApiError(400, "All fields are required")
+        return res.status(400).json( new ApiError(400, "All fields are required"));
     }
 
     const existedUser = await Student.findOne({
@@ -238,16 +238,21 @@ const getCurrentUser = asyncHandler(async (req, res) => {
 const updateAccountDetails = asyncHandler(async (req, res) => {
     const { username, email } = req.body;
 
-    if (!(username || email)) {
+    const profileLocalPath = req.file?.path;
+
+    if (!(username || email || profileLocalPath)) {
         throw new ApiError("All Fields Are Required");
     }
+
+    const profile = await uploadOnCloudinary(profileLocalPath);
 
     const user = await Student.findByIdAndUpdate(
         req.user?._id,
         {
             $set: {
                 username,
-                email
+                email,
+                profile:profile.url
             }
         },
         { new: true }

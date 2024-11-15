@@ -24,7 +24,7 @@ router.route('/refresh-token').post(refreshAccessToken);
 
 router.route('/current-user').get(verifyJWT, getCurrentUser);
 
-router.route('/update-account').patch(verifyJWT, updateAccountDetails);
+router.route('/update-account').patch(verifyJWT,upload.single("profile"), updateAccountDetails);
 
 router.route('/profile').patch(verifyJWT, upload.single("profile"), setProfilePhoto);
 
