@@ -8,7 +8,7 @@ export const stud_verifyJWT = asyncHandler(async (req, _, next) => {
         const token = req.cookies?.accessToken || req.header("Authorization")?.replace("Bearer", "");
 
         if (!token) {
-            throw new ApiError(401, "Unathorized Request");
+            return next(new ApiError(401, "Unauthorized request. Please check your permissions or log in again."));
         }
 
         const decodedToken = jwt.verify(token, process.env.ACCESS_TOKEN_SECRET);
@@ -16,13 +16,13 @@ export const stud_verifyJWT = asyncHandler(async (req, _, next) => {
         const user = await Student.findById(decodedToken?._id).select("-password -refreshToken");
 
         if (!user) {
-            throw new ApiError(401, "Invalid AccessToken")
+            return next(new ApiError(401, "The access token is invalid. Please log in again."))
         }
 
         req.user = user;
 
         next();
     } catch (error) {
-        throw new ApiError(401, error?.message || "Invalid AccessToken")
+        return next(new ApiError(401, error?.message || "The access token is invalid. Please ensure you're logged in and try again."))
     }
 })

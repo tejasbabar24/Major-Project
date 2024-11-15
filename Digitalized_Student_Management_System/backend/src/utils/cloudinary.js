@@ -3,6 +3,7 @@ import fs from "fs";
 import dotenv from "dotenv";
 import axios from 'axios';
 import path from 'path';
+import { ApiError } from './ApiError';
 
 dotenv.config();
 
@@ -56,7 +57,6 @@ const downloadFromCloudinary = async (cloudinaryUrl, downloadDir = 'C:/Downloads
 
     return new Promise((resolve, reject) => {
       writer.on('finish', () => {
-        console.log(`File downloaded successfully to ${downloadPath}`);
         resolve(downloadPath);
       });
       writer.on('error', (err) => {
@@ -65,8 +65,7 @@ const downloadFromCloudinary = async (cloudinaryUrl, downloadDir = 'C:/Downloads
       });
     });
   } catch (error) {
-    console.error('Error downloading file:', error);
-    throw error;
+    throw new ApiError(500,'Error downloading file:', error);
   }
 };
 
