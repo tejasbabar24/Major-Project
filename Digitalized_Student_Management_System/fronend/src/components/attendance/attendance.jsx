@@ -67,51 +67,57 @@ export default function Attendance() {
   const [createdClasses, setCreatedClasses] = React.useState([]);
   const [joinedClasses, setJoinedClasses] = React.useState([]);
   const [files, setFiles] = React.useState([]);
-  const [myAttendance,setMyAttendance] = useState();
+  const [myAttendance,setMyAttendance] = useState([]);
   const handleFilesUploaded = (files) => setUploadedFiles(files);
 
-  const handleParseFromUrl = (csvUrl) => {
-     Papa.parse(csvUrl, {
+const [processedUrls, setProcessedUrls] = useState([]);
+
+const handleParseFromUrl = (csvUrl) => {
+  // Check if the URL has already been processed
+  if (!processedUrls.includes(csvUrl)) {
+    setProcessedUrls((prevUrls) => [...prevUrls, csvUrl]);
+
+    Papa.parse(csvUrl, {
       download: true, // Enables fetching from a remote URL
       header: true, // Adjust based on your CSV structure
       skipEmptyLines: true,
       complete: (results) => {
         console.log(results.data);
-        const foundData = results.data.find((item) => item.USERNAME === userData.username);
+        const foundData = results.data.find(
+          (item) => item.Enrollment_Number === userData.username
+        );
         console.log("Found Data:", foundData);
-        return foundData
+
+        if (foundData) {
+          // Appending the found data to the attendance state
+          setMyAttendance((prevAttendance) => [...prevAttendance, foundData]);
+        }
       },
       error: (error) => {
         console.error("Error parsing CSV:", error);
       },
     });
-  };
-  if(userData.role==="Student"){
-
-    useEffect(()=>{
-      let attendance = []
-      joinedClasses.find(
-        (item) => item.classname === selectedClass.toLowerCase()
-      ) ? (
-        joinedClasses.find(
-          (item) => item.classname === selectedClass.toLowerCase()
-        ).attendance?.length > 0 ? (
-          joinedClasses
-            .find(
-              (item) => item.classname === selectedClass.toLowerCase()
-            )
-            .attendance 
-            .map((item) => (
-              attendance.push(handleParseFromUrl(item.attachment))
-            ))
-        ) : null
-      ) : null
-  
-      setMyAttendance(attendance)
-      
-    },[selectedClass])
   }
-// console.log(myAttendance);
+};
+
+useEffect(() => {
+  if (userData.role === "Student") {
+    // Find the selected class from joinedClasses
+    const selectedClassData = joinedClasses.find(
+      (item) => item.classname === selectedClass?.toLowerCase()
+    );
+
+    if (selectedClassData && selectedClassData.attendance?.length > 0) {
+      // Only handle the attendance once for the selected class
+      selectedClassData.attendance.forEach((item) => {
+        if (item.attachment) {
+          handleParseFromUrl(item.attachment);
+        }
+      });
+    }
+  }
+}, [selectedClass, joinedClasses, userData.role]); // Re-run only when necessary
+
 
   const handleClassChange = (event) => setClasses(event.target.value);
 
@@ -390,9 +396,9 @@ export default function Attendance() {
                       .attendance.sort(
                         (a, b) => new Date(b.createdAt) - new Date(a.createdAt)
                       ) // Sorting by createdAt
-                      .map((item) => (
+                      .map((item,index) => (
                         <AttendanceCard
-                          key={item.createdAt}
+                          key={index}
                           name={selectedClass}
                           date={item.createdAt}
                           fileUrl={item.attachment}
@@ -403,7 +409,7 @@ export default function Attendance() {
 
                       {/* <DonutChart/> */}
                       <div >
-                      <HighlightedCalendar highlightedDates={highlightedDates}/>
+                      {/* <HighlightedCalendar highlightedDates={highlightedDates}/> */}
                       </div>
                       <div className="">
                       <DonutChart/>

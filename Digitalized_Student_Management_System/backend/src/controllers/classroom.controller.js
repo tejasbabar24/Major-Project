@@ -262,7 +262,7 @@ const getJoinedClasses=asyncHandler(async(req,res)=>{
             classArr.push(classInfo);
         }
         
-        console.log(classArr)
+        // console.log(classArr)
 
         return res
                   .status(200)
