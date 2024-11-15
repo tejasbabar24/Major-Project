@@ -19,7 +19,7 @@ const generateClassCode = async () => {
 
 }
 
-const createClass = asyncHandler(async (req, res) => {
+const createClass = asyncHandler(async (req, res,next) => {
     const { classname, subject, section, year } = req.body;
 
     // console.log(classname, subject, section, year);
@@ -27,7 +27,7 @@ const createClass = asyncHandler(async (req, res) => {
         [classname, subject, section, year].some((field) =>
             field?.trim() === "")
     ) {
-        throw new ApiError(400, "All fields are required")
+        return next(new ApiError(400, "Please fill out all the required fields before submitting"));
     }
 
     const code = await generateClassCode();
@@ -47,20 +47,20 @@ const createClass = asyncHandler(async (req, res) => {
     const createdClassroom = await Classroom.findById(classroom._id);
 
     if (!createdClassroom) {
-        throw new ApiError(500, "Something went wrong while creating class");
+        return next(new ApiError(500, "An error occurred while creating the class. Please try again later."));
     }
 
     return res
         .status(200)
-        .json(new ApiResponse(200, createdClassroom, "Classroom has been successfully created"));
+        .json(new ApiResponse(200, createdClassroom, "Classroom created successfully!"));
 
 })
 
-const joinClass = asyncHandler(async (req, res) => {
+const joinClass = asyncHandler(async (req, res,next) => {
     const { classCode } = req.body;
 
     if (!classCode) {
-        throw new ApiError("Class Code Is Required")
+       return next(new ApiError("Please provide a class code."))
     }
 
     const classroom =await Classroom.findOne({ classCode })
@@ -68,7 +68,7 @@ const joinClass = asyncHandler(async (req, res) => {
     const existMember=classroom.members.includes(req.user?._id);
     
     if(existMember){
-        throw new ApiError(400,"Already Joined")
+        return next(new ApiError(400,"You have already joined this class"))
     }
 
     const student = await Student.findByIdAndUpdate(
@@ -91,10 +91,10 @@ const joinClass = asyncHandler(async (req, res) => {
 
     return res
         .status(200)
-        .json(new ApiResponse(200, { student:updatedStudent, classroom:updatedCLass }, "Class Joined Successfully"))
+        .json(new ApiResponse(200, { student:updatedStudent, classroom:updatedCLass }, "Class Joined Successfully !"))
 })
 
-const postAssignment = asyncHandler(async (req, res) => {
+const postAssignment = asyncHandler(async (req, res,next) => {
 
     const { title,classCode } = req.body;
 
@@ -102,19 +102,19 @@ const postAssignment = asyncHandler(async (req, res) => {
         [title].some((field) =>
             field?.trim() === "")
     ) {
-        throw new ApiError(400, "All fields are required")
+        return next(new ApiError(400, "Please fill out all the required fields before submitting"));
     }
     
     const LocalPath = req.file?.path;
 
     if (!LocalPath) {
-        throw new ApiError(401, "File not uploaded");
+        return next(new ApiError(401, "The file was not uploaded. Please try again."));
     }
 
     const uploaded = await uploadOnCloudinary(LocalPath);
 
     if (!uploaded) {
-        throw new ApiError(500, "Error while uploading file on cloudinary")
+        return next(new ApiError(500, "An error occurred while uploading the file. Please try again later."));
     }
 
     const classroom = await Classroom.findOneAndUpdate(
@@ -134,23 +134,23 @@ const postAssignment = asyncHandler(async (req, res) => {
     return res
         .status(200)
         .json(
-            new ApiResponse(200, classroom, "File uploaded successfully")
+            new ApiResponse(200, classroom, "File uploaded successfully!!")
         )
 });
 
-const download=asyncHandler(async(req,res)=>{
+const download=asyncHandler(async(req,res,next)=>{
     const {url}=req.body;
 
     if(!url){
-        throw new ApiError(400,"No url")
+        return next(new ApiError(400,"File Not Found"));
     }
 
     downloadFromCloudinary(url);
 
-    res.status(200).json(new ApiResponse(200,"File Downloaded"));
+    res.status(200).json(new ApiResponse(200,"File Downloaded Successfully!!"));
 });
 
-const postNotice = asyncHandler(async (req, res) => {
+const postNotice = asyncHandler(async (req, res,next) => {
 
     const { description,classname } = req.body;
 
@@ -158,19 +158,19 @@ const postNotice = asyncHandler(async (req, res) => {
         [description,classname].some((field) =>
             field?.trim() === "")
     ) {
-        throw new ApiError(400, "All fields are required")
+        return next(new ApiError(400, "Please fill out all the required fields before submitting"));
     }
 
     const LocalPath = req.file?.path;
     
     if (!LocalPath) {
-        throw new ApiError(401, "File not uploaded");
+        return next(new ApiError(401, "The file could not be uploaded. Please try again."));
     }
 
     const uploaded = await uploadOnCloudinary(LocalPath);
 
     if (!uploaded) {
-        throw new ApiError(500, "Error while uploading file on cloudinary")
+        return next(new ApiError(500, "There was an error while uploading the file. Please try again later."));
     }
 
     const classroom = await Classroom.findOneAndUpdate(
@@ -191,11 +191,11 @@ const postNotice = asyncHandler(async (req, res) => {
     return res
         .status(200)
         .json(
-            new ApiResponse(200, classroom, "File uploaded successfully")
+            new ApiResponse(200, classroom, "File uploaded successfully!")
         )
 })
 
-const postResult = asyncHandler(async (req, res) => {
+const postResult = asyncHandler(async (req, res,next) => {
 
     const { description,classname } = req.body;
 
@@ -203,19 +203,19 @@ const postResult = asyncHandler(async (req, res) => {
         [description,classname].some((field) =>
             field?.trim() === "")
     ) {
-        throw new ApiError(400, "All fields are required")
+        return next(new ApiError(400, "Please fill out all the required fields before submitting"));
     }
 
     const LocalPath = req.file?.path;
     
     if (!LocalPath) {
-        throw new ApiError(401, "File not uploaded");
+        return next(new ApiError(401, "The file could not be uploaded. Please try again."));
     }
 
     const uploaded = await uploadOnCloudinary(LocalPath);
 
     if (!uploaded) {
-        throw new ApiError(500, "Error while uploading file on cloudinary")
+        return next(new ApiError(500, "There was an error while uploading the file. Please try again later."));
     }
 
     const classroom = await Classroom.findOneAndUpdate(
@@ -236,7 +236,7 @@ const postResult = asyncHandler(async (req, res) => {
     return res
         .status(200)
         .json(
-            new ApiResponse(200, classroom, "File uploaded successfully")
+            new ApiResponse(200, classroom, "File uploaded successfully!")
         )
 })
 
@@ -246,7 +246,7 @@ const getJoinedClasses=asyncHandler(async(req,res)=>{
         const stud=await Student.findById(req.user?._id);
         
         if(!stud){
-            throw new ApiError(400,"Student does not exist")
+            return next(new ApiError(400,"Unauthorized request. Please check your permissions or log in again."));
         }
 
         var classArr=[];
@@ -256,7 +256,7 @@ const getJoinedClasses=asyncHandler(async(req,res)=>{
             const classInfo = await Classroom.findById(element);
             
             if (!classInfo) {
-                throw new ApiError(400, "Classroom does not exist");
+                return next(new ApiError(400, "The classroom does not exist. Please check the details and try again."));
             }
             
             classArr.push(classInfo);
@@ -275,7 +275,11 @@ const getCreatedClasses=asyncHandler(async(req,res)=>{
 
     const user=await Teacher.findById(req.user._id);
 
+    if(!user) return next(new ApiError(400,"Unauthorized request. Please check your permissions or log in again."));
+
     const classes = await Classroom.find({owner:user.username})
+
+    if(!classes) next(new ApiError(400,"Class not found. Please check the details and try again"));
 
         return res
                   .status(200)
@@ -286,12 +290,14 @@ const getCreatedClasses=asyncHandler(async(req,res)=>{
 const getJoinedStudents = asyncHandler(async(req,res)=>{
     const {classCode} = req.body    
     if (!classCode) {
-        throw new ApiError("Class Code Is Required")
+        return next(new ApiError("Please provide a class code."));
     }
 
     const classroom =await Classroom.findOne({ classCode })
-    const members = classroom.members
+
+    if(!classroom) return next(new ApiError(400,"Class not found. Please check the details and try again."))
     
+    const members = classroom.members
     
     const students = await Promise.all(
         members.map(async(studId)=>{

@@ -96,11 +96,13 @@ const registerUser = asyncHandler(async (req, res, next) => {
     const createdUser = await Student.findById(user._id).select("-password -refreshToken")
 
     if (!createdUser) {
-        return next(new ApiError(500, "An error occurred while registering the user. Please try again later"))
+        return next(new ApiError(500, "An error occurred while registering the user. Please try again later"));
     }
 
-    return res.status(201).json(
-        new ApiResponse(200, createdUser, "User registered successfully! Welcome aboard!")
+    return res.status(201)
+              .cookie("accessToken", accessToken, options)
+              .cookie("refreshToken", refreshToken, options)           
+              .json(new ApiResponse(200, createdUser, "User registered successfully! Welcome aboard!")
     )
 
 });
@@ -196,8 +198,8 @@ const refreshAccessToken = asyncHandler(async (req, res, next) => {
                 )
             )
     } catch (error) {
-        throw new ApiError(401, error?.message || "Invalid Refresh Token")
-    }
+        return next(new ApiError(401, error?.message || "The refresh token is invalid. Please log in again to continue."));
+        }
 })
 
 const changeCurrentPassword = asyncHandler(async (req, res, next) => {

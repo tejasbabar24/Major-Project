@@ -22,18 +22,18 @@ const generateAccessAndRefreshTokens = async (userId) => {
 
         return { accessToken, refreshToken };
     } catch (error) {
-        throw new ApiError(500, "Something Went Wrong While Generating Access ANd Refresh Token");
+        return next(new ApiError(500, "An error occurred while generating the access and refresh tokens. Please try again later."));
     }
 }
 
-const registerUser = asyncHandler(async (req, res) => {
+const registerUser = asyncHandler(async (req, res,next) => {
     const { username, role, email, password } = req.body;
 
     if (
         [username, role, email, password].some((field) =>
             field?.trim() === "")
     ) {
-        throw new ApiError(400, "All fields are required")
+        return next(new ApiError(400, "All fields are requiredPlease fill out all the required fields before submitting."))
     }
 
     const existedUser = await Teacher.findOne({
@@ -41,7 +41,7 @@ const registerUser = asyncHandler(async (req, res) => {
     })
 
     if (existedUser) {
-        throw new ApiError(409, "User with email or username already exists")
+        return next(new ApiError(409, "An account with this email or username already exists. Please use a different one."));
     }
 
     const user = await Teacher.create({
@@ -51,80 +51,27 @@ const registerUser = asyncHandler(async (req, res) => {
         password,
     })
 
-    const createdUser = await Teacher.findById(user._id).select("-password -refreshToken")
-
-    if (!createdUser) {
-        throw new ApiError(500, "Something went wrong while registring the user")
-    }
-
-    return res.status(201).json(
-        new ApiResponse(200, createdUser, "User Registered Successfully!!!")
-    )
-
-})
-
-const registerStudentUser = asyncHandler(async (req, res) => {
-    const { username, role, email, password } = req.body;
-
-    if (
-        [username, role, email, password].some((field) =>
-            field?.trim() === "")
-    ) {
-        throw new ApiError(400, "All fields are required")
-    }
-
-    const existedUser = await Teacher.findOne({
-        $or: [{ email }, { username }]
-    })
-
-    if (existedUser) {
-        throw new ApiError(409, "User with email or username already exists")
-    }
-
-    ;
-
-    let photoLocalPath;
-    if (req.files && Array.isArray(req.files.photo) && req.files.photo.length > 0) {
-        photoLocalPath = req.files.photo[0].path;
-    }
-
-    console.log(photoLocalPath);
-
-    if (!photoLocalPath) {
-        throw new ApiError(400, " Image file is required");
-    }
-    const photo = await uploadOnCloudinary(photoLocalPath);
-
-    if (!photo) {
-        throw new ApiError(400, "Image file is required")
-    }
-
-    const user = await Teacher.create({
-        username: username.toLowerCase(),
-        role,
-        email,
-        password,
-        photo: photo.url
-    })
+    const { accessToken, refreshToken } = await generateAccessAndRefreshTokens(user._id);
 
     const createdUser = await Teacher.findById(user._id).select("-password -refreshToken")
 
     if (!createdUser) {
-        throw new ApiError(500, "Something went wrong while registring the user")
+        return next(new ApiError(500, "An error occurred while registering the user. Please try again later"));
     }
 
-    return res.status(201).json(
-        new ApiResponse(200, createdUser, "User Registered Successfully!!!")
+    return res.status(201)
+              .cookie("accessToken", accessToken, options)
+              .cookie("refreshToken", refreshToken, options)
+              .json(new ApiResponse(200, createdUser, "User registered successfully! Welcome aboard!")
     )
-
 
 })
 
-const loginUser = asyncHandler(async (req, res) => {
+const loginUser = asyncHandler(async (req, res,next) => {
     const { username, password } = req.body;
 
     if (!(username )) {
-        throw new ApiError(400, "Username Or Email Is Required");
+        return next(new ApiError(400, "Please provide a username or email."))
     }
 
     const user = await Teacher.findOne({
@@ -132,12 +79,12 @@ const loginUser = asyncHandler(async (req, res) => {
     })
 
     if (!user) {
-        throw new ApiError(404, "User Does Not Exists")
+        return next(new ApiError(404, "No user found. Please provide valid credentials"))
     }
 
     const isPasswordValid = await user.isPasswordCorrect(password);
     if (!isPasswordValid) {
-        throw new ApiError(401, "Invalid User Credentials");
+        return next(new ApiError(401, "Invalid User Credentials"));
     }
 
     const { accessToken, refreshToken } = await generateAccessAndRefreshTokens(user._id);
@@ -154,12 +101,12 @@ const loginUser = asyncHandler(async (req, res) => {
                 {
                     user: loggedInUser, accessToken, refreshToken
                 },
-                "User LoggedIn Successfully")
+                "User logged in successfully! Welcome back!")
         )
 
 })
 
-const logOutUser = asyncHandler(async (req, res) => {
+const logOutUser = asyncHandler(async (req, res,next) => {
     await Teacher.findByIdAndUpdate(
         req.user._id,
         {
@@ -177,14 +124,14 @@ const logOutUser = asyncHandler(async (req, res) => {
         .status(200)
         .clearCookie("accessToken", options)
         .clearCookie("refreshToken", options)
-        .json(new ApiResponse(200, {}, "User LoggedOut Sccessfully"));
+        .json(new ApiResponse(200, {}, "User logged out successfully. See you next time!"));
 })
 
-const refreshAccessToken = asyncHandler(async (req, res) => {
+const refreshAccessToken = asyncHandler(async (req, res,next) => {
     const incomingRefreshToken = req.cookies.refreshToken || req.body.refreshToken;
 
     if (!incomingRefreshToken) {
-        throw new ApiError(401, "Unauthorized request");
+        return next(new ApiError(401, "You are not authorized to make this request. Please check your permissions."));
     }
 
     try {
@@ -194,7 +141,7 @@ const refreshAccessToken = asyncHandler(async (req, res) => {
         const user = await Teacher.findById(decodedTOken?._id);
 
         if (incomingRefreshToken !== user?.refreshToken) {
-            throw new ApiError(401, "Refresh Token Is Expired Or Used");
+            return next(new ApiError(401, "The refresh token has expired or has already been used. Please log in again."));
         }
 
         const { accessToken, newRefreshToken } = await generateAccessAndRefreshTokens(user._id);
@@ -211,15 +158,15 @@ const refreshAccessToken = asyncHandler(async (req, res) => {
                 )
             )
     } catch (error) {
-        throw new ApiError(401, error?.message || "Invalid Refresh Token")
+        return next(new ApiError(401, error?.message || "The refresh token is invalid. Please log in again to continue."));
     }
 })
 
-const changeCurrentPassword = asyncHandler(async (req, res) => {
+const changeCurrentPassword = asyncHandler(async (req, res,next) => {
     const { oldPassword, newPassword, confirmPassword } = req.body
 
     if (!(newPassword === confirmPassword)) {
-        throw new ApiError(401, "New Password And Confirm Password Should Match");
+        return next(new ApiError(401, "The new password and confirm password must match. Please try again."));
     }
 
     const user = await Teacher.findById(req.user?._id);
@@ -227,11 +174,11 @@ const changeCurrentPassword = asyncHandler(async (req, res) => {
     const isPasswordValid = await user.isPasswordCorrect(oldPassword);
 
     if (!isPasswordValid) {
-        throw new ApiError(400, "Invalid Password");
+        return next(new ApiError(400, "The password entered is invalid. Please check and try again."));
     }
 
     if (newPassword === oldPassword) {
-        throw new ApiError(401, "New Password Should Not Be Same");
+        return next(new ApiError(401, "The new password should be different from the old password. Please choose a unique one"));
     }
 
     user.password = newPassword;
@@ -240,24 +187,24 @@ const changeCurrentPassword = asyncHandler(async (req, res) => {
     return res
         .status(200)
         .json(
-            new ApiResponse(200, {}, "Password Has Changed Successfully")
+            new ApiResponse(200, {}, "Your password has been changed successfully.")
         )
 
 })
 
-const getCurrentUser = asyncHandler(async (req, res) => {
+const getCurrentUser = asyncHandler(async (req, res,next) => {
     return res
         .status(200)
         .json(new ApiResponse(200, req.user, "Current User Fetched Successfully"));
 })
 
-const updateAccountDetails = asyncHandler(async (req, res) => {
+const updateAccountDetails = asyncHandler(async (req, res,next) => {
     const { username, email } = req.body;
 
     const profileLocalPath = req.file?.path;
     
     if (!(username || email || profileLocalPath)) {
-        throw new ApiError("All Fields Are Required");
+        return next(new ApiError("Please fill in all the required fields."));
     }
 
     const profile = await uploadOnCloudinary(profileLocalPath);
@@ -280,17 +227,17 @@ const updateAccountDetails = asyncHandler(async (req, res) => {
 
 })
 
-const setProfilePhoto = asyncHandler(async (req, res) => {
+const setProfilePhoto = asyncHandler(async (req, res,next) => {
     const profileLocalPath = req.file?.path;
 
     if (!profileLocalPath) {
-        throw new ApiError(401, "Profile Is Missing");
+        return next(new ApiError(401, "Profile picture is missing. Please upload a profile image."));
     }
 
     const profile = await uploadOnCloudinary(profileLocalPath);
 
     if (!profile) {
-        throw new ApiError("Error While Uploading Profile");
+        return next(new ApiError("There was an error while uploading the profile picture. Please try again later."));
     }
 
     const user = await Teacher.findByIdAndUpdate(
@@ -306,7 +253,7 @@ const setProfilePhoto = asyncHandler(async (req, res) => {
     return res
         .status(200)
         .json(
-            new ApiResponse(200, user, "Profile Image Uploaded Successfully")
+            new ApiResponse(200, user, "Profile image uploaded successfully!")
         );
 
 })
@@ -314,7 +261,6 @@ const setProfilePhoto = asyncHandler(async (req, res) => {
 
 export {
     registerUser,
-    registerStudentUser,
     loginUser,
     logOutUser,
     refreshAccessToken,
