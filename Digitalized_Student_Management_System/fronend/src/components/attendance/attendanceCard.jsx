@@ -1,18 +1,77 @@
-import React from 'react'
-import filelogo from '../noticeboard/filelogo.png'
+import React from "react";
+import filelogo from "../noticeboard/filelogo.png";
+import { toast, ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+import axios from "axios";
+import { Card, CardContent, CardMedia, Typography, Box } from "@mui/material";
+import { MdOutlineFileDownload } from "react-icons/md";
 
-function AttendanceCard({date , name}) {
+function AttendanceCard({ date, name, fileUrl }) {
+  const formattedDate = new Date(date).toLocaleDateString("en-US", {
+    weekday: "short",
+    month: "short",
+    day: "numeric",
+    year: "numeric",
+  });
+
+  const downloadFile = () => {
+    axios
+      .post("http://localhost:8000/class/download-assignment", {
+        url: fileUrl,
+      })
+      .then((result) => {
+        if (result.data.data) {
+          toast.success("File downloaded successfully!", {
+            position: "top-right",
+            autoClose: 3000,
+          });
+          // window.open(fileUrl);
+        }
+      })
+      .catch(() => {
+        toast.error("Failed to download the file.", {
+          position: "top-right",
+          autoClose: 3000,
+        });
+      });
+  };
+
   return (
-    <div className=' border border-neutral-950  w-36 h-36 rounded-xl  flex justify-center items-center flex-col' >
-      <div className=' flex rounded-full border w-16 h-16 border-neutral-950 mt-2 justify-center items-center bg-emerald-300'>
-            <img src={filelogo} alt="" className='h-12 w-12' />
+    <>
+    <ToastContainer />
+    <Card      
+      sx={{
+        maxWidth: 200,
+        margin: 2,
+        boxShadow: 3,
+        cursor: "pointer",
+        "&:hover": { boxShadow: 6, transform: "scale(1.05)" },
+      }}
+    >
+     
+      <CardMedia
+        component="img"
+        image={filelogo}
+        alt="File Logo"
+        
+        sx={{ height: 80, objectFit: "contain", padding: 2 }}
+      />
+      
+      <CardContent>
+        <Typography variant="h6" align="center">
+          {name}
+        </Typography>
+        <Typography variant="body2" color="text.secondary" align="center">
+          Date: {formattedDate}
+        </Typography>
+      </CardContent>
+      <div className=" flex justify-center border" onClick={downloadFile}>
+      <MdOutlineFileDownload className=" w-8 h-8"  />
       </div>
-      <div>
-        <h1 className='text-md'>{name}</h1>
-        <p>Date: {date}</p>
-      </div>
-    </div>
-  ) 
+    </Card>
+    </>
+
+  );
 }
 
-export default AttendanceCard
+export default AttendanceCard;

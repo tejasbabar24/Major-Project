@@ -254,16 +254,21 @@ const getCurrentUser = asyncHandler(async (req, res) => {
 const updateAccountDetails = asyncHandler(async (req, res) => {
     const { username, email } = req.body;
 
-    if (!(username || email)) {
+    const profileLocalPath = req.file?.path;
+    
+    if (!(username || email || profileLocalPath)) {
         throw new ApiError("All Fields Are Required");
     }
+
+    const profile = await uploadOnCloudinary(profileLocalPath);
 
     const user = await Teacher.findByIdAndUpdate(
         req.user?._id,
         {
             $set: {
                 username,
-                email
+                email,
+                profile:profile.url
             }
         },
         { new: true }

@@ -19,10 +19,13 @@ app.set("trust proxy",1);
 import teacherRouter from "./routes/teacher.routes.js";
 import studentRouter from "./routes/student.routes.js";
 import classroomRouter from "./routes/classroom.routes.js";
+import { errorHandler } from "./middlewares/errorHandling.middleware.js";
 
 //routes declaration
 app.use("/faculty", teacherRouter)
 app.use("/student", studentRouter)
 app.use("/class", classroomRouter)
+
+app.use(errorHandler);
 
 export { app }

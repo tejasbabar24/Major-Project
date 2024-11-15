@@ -19,7 +19,7 @@ from pymongo import MongoClient
 load_dotenv()
 
 app = Flask(__name__)
-CORS(app)
+CORS(app,supports_credentials=True, origins=["http://localhost:5173","http://localhost:8000"])
 
 cloudinary.config(
     cloud_name=os.getenv('CLOUDINARY_CLOUD_NAME'),
@@ -152,8 +152,9 @@ def detection():
             print(name+" Present")
     f.close()
 
-    upload_result = cloudinary.uploader.upload(filename, resource_type="raw")
-    
+    original_name = os.path.splitext(os.path.basename(filename))[0]
+    upload_result = cloudinary.uploader.upload(filename, resource_type="raw",public_id=original_name)
+     
     attendance_record = {
     "filename": filename,  
     "attachment": upload_result["secure_url"], 

@@ -11,6 +11,7 @@ import {
 } from "../controllers/student.controller.js";
 import { upload } from "../middlewares/multer.middleware.js";
 import { stud_verifyJWT } from '../middlewares/auth_stud.middleware.js';
+import { errorHandler } from '../middlewares/errorHandling.middleware.js';
 
 const router = Router();
 
@@ -31,7 +32,9 @@ router.route('/refresh-token').post(refreshAccessToken);
 
 router.route('/current-user').get(stud_verifyJWT, getCurrentUser);
 
-router.route('/update-account').patch(stud_verifyJWT, updateAccountDetails);
+router.route('/update-account').patch(stud_verifyJWT, 
+    upload.single('profile'),
+    updateAccountDetails);
 
 router.route('/profile').patch(stud_verifyJWT, upload.single("profile"), setProfilePhoto);
 

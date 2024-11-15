@@ -72,10 +72,10 @@ const Progress = styled.div`
   border-radius: inherit;
 `;
 
-const DragAndDropFileUpload = ({ onFilesUploaded }) => {
-  const [files, setFiles] = useState([]);
+const DragAndDropFileUpload = ({ onFilesUploaded,files,setFiles }) => {
+  // const [files, setFiles] = useState([]);
   const [uploadProgress, setUploadProgress] = useState({});
-
+  
   const onDrop = useCallback((acceptedFiles) => {
     const newFiles = acceptedFiles.map((file) =>
       Object.assign(file, { preview: URL.createObjectURL(file) })
@@ -86,6 +86,7 @@ const DragAndDropFileUpload = ({ onFilesUploaded }) => {
       // Call the parent callback function with the updated files array
       onFilesUploaded(updatedFiles);
       return updatedFiles;
+
     });
 
     newFiles.forEach((file) => {
