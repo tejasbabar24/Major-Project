@@ -3,7 +3,7 @@ import fs from "fs";
 import dotenv from "dotenv";
 import axios from 'axios';
 import path from 'path';
-import { ApiError } from './ApiError';
+import { ApiError } from './ApiError.js';
 
 dotenv.config();
 
