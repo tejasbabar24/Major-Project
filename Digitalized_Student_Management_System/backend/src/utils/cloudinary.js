@@ -17,7 +17,7 @@ const uploadOnCloudinary = async (localFilePath) => {
     try {
         if (!localFilePath) return null;
 
-        const fileName = path.basename(localFilePath)
+        const fileName = path.basename(localFilePath,path.extname(localFilePath))
         console.log(fileName)
         const response = await cloudinary.uploader.upload(localFilePath, {
             public_id: fileName, 
