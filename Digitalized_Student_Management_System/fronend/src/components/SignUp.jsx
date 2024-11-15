@@ -93,7 +93,7 @@ function SignUp() {
           setLoading(false)
           navigate('/');
         })
-        .catch(err => alert(err));
+        .catch(error => { console.log(error.response.data.message)});
       }
       else if(role ==='Teacher'){
 
@@ -103,7 +103,7 @@ function SignUp() {
           setLoading(false)
           navigate('/')
         })
-        .catch(err => alert(err.message))
+        .catch(err => alert(err.response.data.message))
       }
     }
 

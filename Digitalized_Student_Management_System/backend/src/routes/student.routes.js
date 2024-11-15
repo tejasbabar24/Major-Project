@@ -11,6 +11,7 @@ import {
 } from "../controllers/student.controller.js";
 import { upload } from "../middlewares/multer.middleware.js";
 import { stud_verifyJWT } from '../middlewares/auth_stud.middleware.js';
+import { errorHandler } from '../middlewares/errorHandling.middleware.js';
 
 const router = Router();
 
