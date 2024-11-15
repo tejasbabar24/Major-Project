@@ -124,8 +124,8 @@ export default function Attendance() {
   };
   const clearFields = () => {
     setUploadedFiles([]);
-    setOpen(false)
     setClasses("");
+    setSelectedClass(classes)
     setFiles([])
     
   };
