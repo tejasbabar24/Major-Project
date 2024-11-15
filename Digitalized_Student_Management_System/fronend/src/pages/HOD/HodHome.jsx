@@ -9,13 +9,35 @@ import { useNavigate } from 'react-router';
 import "boxicons/css/boxicons.min.css";
 import { RxCross2 } from "react-icons/rx";
 import { FiLogOut } from "react-icons/fi";
-import axios from 'axios'
+import axios from 'axios';
+import { IoCameraOutline, IoCloseSharp } from "react-icons/io5";
+import myimg1 from './myimg1.png'
+import rasmika from './rashmika.png'
+import {Input} from "@nextui-org/react";
+import { FaUserEdit } from "react-icons/fa";
 
 
 function Home() {
-  const [isSidebarOpen, setSidebarOpen] = useState(false);  // State to toggle sidebar
+  const [isSidebarOpen, setSidebarOpen] = useState(false);
+  const [isDrawerOpen, setDrawerOpen] = useState(false); // State for right drawer
   const userData = useSelector(state => state.auth.userData);
   const navigate = useNavigate();
+
+  const [isEditing, setIsEditing] = useState({ username: false, email: false });
+  const [formData, setFormData] = useState({
+    username: userData.username,
+    email: userData.email,
+  });
+
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setFormData((prev) => ({ ...prev, [name]: value }));
+  };
+
+  const handleSubmit = () => {
+    setIsEditing({ username: false, email: false });
+    
+  };
 
   const navItems = [
     { name: "Create Class", slug: "/classroom", logo: CreateClass, active: true, roles: ["Teacher"] },
@@ -33,58 +55,49 @@ function Home() {
     ? navItems.filter(item => item.roles.includes(userData.role))
     : [];
 
-
-  const handleLogout = ()=>{
-    if(userData.role === "Student"){
-
-      axios.post('http://localhost:8000/student/logout')
-      .then((result)=>{
+  const handleLogout = () => {
+    const endpoint = userData.role === "Student" ? '/student/logout' : '/faculty/logout';
+    axios.post(`http://localhost:8000${endpoint}`)
+      .then(result => {
         console.log(result);
-        navigate('/')
+        navigate('/');
       })
-      .catch((err)=>{
+      .catch(err => {
         console.log(err);
-      })
-    }
-    else if(userData.role === "Teacher"){
-      axios.post('http://localhost:8000/faculty/logout')
-      .then((result)=>{
-        console.log(result);
-        navigate('/')
-      })
-      .catch((err)=>{
-        console.log(err);
-      })
-    }
-  }
+      });
+  };
+
   return (
     <div className="w-full min-h-screen flex flex-col md:flex-row bg-gradient-to-br from-blue-100 to-indigo-200">
       
       {/* Sidebar Toggle Button for Mobile */}
       <button
-        className="md:hidden p-4 text-gray-600 focus:outline-none"
+        className={`md:hidden p-4 text-gray-600 focus:outline-none ml-${setDrawerOpen == true ? '20' : 0 }`}
         onClick={() => setSidebarOpen(!isSidebarOpen)}
+        
       >
         <img src={sideBarLogo} alt="Menu" className="w-8 h-8" />
       </button>
 
       {/* Sidebar */}
+      {isDrawerOpen ? null : 
       <div
         className={`fixed inset-y-0 left-0 z-30 w-64 bg-gradient-to-b from-gray-800 to-gray-600 min-h-screen shadow-2xl transition-transform duration-300 transform ${
           isSidebarOpen ? 'translate-x-0' : '-translate-x-full'
         } md:static md:translate-x-0`}
       >
         {/* Sidebar Header */}
+       
         <div className="flex px-4 pt-4 justify-between">
           <div className='flex items-center'>
-          <img className="w-10 h-10 md:w-12 md:h-12 mr-3" src={BookLogo} alt="College Logo" />
-          <h1 className="text-indigo-200 font-bold text-lg md:text-xl">COLLEGE</h1>
+            <img className="w-10 h-10 md:w-12 md:h-12 mr-3" src={BookLogo} alt="College Logo" />
+            <h1 className="text-indigo-200 font-bold text-lg md:text-xl">COLLEGE</h1>
           </div>
           <button className='md:hidden' onClick={() => setSidebarOpen(false)}>
-          <RxCross2 className="text-white w-8 h-8 opacity-80 hover:opacity-100 transition-opacity cursor-pointer"/>
+            <RxCross2 className="text-white w-8 h-8 opacity-80 hover:opacity-100 transition-opacity cursor-pointer"/>
           </button>
-
         </div>
+      
 
         {/* Navigation Menu */}
         <nav className="mt-6">
@@ -107,6 +120,7 @@ function Home() {
           </ul>
         </nav>
       </div>
+      }
       
       {/* Main Content Section */}
       <div className="flex flex-col w-full p-4 md:p-6">
@@ -118,8 +132,12 @@ function Home() {
             <h2 className="text-md md:text-lg text-gray-500">{userData?.username || "Guest User"}</h2>
           </div>
           <div className="flex items-center gap-x-3 md:gap-x-4 mt-4 md:mt-0">
-            <img className="w-10 h-10 md:w-12 md:h-12 rounded-full border-2 border-indigo-300 cursor-pointer hover:scale-105 transition-transform duration-200" src={ProfileLogo} alt="profile" />
-            {/* <img className="cursor-pointer w-6 h-6 md:w-8 md:h-8 opacity-70 hover:opacity-100 transition-opacity duration-200" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAB4AAAAeCAYAAAA7MK6iAAAAAXNSR0IArs4c6QAAAW1JREFUSEvtlrsuRUEUhr8jHkAUElFqEbXC5QHwEhrR8BoSUVGIzoO4NCQiwTMIEQpaBPMne5Ix9hzrzOzYpziT7GbPzPrWZdbM36Gl0WmJS9+BR4AZYKgwI5/ALfAS26mLeAvYBoYLoX77uwNvAvuhvRg8Adw1BAzNfDnwGPDsf8bgeeC0mlTk14VOzAK7lY0F4CwFXgSOq8kl4KQQnLQXRzwAp1I9B0y67+iPUphTrf7VgdDQwfrVf9WcN3gAbAAfCQfMYOtZCg1eACvOgaeazWZwGHE3J8I20boHYBW4jDaZweFCa/R+3Zu7fNaiuv8LWHVeBw4Dj83g3FTrKlSdz3NTbU1vGMkVsFzVOd6fFbGlndTHqqvqWzfMYOuVqQtkClAfdxuNg3NK8uPRGTwSrQmBceDeWsAe1kn6yPZjSoHov4TZTgMK0zMk9iSj9kJHU7p6FJiGYt0teXvjwK9xdvpO0PdQvrylrUX8DZOyaB9ap/VCAAAAAElFTkSuQmCC" /> */}
+            <img
+              className="w-10 h-10 md:w-12 md:h-12 rounded-full border-2 border-indigo-300 cursor-pointer hover:scale-105 transition-transform duration-200 object-cover"
+              src={rasmika}
+              alt="profile"
+              onClick={() => setDrawerOpen(!isDrawerOpen)}  // Toggle drawer
+            />
             <FiLogOut onClick={handleLogout} className="cursor-pointer w-6 h-6 md:w-8 md:h-8 opacity-70 hover:opacity-100 transition-opacity duration-200" />
           </div>
         </div>
@@ -139,6 +157,126 @@ function Home() {
             ) : null
           )}
         </div>
+      </div>
+
+      {/* Right Drawer */}
+      <div
+        className={`fixed inset-y-0 right-0 z-40 w-64 bg-white shadow-2xl transition-transform duration-300 transform ${
+          isDrawerOpen ? 'translate-x-0' : 'translate-x-full'
+        }`}
+      >
+            <div className="p-4">
+            <IoCloseSharp size={25} onClick={()=>setDrawerOpen(!isDrawerOpen)} />
+              <h2 className="text-xl font-bold text-gray-700 ml-9">  Profile Settings</h2>
+              <div className="flex justify-center flex-col items-center mt-4 relative">
+              {/* Profile Image with Hover Icon */}
+              <div className="relative group w-36 h-36">
+                <img
+                  src={rasmika} // Use a default image if none is set
+                  alt="your profile"
+                  className="w-36 h-36 rounded-full border border-indigo-500 shadow-lg object-cover"
+                />
+                <p className="text-gray-600 font-bold text-lg mt-0 ml-4 mt-2">{userData?.username}</p>
+                {/* Update Icon on Hover */}
+                <div className="absolute inset-0 flex items-center justify-center bg-black bg-opacity-50 rounded-full opacity-0 group-hover:opacity-100 transition-opacity ">
+                  <label className="text-white cursor-pointer">
+                    <IoCameraOutline size={24} />
+                    <input
+                      type="file"
+                      className="hidden"
+                      accept="image/*"
+                      
+                    />
+                  </label>
+                </div>
+              </div>
+
+                <form 
+                action="" 
+                className="mt-14 space-y-4"
+                onSubmit={(e) => e.preventDefault()} // Prevent default form submission
+              >
+                {/* Username Section */}
+                <div className="flex items-center space-x-2">
+                  <div className="flex-grow">
+                    {isEditing.username ? (
+                      <Input
+                        type="text"
+                        variant="underlined"
+                        label="Change Username"
+                        name="username"
+                        value={formData.username}
+                        onChange={handleChange}
+                      />
+                    ) : (
+                          <Input
+                              isReadOnly
+                              type="text"
+                              label="Username"
+                              variant="bordered"
+                              className="max-w-xs"
+                              value={userData.username}
+                          />          
+                        )}
+
+                  </div>
+                  <button
+                    type="button"
+                    className="text-indigo-600 hover:text-indigo-800 focus:outline-none"
+                    onClick={() => setIsEditing((prev) => ({ ...prev, username: !prev.username }))}
+                  >
+                    <FaUserEdit size={20} />
+                  </button>
+                </div>
+
+                {/* Email Section */}
+                <div className="flex items-center space-x-2">
+                  <div className="flex-grow">
+                    {isEditing.email ? (
+                      <Input
+                        type="email"
+                        variant="underlined"
+                        label="Change Email"
+                        name="email"
+                        value={formData.email}
+                        onChange={handleChange}
+                      />
+                    ) : (
+                      <Input
+                              isReadOnly
+                              type="text"
+                              label="Email"
+                              variant="bordered"
+                              className="max-w-xs"
+                              value={userData.email}
+                          /> 
+                    )}
+                  </div>
+                  <button
+                    type="button"
+                    className="text-indigo-600 hover:text-indigo-800 focus:outline-none"
+                    onClick={() => setIsEditing((prev) => ({ ...prev, email: !prev.email }))}
+                  >
+                    <FaUserEdit size={20} />
+                  </button>
+                </div>
+
+                {/* Submit Button */}
+                <div className="flex justify-center mt-4">
+                  <button
+                    type="button"
+                    onClick={handleSubmit}
+                    className="bg-indigo-600 text-white px-4 py-2 rounded-md hover:bg-indigo-700 focus:outline-none"
+                  >
+                    Update
+                  </button>
+                </div>
+              </form>
+
+
+            </div>
+            
+          </div>
       </div>
     </div>
   );
