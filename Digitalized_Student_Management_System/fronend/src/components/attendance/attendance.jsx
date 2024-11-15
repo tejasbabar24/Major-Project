@@ -23,6 +23,7 @@ import axios from "axios";
 import { List, ListItem, ListItemButton, ListItemIcon, ListItemText } from "@mui/material";
 import classBackground from "../../assets/classCards/classbackground.jpg"; // Ensure you have this asset
 import user from "../../assets/classCards/user.png"; // Ensure you have this asset
+import Papa from 'papaparse';
 
 const drawerWidth = 300;
 
@@ -64,10 +65,54 @@ export default function Attendance() {
   const [createdClasses, setCreatedClasses] = React.useState([]);
   const [joinedClasses, setJoinedClasses] = React.useState([]);
   const [files, setFiles] = React.useState([]);
-
+  const [myAttendance,setMyAttendance] = useState();
   const handleFilesUploaded = (files) => setUploadedFiles(files);
 
+  const handleParseFromUrl = (csvUrl) => {
+     Papa.parse(csvUrl, {
+      download: true, // Enables fetching from a remote URL
+      header: true, // Adjust based on your CSV structure
+      skipEmptyLines: true,
+      complete: (results) => {
+        console.log(results.data);
+        const foundData = results.data.find((item) => item.USERNAME === userData.username);
+        console.log("Found Data:", foundData);
+        return foundData
+      },
+      error: (error) => {
+        console.error("Error parsing CSV:", error);
+      },
+    });
+  };
+  if(userData.role==="Student"){
+
+    useEffect(()=>{
+      let attendance = []
+      joinedClasses.find(
+        (item) => item.classname === selectedClass.toLowerCase()
+      ) ? (
+        joinedClasses.find(
+          (item) => item.classname === selectedClass.toLowerCase()
+        ).attendance?.length > 0 ? (
+          joinedClasses
+            .find(
+              (item) => item.classname === selectedClass.toLowerCase()
+            )
+            .attendance 
+            .map((item) => (
+              attendance.push(handleParseFromUrl(item.attachment))
+            ))
+        ) : null
+      ) : null
+  
+      setMyAttendance(attendance)
+      
+    },[selectedClass])
+  }
+// console.log(myAttendance);
+
   const handleClassChange = (event) => setClasses(event.target.value);
+
 
   const handleClassClick = (className) => {
     if (className === "Upload Attendance") {
@@ -96,8 +141,6 @@ export default function Attendance() {
       formData.append("image", image);
     });
 
-    console.log(uploadedFiles);
-    console.log(classDetails.classCode);
     axios
       .post("http://localhost:5001/face_recognition", formData, {
         headers: {
