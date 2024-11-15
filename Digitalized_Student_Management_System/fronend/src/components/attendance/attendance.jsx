@@ -24,6 +24,8 @@ import { List, ListItem, ListItemButton, ListItemIcon, ListItemText } from "@mui
 import classBackground from "../../assets/classCards/classbackground.jpg"; // Ensure you have this asset
 import user from "../../assets/classCards/user.png"; // Ensure you have this asset
 import Papa from 'papaparse';
+import HighlightedCalendar from "./Calendar.jsx";
+import DonutChart from "./DonutChart.jsx";
 
 const drawerWidth = 300;
 
@@ -397,7 +399,16 @@ export default function Attendance() {
                         />
                       ))
                   ) : (
-                    <div>No attendance found</div>
+                    <div className="flex flex-row gap-32 bg-white">
+
+                      {/* <DonutChart/> */}
+                      <div >
+                      <HighlightedCalendar highlightedDates={highlightedDates}/>
+                      </div>
+                      <div className="">
+                      <DonutChart/>
+                      </div>
+                    </div>
                   )
                 ) : (
                   <div>Class not found</div>
