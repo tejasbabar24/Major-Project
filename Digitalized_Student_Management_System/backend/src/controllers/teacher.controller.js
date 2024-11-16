@@ -33,7 +33,7 @@ const registerUser = asyncHandler(async (req, res,next) => {
         [username, role, email, password].some((field) =>
             field?.trim() === "")
     ) {
-        return next(new ApiError(400, "All fields are requiredPlease fill out all the required fields before submitting."))
+        return next(new ApiError(400, "All fields are required. Please fill out all the required fields before submitting."))
     }
 
     const existedUser = await Teacher.findOne({

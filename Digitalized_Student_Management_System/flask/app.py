@@ -39,7 +39,6 @@ current_date = now.strftime("%Y-%m-%d")
 def regEncoding():
         encodeArr=[]
         cloudArr=request.json.get('img',[])
-
         for imgId in cloudArr:
             response = requests.get(imgId)
             if response.status_code == 200:
