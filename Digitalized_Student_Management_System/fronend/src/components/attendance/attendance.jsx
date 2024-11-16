@@ -26,6 +26,7 @@ import user from "../../assets/classCards/user.png"; // Ensure you have this ass
 import Papa from 'papaparse';
 import HighlightedCalendar from "./Calendar.jsx";
 import DonutChart from "./DonutChart.jsx";
+import ShowAttendance from "./ShowAttendace.jsx";
 
 const drawerWidth = 300;
 
@@ -71,6 +72,8 @@ export default function Attendance() {
   const handleFilesUploaded = (files) => setUploadedFiles(files);
 
 const [processedUrls, setProcessedUrls] = useState([]);
+const highlightedDates = ["2024-11-10", "2024-11-12"];
+
 
 const handleParseFromUrl = (csvUrl) => {
   // Check if the URL has already been processed
@@ -405,16 +408,39 @@ useEffect(() => {
                         />
                       ))
                   ) : (
-                    <div className="flex flex-row gap-32 bg-white">
+                    <div className="flex flex-col gap-12 bg-gray-50 p-0 border-box border border-gray-200 shadow-lg w-full h-full">
+                      {/* Header Section */}
+                      <h1 className="text-xl font-bold text-center text-gray-800 py-4 border-b border-gray-300">
+                       {selectedClass} Attendance Dashboard
+                      </h1>
 
-                      {/* <DonutChart/> */}
-                      <div >
-                      {/* <HighlightedCalendar highlightedDates={highlightedDates}/> */}
+                      {/* Top Section: Calendar and Donut Chart */}
+                      <div className="flex flex-col md:flex-row justify-between items-start gap-8 px-4">
+                        {/* Calendar Section */}
+                        <div className="flex-1 bg-white rounded-md border border-gray-300 shadow-md p-4">
+                          <h2 className="text-lg font-semibold text-gray-700 mb-4 text-center">
+                            Highlighted Calendar
+                          </h2>
+                          <HighlightedCalendar highlightedDates={highlightedDates} />
+                        </div>
+
+                        {/* Donut Chart Section */}
+                        <div className="flex-1 bg-white rounded-md border border-gray-300 shadow-md p-4">
+                          <h2 className="text-lg font-semibold text-gray-700 mb-4 text-center">
+                            Attendance Overview
+                          </h2>
+                          <DonutChart />
+                        </div>
                       </div>
-                      <div className="">
-                      <DonutChart/>
+
+                      {/* Bottom Section: Show Attendance */}
+                      <div className="bg-white rounded-md border border-gray-300 shadow-md p-4 mx-4">
+                        <h2 className="text-lg font-semibold text-gray-700 mb-4 text-center">
+                          Detailed Attendance Records
+                        </h2>
+                        <ShowAttendance />
                       </div>
-                    </div>
+                    </div>
                   )
                 ) : (
                   <div>Class not found</div>

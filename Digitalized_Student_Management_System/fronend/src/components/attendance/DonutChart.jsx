@@ -22,7 +22,7 @@ function DonutChart() {
   const series = [44, 55, 41, 17, 15];
 
   return (
-    <div id="chart" className='bg-white'>
+    <div id="chart" className='bg-white shadow-lg rounded-lg h-full w-full'>
       <Chart  options={options} series={series} type="donut" width={380} />
     </div>
   );
