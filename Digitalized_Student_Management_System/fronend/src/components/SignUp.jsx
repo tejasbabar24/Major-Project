@@ -94,20 +94,7 @@ function SignUp() {
         })
         .then((result) => {
           if (result.data.data) {
-            setTimeout(() => {
-              setLoading(false)
-              navigate("/");
-            }, 3000);
-            // Display success toast
-            toast.success(result.data.message, {
-              position: "top-right",
-              autoClose: 3000,
-              hideProgressBar: false,
-              closeOnClick: true,
-              pauseOnHover: true,
-              draggable: true,
-              progress: undefined,
-            });
+              navigate("/")
             // Navigate to home after a slight delay to allow the toast to appear
             
           }
