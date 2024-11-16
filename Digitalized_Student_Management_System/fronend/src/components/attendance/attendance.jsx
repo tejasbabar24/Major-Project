@@ -70,10 +70,10 @@ export default function Attendance() {
   const [files, setFiles] = React.useState([]);
   const [myAttendance,setMyAttendance] = useState([]);
   const handleFilesUploaded = (files) => setUploadedFiles(files);
-
+  const [selectedClassDates,setSelectedClassDates] = useState([])
 const [processedUrls, setProcessedUrls] = useState([]);
-const highlightedDates = ["2024-11-10", "2024-11-12"];
 
+// console.log(myAttendance);
 
 const handleParseFromUrl = (csvUrl) => {
   // Check if the URL has already been processed
@@ -105,13 +105,25 @@ const handleParseFromUrl = (csvUrl) => {
 
 useEffect(() => {
   if (userData.role === "Student") {
-    // Find the selected class from joinedClasses
     const selectedClassData = joinedClasses.find(
       (item) => item.classname === selectedClass?.toLowerCase()
     );
 
     if (selectedClassData && selectedClassData.attendance?.length > 0) {
-      // Only handle the attendance once for the selected class
+      selectedClassData.attendance.forEach((item) => {
+        if (item.createdAt) {
+          // Extract the date in YYYY-MM-DD format
+          const formattedDate = new Date(item.createdAt).toISOString().split("T")[0];
+
+          // Add the date only if it doesn't already exist in the state
+          if (!selectedClassDates.includes(formattedDate)) {
+            setSelectedClassDates((prevDates) => [...prevDates, formattedDate]);
+          }
+        }
+      });
+    }
+
+    if (selectedClassData && selectedClassData.attendance?.length > 0) {
       selectedClassData.attendance.forEach((item) => {
         if (item.attachment) {
           handleParseFromUrl(item.attachment);
@@ -119,7 +131,7 @@ useEffect(() => {
       });
     }
   }
-}, [selectedClass, joinedClasses, userData.role]); // Re-run only when necessary
+}, [selectedClass, joinedClasses, userData.role]);
 
 
   const handleClassChange = (event) => setClasses(event.target.value);
@@ -161,11 +173,12 @@ useEffect(() => {
       })
       .then((result) => {
         console.log(result.data.message);
+        clearFields()
+
       })
       .catch((error) => {
         console.log(error);
       });
-      clearFields()
   };
 
   if (userData.role === "Teacher") {
@@ -386,29 +399,7 @@ useEffect(() => {
                   <div>Class not found</div>
                 )
               ) : userData.role === "Student" ? (
-                joinedClasses.find(
-                  (item) => item.classname === selectedClass?.toLowerCase()
-                ) ? (
-                  joinedClasses.find(
-                    (item) => item.classname === selectedClass?.toLowerCase()
-                  ).attendance?.length > 0 ? (
-                    joinedClasses
-                      .find(
-                        (item) => item.classname === selectedClass?.toLowerCase()
-                      )
-                      .attendance.sort(
-                        (a, b) => new Date(b.createdAt) - new Date(a.createdAt)
-                      ) // Sorting by createdAt
-                      .map((item,index) => (
-                        <AttendanceCard
-                          key={index}
-                          name={selectedClass}
-                          date={item.createdAt}
-                          fileUrl={item.attachment}
-                        />
-                      ))
-                  ) : (
-                    <div className="flex flex-col gap-12 bg-gray-50 p-0 border-box border border-gray-200 shadow-lg w-full h-full">
+                <div className="flex flex-col gap-12 bg-gray-50 p-0 border-box border border-gray-200 shadow-lg w-full h-full">
                       {/* Header Section */}
                       <h1 className="text-xl font-bold text-center text-gray-800 py-4 border-b border-gray-300">
                        {selectedClass} Attendance Dashboard
@@ -421,7 +412,7 @@ useEffect(() => {
                           <h2 className="text-lg font-semibold text-gray-700 mb-4 text-center">
                             Highlighted Calendar
                           </h2>
-                          <HighlightedCalendar highlightedDates={highlightedDates} />
+                          <HighlightedCalendar highlightedDates={selectedClassDates} />
                         </div>
 
                         {/* Donut Chart Section */}
@@ -440,13 +431,10 @@ useEffect(() => {
                         </h2>
                         <ShowAttendance />
                       </div>
-                    </div>
-                  )
+                    </div> 
                 ) : (
-                  <div>Class not found</div>
+                  null
                 )
-              )
-              : null
               }
             </div>
           )}

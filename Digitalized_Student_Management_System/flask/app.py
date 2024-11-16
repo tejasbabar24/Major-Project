@@ -98,7 +98,7 @@ def detection():
     filename=f"{current_date}.csv"
     f = open(filename,'w+',newline='')
     lnwriter = csv.writer(f)
-    lnwriter.writerow(["Enrollment_Number","Time"])
+    lnwriter.writerow(["Date","Enrollment_Number","Time"])
 
     Code = request.form.get('classCode')
     
@@ -149,7 +149,7 @@ def detection():
         if name in stud_name:
             print(face_names)
             current_time = now.strftime("%H-%M-%S")
-            lnwriter.writerow([name,current_time])
+            lnwriter.writerow([current_date,name,current_time])
             print(name+" Present")
     f.close()
 
