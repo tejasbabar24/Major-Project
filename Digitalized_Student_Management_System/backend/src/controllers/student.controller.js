@@ -72,12 +72,12 @@ const registerUser = asyncHandler(async (req, res, next) => {
 
     const encodingErrors = encodeData.filter(result => result.error);
 
-    if (encodingErrors.length > 0) {
-        return next(new ApiError(500, "Face encoding failed. Please upload clear images for better recognition."));
-    }
+    // if (encodingErrors.length > 0) {
+    //     return next(new ApiError(500, "Face encoding failed. Please upload clear images for better recognition."));
+    // }
 
     const faceEncodings = encodeData.filter(result => !result.error);
-
+    
     if (faceEncodings.length === 0) {
         return next(new ApiError(500, " No valid face encodings were found. Please ensure the image contains a clear, visible face"));
     }

@@ -11,7 +11,7 @@ function Loading({ show }) {
     return loading && (
         <div className="flex justify-center items-center ">
             <ClipLoader
-                color='red'
+                color="4f46e5"
                 loading={loading}
                 size={50}
                 aria-label="Loading Spinner"

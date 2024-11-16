@@ -15,13 +15,18 @@ import Button from "./Button";
 import { login } from "../store/authSlice";
 import { useDispatch } from "react-redux";
 import { jwtDecode } from "jwt-decode";
+import { toast, ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+import Loading from "./Loading";
 
 function LogIn() {
   const cookies=new Cookies();
+  const [loading, setLoading] = useState(false);
+
   const [role, setRole] = useState("Student");
   const dispatch = useDispatch();
-  const [username, setusername] = useState();
-  const [password, setpassword] = useState();
+  const [username, setusername] = useState("");
+  const [password, setpassword] = useState("");
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -31,7 +36,10 @@ function LogIn() {
   const handleItemClick = (item) => {
     setRole(item);
   };
-
+  const clearFields = ()=>{
+    setusername("")
+    setusername("")
+  }
   const switchImage = () => {
     switch (role) {
       case "Teacher":
@@ -49,49 +57,82 @@ function LogIn() {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-
-
-    if (role == "Student") {
-      axios
-        .post(`http://localhost:8000/student/login`, {
-          username: username.toLowerCase(),
-          password,
-        })
-        .then((result) => {
-          if (result.data) {
-            dispatch(login(result.data.data.user));
-            navigate("/home");
-          } else {
-            alert("creadentials mismatched");
-          }
-        })
-        .catch((err) => alert(err));
-
-    } 
-    else if (role === "Teacher") {
-      axios
-      .post(`http://localhost:8000/faculty/login`, { username:username.toLowerCase(), password })
+    setLoading(true); // Show loader while processing
+  
+    const loginEndpoint =
+      role === "Student" ? "student/login" : role === "Teacher" ? "faculty/login" : null;
+  
+    if (!loginEndpoint) {
+      toast.error("Please select a valid role before logging in.", {
+        position: "top-right",
+        autoClose: 3000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+      });
+      setLoading(false);
+      return;
+    }
+    if (!username || !password) {
+      toast.error("All fields are required.", {
+        position: "top-right",
+        autoClose: 3000,
+      });
+      setLoading(false)
+      return;
+    }
+    axios
+      .post(`http://localhost:8000/${loginEndpoint}`, {
+        username: username.toLowerCase(),
+        password,
+      })
       .then((result) => {
-        console.log(result.data.message);
-
-        
-        if (result.data) {
-          dispatch(login(result.data.data.user))
-          navigate("/home");
-        } else {
-          alert("creadentials mismatched");
+        if (result.data?.data) {
+          const  {user}  = result.data.data;
+          const message = result.data.message
+          toast.success(message || "Login successful!", {
+            position: "top-right",
+            autoClose: 1500,
+            hideProgressBar: false,
+            closeOnClick: true,
+            pauseOnHover: true,
+            draggable: true,
+            progress: undefined,
+          });
+  
+          dispatch(login(user));
+          setTimeout(()=>{
+            navigate("/home");
+          },1500)
         }
       })
-      .catch((err) => alert(err));
-
+      .catch((error) => {
+        console.log(error);
+        
+        const errorMessage = error.response?.data?.message || "Something went wrong!";
+        toast.error(errorMessage, {
+          position: "top-right",
+          autoClose: 3000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+        });
+      })
+      .finally(() => {
+        setLoading(false); // Hide loader after processing
+        clearFields()
+      });
   };
-  }
-
     
    
 
   return (
     <div className="flex flex-row w-full h-screen font-merriweather">
+      <ToastContainer/>
       <div
         className="bg-custom-bg bg-cover bg-center h-screen w-2/4  flex justify-end items-center p-0"
         style={{ backgroundImage: `url(${backgroundImage})` }}
@@ -165,12 +206,14 @@ function LogIn() {
               Forgot password?
             </button>
             <div className="text-center">
+              <Loading show={loading}/>
               <Button
                 type="submit"
                 className="bg-purple-400 rounded text-white mt-4 w-full h-8"
               >
                 Login
               </Button>
+
             </div>
           </form>
           <div className="text-center mt-3">--------------------------</div>

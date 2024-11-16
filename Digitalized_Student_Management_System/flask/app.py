@@ -41,10 +41,12 @@ def regEncoding():
         cloudArr=request.json.get('img',[])
         for imgId in cloudArr:
             response = requests.get(imgId)
+            print(response)
             if response.status_code == 200:
                 img = Image.open(BytesIO(response.content))
                 img_array = np.array(img)
                 encoded_face = encode(img_array)
+                print(encoded_face)
                 encodeArr.append(encoded_face)
             else:
                 encodeArr.append({"error": f"Failed to fetch image with ID {imgId}"})
@@ -54,7 +56,7 @@ def regEncoding():
 def encode(image):
         if image is None:
             return jsonify({"error": "Could not decode the image"}), 400
-
+        
         face_locations = face_recognition.face_locations(image)
         encoded_faces = face_recognition.face_encodings(image, face_locations)
 

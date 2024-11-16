@@ -66,15 +66,24 @@ function SignUp() {
     e.preventDefault();
 
     if (role === "Student") {
+      setLoading(true);
       if (!Stud_username || !Stud_email || !Stud_password) {
         toast.error("All fields are required.", {
           position: "top-right",
-          autoClose: 3000,
+          autoClose: 1500,
         });
+        setLoading(false);
         return;
       }
-      setLoading(true);
-      
+      toast.info("Please be patient! Registration may take a few moments as we process your images.", {
+        position: "top-right",
+        autoClose: 1500,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+      });
       const formData = new FormData();
       formData.append("username", Stud_username.toLowerCase());
       formData.append("email", Stud_email);
@@ -84,8 +93,6 @@ function SignUp() {
       stud_images.forEach((image, index) => {
         formData.append("photo", image);
       });
-
-      
       axios
         .post(`http://localhost:8000/student/register`, formData, {
           headers: {
@@ -93,10 +100,23 @@ function SignUp() {
           },
         })
         .then((result) => {
+          
           if (result.data.data) {
-              navigate("/")
-            // Navigate to home after a slight delay to allow the toast to appear
             
+            toast.success(result.data.message, {
+              position: "top-right",
+              autoClose: 1500,
+              hideProgressBar: false,
+              closeOnClick: true,
+              pauseOnHover: true,
+              draggable: true,
+              progress: undefined,
+            });
+
+            setTimeout(() => {
+              dispatch(login(result.data.data));
+              navigate("/home");
+            }, 1500);
           }
         })
         .catch((error) => {
@@ -105,7 +125,7 @@ function SignUp() {
             error.response?.data?.message || "Something went wrong!";
           toast.error(errorMessage, {
             position: "top-right",
-            autoClose: 3000,
+            autoClose: 1500,
             hideProgressBar: false,
             closeOnClick: true,
             pauseOnHover: true,
@@ -117,15 +137,17 @@ function SignUp() {
           setLoading(false);
         });
     } else if (role === "Teacher") {
+      setLoading(true);
+
       if (!Teach_username || !Teach_email || !Teach_password) {
         toast.error("All fields are required.", {
           position: "top-right",
-          autoClose: 3000,
+          autoClose: 1500,
         });
+        setLoading(false);
         return;
       }
 
-      setLoading(true);
       axios
         .post(`http://localhost:8000/faculty/register`, {
           username: Teach_username.toLowerCase(),
@@ -134,15 +156,20 @@ function SignUp() {
           role,
         })
         .then((result) => {
-          setTimeout(() => {
-            setLoading(false);
-            navigate("/");
-          }, 3000);
           if (result.data.data) {
             toast.success(result.data.message, {
               position: "top-right",
-              autoClose: 2000,
+              autoClose: 1500,
+              hideProgressBar: false,
+              closeOnClick: true,
+              pauseOnHover: true,
+              draggable: true,
+              progress: undefined,
             });
+            setTimeout(() => {
+              dispatch(login(result.data.data));
+              navigate("/home");
+            }, 1500);
           }
         })
         .catch((error) => {
@@ -150,7 +177,12 @@ function SignUp() {
             error.response?.data?.message || "Something went wrong!";
           toast.error(errorMessage, {
             position: "top-right",
-            autoClose: 3000,
+            autoClose: 1500,
+            hideProgressBar: false,
+            closeOnClick: true,
+            pauseOnHover: true,
+            draggable: true,
+            progress: undefined,
           });
         })
         .finally(() => {
@@ -261,7 +293,7 @@ function SignUp() {
                     </div>
                   ))}
                 </div>
-              <Loading show={loading} />
+                <Loading show={loading} />
 
                 <Button
                   type="submit"
