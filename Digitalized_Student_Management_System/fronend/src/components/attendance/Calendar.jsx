@@ -1,10 +1,15 @@
-import React from "react";
+import React, { useState } from "react";
 import Calendar from "react-calendar";
 import "react-calendar/dist/Calendar.css"; // Import base calendar styles
 import "./HighlightedCalendar.css"; // Your custom styles
 
 function HighlightedCalendar({ highlightedDates }) {
-  // Function to normalize a date to midnight UTC (ignoring time)
+  
+  
+
+  const Dates = highlightedDates.map((item) => item.Date);
+  
+  
   const normalizeDate = (date) => {
     const utcDate = new Date(Date.UTC(date.getFullYear(), date.getMonth(), date.getDate()));
     return utcDate.toISOString().split("T")[0]; // Return the date in YYYY-MM-DD format
@@ -13,7 +18,7 @@ function HighlightedCalendar({ highlightedDates }) {
   // Function to check if a date should be highlighted
   const isHighlighted = (date) => {
     const formattedDate = normalizeDate(date); // Normalize the date before comparison
-    return highlightedDates.includes(formattedDate); // Check if the date is in the highlighted array
+    return Dates.includes(formattedDate); // Check if the date is in the highlighted array
   };
 
   // Function to add a custom class to highlighted tiles

@@ -14,6 +14,7 @@ import AuthLayout from './components/AuthLayout.jsx'
 import Viewclassroom from './components/classroom/Viewclassroom.jsx'
 import Noticeboard from './components/noticeboard/noticeboard.jsx'
 import Attendance from './components/attendance/attendance.jsx'
+import ExamPage from './components/exam/ExamPage.jsx'
 
 const router = createBrowserRouter([
   {
@@ -80,7 +81,7 @@ const router = createBrowserRouter([
         path:"/exam-result",
         element:(
           <AuthLayout authentication>
-          <Home/>
+          <ExamPage/>
         </AuthLayout>
         )
       },

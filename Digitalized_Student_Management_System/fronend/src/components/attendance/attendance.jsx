@@ -412,7 +412,7 @@ useEffect(() => {
                           <h2 className="text-lg font-semibold text-gray-700 mb-4 text-center">
                             Highlighted Calendar
                           </h2>
-                          <HighlightedCalendar highlightedDates={selectedClassDates} />
+                          <HighlightedCalendar highlightedDates={myAttendance} />
                         </div>
 
                         {/* Donut Chart Section */}
@@ -420,7 +420,7 @@ useEffect(() => {
                           <h2 className="text-lg font-semibold text-gray-700 mb-4 text-center">
                             Attendance Overview
                           </h2>
-                          <DonutChart />
+                          <DonutChart myAttendance={myAttendance} selectedClassDates={selectedClassDates.length}/>
                         </div>
                       </div>
 
@@ -429,7 +429,7 @@ useEffect(() => {
                         <h2 className="text-lg font-semibold text-gray-700 mb-4 text-center">
                           Detailed Attendance Records
                         </h2>
-                        <ShowAttendance />
+                        <ShowAttendance dates={selectedClassDates} presentDates={myAttendance}/>
                       </div>
                     </div> 
                 ) : (
