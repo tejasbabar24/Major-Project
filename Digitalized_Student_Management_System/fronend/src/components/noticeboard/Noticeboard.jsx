@@ -21,7 +21,9 @@ import { useSelector } from "react-redux";
 import { useEffect } from "react";
 import NoticeCard from "./NoticeCard.jsx";
 import axios from "axios";
-
+import { toast, ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+import Loading from "../Loading.jsx"
 const drawerWidth = 320;
 
 const Main = styled("main", { shouldForwardProp: (prop) => prop !== "open" })(
@@ -48,6 +50,7 @@ const AppBar = styled(MuiAppBar, {
 }));
 
 export default function Noticeboard() {
+  const [loading,setLoading] = React.useState(false)
   const userData = useSelector((state) => state.auth.userData);
   const [open, setOpen] = React.useState(false);
   const [description, setDescription] = React.useState("");
@@ -85,6 +88,7 @@ export default function Noticeboard() {
     setOpen(false)
     setClasses("");
     setFiles([])
+    setLoading(false)
     
   };
 
@@ -94,14 +98,31 @@ export default function Noticeboard() {
 
   const handleFormSubmit = (e) => {
     e.preventDefault();
+    if (!description || !classes) {
+      toast.error("Description and Class are required.", {
+        position: "top-right",
+        autoClose: 1500,
+      });
+      return;
+    }
     const formData = new FormData();
     formData.append("description", description);
     formData.append("classname", classes);
     formData.append("attachment", uploadFiles);
-
+    setLoading(true)
     axios
       .post("http://localhost:8000/class/notice", formData)
       .then((result) => {
+        const message = result.data.message || "Notice Created"
+        toast.success(message, {
+          position: "top-right",
+          autoClose: 1500,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+        });
         const newNotice = result.data.data;
         
         // Update the state with the new notice
@@ -122,12 +143,27 @@ export default function Noticeboard() {
             );
           });
         }
-      })
-      .catch((error) => console.log(error));
       clearFields()
+      })
+      .catch((error) =>{
+        const errorMessage = error.response?.data?.message || "Something went wrong!";
+        toast.error(errorMessage, {
+          position: "top-right",
+          autoClose: 1500,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+        });
+      })
+      .finally(()=>{
+        setLoading(false)
+      })
   };
   return (
     <Box sx={{ display: "flex" }}>
+      <ToastContainer/>
       <CssBaseline />
       <AppBar position="fixed">
         <Toolbar sx={{ backgroundColor: "#8E6AC4" }}>
@@ -142,7 +178,7 @@ export default function Noticeboard() {
                 variant="contained"
                 sx={{ fontSize: "15px", backgroundColor: "#3A2B51" }}
               >
-                Create <MdOutlineAdd />
+                Post Notice <MdOutlineAdd />
               </Buttons>
             </IconButton>
           )}
@@ -202,11 +238,12 @@ export default function Noticeboard() {
               </Select>
             </FormControl>
             <DragAndDropFileUpload onFilesUploaded={handleFilesUploaded} files={files} setFiles={setFiles}/>
+            <Loading show={loading}/>
             <Button
               type="submit"
               className="w-18 h-8 mt-4 text-white text-sm text-center bg-purple-500"
             >
-              Create
+              Post Notice
             </Button>
           </form>
         </Drawer>
