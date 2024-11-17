@@ -78,7 +78,7 @@ function LogIn() {
     if (!username || !password) {
       toast.error("All fields are required.", {
         position: "top-right",
-        autoClose: 3000,
+        autoClose: 150,
       });
       setLoading(false)
       return;
@@ -114,7 +114,7 @@ function LogIn() {
         const errorMessage = error.response?.data?.message || "Something went wrong!";
         toast.error(errorMessage, {
           position: "top-right",
-          autoClose: 3000,
+          autoClose: 1500,
           hideProgressBar: false,
           closeOnClick: true,
           pauseOnHover: true,

@@ -64,20 +64,6 @@ function Viewclassroom() {
       setInput('');
     }
 
-  useEffect(()=>{
-    axios.
-    post("http://localhost:8000/class/joined-students",{classCode:classId}).
-    then((result)=>{
-      console.log(result.data.data.students);
-      setStudents(result.data.data.students)
-      
-    })
-    .catch((err)=>{
-      console.log(err);
-    })
-
-    
-  },[]);
 
   // Render component based on active tab
   const renderComponent = () => {

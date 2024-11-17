@@ -27,7 +27,9 @@ import Papa from 'papaparse';
 import HighlightedCalendar from "./Calendar.jsx";
 import DonutChart from "./DonutChart.jsx";
 import ShowAttendance from "./ShowAttendace.jsx";
-
+import { toast, ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+import Loading from "../Loading.jsx"
 const drawerWidth = 300;
 
 const Main = styled("main", { shouldForwardProp: (prop) => prop !== "open" })(
@@ -72,6 +74,7 @@ export default function Attendance() {
   const handleFilesUploaded = (files) => setUploadedFiles(files);
   const [selectedClassDates,setSelectedClassDates] = useState([])
 const [processedUrls, setProcessedUrls] = useState([]);
+const [loading,setLoading] = useState(false)
 
 // console.log(myAttendance);
 
@@ -149,11 +152,19 @@ useEffect(() => {
     setUploadedFiles([]);
     setClasses("");
     setSelectedClass(classes)
+    setLoading(false)
     setFiles([])
     
   };
   const uploadAttendance = (e) => {
     e.preventDefault();
+    if (!uploadedFiles || !classes) {
+      toast.error("Class and files are required.", {
+        position: "top-right",
+        autoClose: 1500,
+      });
+      return;
+    }
     const classDetails = createdClasses.find(
       (item) => item.classname === classes.toLowerCase()
     );
@@ -172,13 +183,34 @@ useEffect(() => {
         withCredentials: true,
       })
       .then((result) => {
-        console.log(result.data.message);
+        const message = result.data.message || "Attendance Uploaded"
+        toast.success(message, {
+          position: "top-right",
+          autoClose: 1500,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+        });
         clearFields()
 
       })
       .catch((error) => {
-        console.log(error);
-      });
+        const errorMessage = error.response?.data?.message || "Something went wrong!";
+        toast.error(errorMessage, {
+          position: "top-right",
+          autoClose: 1500,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+        });
+      })
+      .finally(()=>{
+        setLoading(false)
+      })
   };
 
   if (userData.role === "Teacher") {
@@ -206,6 +238,7 @@ useEffect(() => {
   }
   return (
     <Box sx={{ display: "flex" }}>
+      <ToastContainer/>
       <CssBaseline />
       <StyledAppBar position="fixed">
         <Toolbar sx={{ backgroundColor: "#8E6AC4" }}>
@@ -354,6 +387,7 @@ useEffect(() => {
                     files={files} 
                     setFiles={setFiles}
                   />
+                  <Loading show={loading}/>
                   <Button
                     type="submit"
                     className="w-18 h-8 mt-4 text-white text-sm text-center bg-purple-500"

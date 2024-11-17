@@ -29,6 +29,9 @@ import { useEffect } from "react";
 import { addClass } from "../../store/classSlice";
 import { useNavigate } from "react-router";
 import { Icon } from "@mui/material";
+import { toast, ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+
 
 const drawerWidth = 240;
 
@@ -59,6 +62,7 @@ const AppBar = styled(MuiAppBar, {
 }));
 
 export default function ClassroomHomePage() {
+  const [loading, setLoading] = React.useState(false);
   const [createdClasses, setCreatedClasses] = React.useState([]);
   const [joinedClasses, setJoinedClasses] = React.useState([]);
   const userData = useSelector((state) => state.auth.userData);
@@ -113,6 +117,13 @@ export default function ClassroomHomePage() {
 
   const handleSubmit = (e) => {
     e.preventDefault();
+    if (!classname || !subject || !section || !year) {
+      toast.error("All fields are required.", {
+        position: "top-right",
+        autoClose: 1500,
+      });
+      return;
+    }
     axios
       .post(`http://localhost:8000/class/create-class`, {
         classname,
@@ -121,27 +132,74 @@ export default function ClassroomHomePage() {
         year,
       })
       .then((result) => {
-        console.log(result);
-      })
-      .catch((err) => {
-        console.log(err.message);
-      });
+        setCreatedClasses((prevClasses)=>{
+          return [...prevClasses,result.data.data]
+        })
+        const message = result.data.message || "Class Created"
+        toast.success(message, {
+          position: "top-right",
+          autoClose: 1500,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+        });
       setJoinDrawerOpen(false)
+      })
+      .catch((error) => {
+        const errorMessage = error.response?.data?.message || "Something went wrong!";
+        toast.error(errorMessage, {
+          position: "top-right",
+          autoClose: 1500,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+        });
+      });
   };
 
   const join = (e) => {
     e.preventDefault();
+    if (!joinId) {
+      toast.error("Class id is required.", {
+        position: "top-right",
+        autoClose: 1500,
+      });
+      return;
+    }
     axios
       .post(`http://localhost:8000/class/join-class`, { classCode: joinId })
       .then((result) => {
-        console.log(result.data.message);
-        console.log(result.data.data.student);
-        console.log(result.data.data.classroom);
-      })
-      .catch((err) => {
-        console.log(err.message);
-      });
+        setJoinedClasses((prevClasses)=>{
+          return [...prevClasses,result.data.data.classroom]
+        })
+        const message = result.data.message || "Class Joined"
+        toast.success(message, {
+          position: "top-right",
+          autoClose: 1500,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+        });
       setJoinDrawerOpen(false)
+      })
+      .catch((error) => {
+        const errorMessage = error.response?.data?.message || "Something went wrong!";
+        toast.error(errorMessage, {
+          position: "top-right",
+          autoClose: 1500,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+        });
+      });
   };
   const renderClass =
         userData.role === "Teacher" ? 
@@ -150,6 +208,7 @@ export default function ClassroomHomePage() {
         joinedClasses : null
   return (
     <Box sx={{ display: "flex" }}>
+      <ToastContainer/>
       <CssBaseline />
       <AppBar position="fixed">
         <Toolbar

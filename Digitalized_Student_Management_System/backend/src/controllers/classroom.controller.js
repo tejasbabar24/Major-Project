@@ -29,7 +29,15 @@ const createClass = asyncHandler(async (req, res,next) => {
     ) {
         return next(new ApiError(400, "Please fill out all the required fields before submitting"));
     }
-
+    // console.log(req.user.username);
+    
+    // const existClass = Classroom.findOne({
+    //     classname,
+    //     owner:req.user.username
+    // })
+    // if(existClass){
+    //     return next(new ApiError(400,"Class already exists with same name"))
+    // }
     const code = await generateClassCode();
     // console.log(code);
 
