@@ -37,26 +37,31 @@ current_date = now.strftime("%Y-%m-%d")
 
 @app.route('/reg-encode', methods=['POST'])
 def regEncoding():
-        encodeArr=[]
-        cloudArr=request.json.get('img',[])
-        for imgId in cloudArr:
-            response = requests.get(imgId)
-            print(response)
-            if response.status_code == 200:
+    encodeArr = []
+    cloudArr = request.json.get('img', [])
+    
+    for imgId in cloudArr:
+        response = requests.get(imgId)
+        print(response)
+        if response.status_code == 200:
+            try:
                 img = Image.open(BytesIO(response.content))
-                img_array = np.array(img)
+                # Convert the image to grayscale
+                img_gray = img.convert('L')  # 'L' mode converts to 8-bit grayscale
+                img_array = np.array(img_gray)
                 encoded_face = encode(img_array)
                 print(encoded_face)
                 encodeArr.append(encoded_face)
-            else:
-                encodeArr.append({"error": f"Failed to fetch image with ID {imgId}"})
+            except Exception as e:
+                encodeArr.append({"error": f"Failed to process image with ID {imgId}: {str(e)}"})
+        else:
+            encodeArr.append({"error": f"Failed to fetch image with ID {imgId}"})
 
-        return jsonify(encodeArr)
-
+    return jsonify(encodeArr)
 def encode(image):
         if image is None:
             return jsonify({"error": "Could not decode the image"}), 400
-        
+
         face_locations = face_recognition.face_locations(image)
         encoded_faces = face_recognition.face_encodings(image, face_locations)
 
@@ -100,8 +105,6 @@ def detection():
     filename=f"{current_date}.csv"
     f = open(filename,'w+',newline='')
     lnwriter = csv.writer(f)
-    lnwriter.writerow(["Date","Enrollment_Number","Time"])
-
     Code = request.form.get('classCode')
     
     if 'image' not in request.files:
@@ -151,7 +154,7 @@ def detection():
         if name in stud_name:
             print(face_names)
             current_time = now.strftime("%H-%M-%S")
-            lnwriter.writerow([current_date,name,current_time])
+            lnwriter.writerow([name,current_time])
             print(name+" Present")
     f.close()
 
@@ -161,7 +164,7 @@ def detection():
     attendance_record = {
     "filename": filename,  
     "attachment": upload_result["secure_url"], 
-    "createdAt": current_date
+    "createdAt": datetime.now()
     }        
 
     os.remove(attendance_record["filename"])
