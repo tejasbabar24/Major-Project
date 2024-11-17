@@ -44,11 +44,11 @@ function Home() {
     { name: "Join Class", slug: "/classroom", logo: CreateClass, active: true, roles: ["Student"] },
     { name: "Class List", slug: "/classroom", logo: ClassListLogo, active: true, roles: ["Teacher", "Student"] },
     { name: "Attendance", slug: "/attendance", logo: userData.role ==="Teacher" ? teacherAttendance : studentAttendance, active: true, roles: ["Teacher", "Student"] },
-    { name: "Exam", slug: "/exam", logo: ExamLogo, active: true, roles: ["Teacher", "Student"] },
+    // { name: "Exam", slug: "/exam", logo: ExamLogo, active: true, roles: ["Teacher", "Student"] },
     { name: "Timetable", slug: "/timetable", logo: TimetableLogo, active: true, roles: ["Teacher", "Student"] },
-    { name: "Homework", slug: "/homework", logo: HomeworkLogo, active: true, roles: ["Teacher", "Student"] },
+    // { name: "Homework", slug: "/homework", logo: HomeworkLogo, active: true, roles: ["Teacher", "Student"] },
     { name: "Notice", slug: "/notice", logo: NotifyLogo, active: true, roles: ["Teacher", "Student"] },
-    { name: "Exam Result", slug: "/exam-result", logo: ResultLogo, active: true, roles: ["Teacher", "Student"] },
+    { name: "Test Result", slug: "/exam-result", logo: ResultLogo, active: true, roles: ["Teacher", "Student"] },
   ];
 
   const renderArr = userData && userData.role
@@ -143,7 +143,7 @@ function Home() {
         </div>
 
         {/* Cards Section */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6">
           {renderArr.map((item, index) =>
             item.active ? (
               <Card
