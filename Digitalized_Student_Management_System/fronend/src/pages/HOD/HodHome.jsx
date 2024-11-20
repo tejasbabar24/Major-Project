@@ -24,19 +24,71 @@ function Home() {
   const navigate = useNavigate();
 
   const [isEditing, setIsEditing] = useState({ username: false, email: false });
+  const [profile,setProfile]=useState([]);
   const [formData, setFormData] = useState({
     username: userData.username,
     email: userData.email,
   });
 
+
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData((prev) => ({ ...prev, [name]: value }));
+    console.log(formData.username)
   };
 
   const handleSubmit = () => {
-    setIsEditing({ username: false, email: false });
     
+    const setProfileEndpoint =
+      userData.role === "Student" ? "student/profile" : userData.role === "Teacher" ? "faculty/profile" : null;
+    const updateEndpoint =
+      userData.role === "Student" ? "student/update-account" : userData.role === "Teacher" ? "faculty/update-account" : null;
+
+    
+    if (!updateEndpoint) {
+      toast.error("Please select a valid role before logging in.", { autoClose: 3000 });
+      return;
+    }
+
+    const form=new FormData();
+    form.append("profile",profile)
+
+    axios
+      .patch(`http://localhost:8000/${updateEndpoint}`, {
+        username: formData.username.toLowerCase(),
+        email:formData.email,
+      })
+      .then((result) => {
+        if (result.data?.data) {
+          const { user } = result.data.data;
+          const message = result.data.message;
+          console.log(user)
+        }
+      })
+      .catch((error) => {
+        const errorMessage = error.response?.data?.message || "Something went wrong!";
+        console.log(error)
+      })
+
+    if (profile) {
+
+     axios
+       .patch(`http://localhost:8000/${setProfileEndpoint}`, 
+           form
+       )
+       .then((result) => {
+         if (result.data?.data) {
+           const { user } = result.data.data;
+           const message = result.data.message;
+           console.log(message)
+         }
+       })
+       .catch((error) => {
+         const errorMessage = error.response?.data?.message || "Something went wrong!";
+         console.log(error)
+       })
+   }
+      
   };
 
   const navItems = [
@@ -134,7 +186,7 @@ function Home() {
           <div className="flex items-center gap-x-3 md:gap-x-4 mt-4 md:mt-0">
             <img
               className="w-10 h-10 md:w-12 md:h-12 rounded-full border-2 border-indigo-300 cursor-pointer hover:scale-105 transition-transform duration-200 object-cover"
-              src={rasmika}
+              src={userData.profile}  
               alt="profile"
               onClick={() => setDrawerOpen(!isDrawerOpen)}  // Toggle drawer
             />
@@ -172,7 +224,7 @@ function Home() {
               {/* Profile Image with Hover Icon */}
               <div className="relative group w-36 h-36">
                 <img
-                  src={rasmika} // Use a default image if none is set
+                  src={userData.profile} // Use a default image if none is set
                   alt="your profile"
                   className="w-36 h-36 rounded-full border border-indigo-500 shadow-lg object-cover"
                 />
@@ -185,7 +237,7 @@ function Home() {
                       type="file"
                       className="hidden"
                       accept="image/*"
-                      
+                      onChange={(e)=>setProfile(e.target.files[0])}
                     />
                   </label>
                 </div>
