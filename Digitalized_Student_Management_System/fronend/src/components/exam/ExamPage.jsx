@@ -8,18 +8,13 @@ import Toolbar from "@mui/material/Toolbar";
 import Typography from "@mui/material/Typography";
 import Divider from "@mui/material/Divider";
 import { List, ListItem, ListItemButton, ListItemIcon, ListItemText } from "@mui/material";
-import IconButton from "@mui/material/IconButton";
-import TextField from "@mui/material/TextField";
-import InputLabel from "@mui/material/InputLabel";
-import MenuItem from "@mui/material/MenuItem";
-import FormControl from "@mui/material/FormControl";
+import {Table, TableHeader, TableColumn, TableBody, TableRow, TableCell, getKeyValue, Spinner} from "@nextui-org/react";
 
 import Button from "../Button"; // Custom button component
 import Buttons from "@mui/material/Button";
 import { MdOutlineAdd } from "react-icons/md";
 import DragAndDropFileUpload from "../dragNdrop/DragNdrop.jsx";
 import { useSelector } from "react-redux";
-import { useEffect } from "react";
 import {Select, SelectItem} from "@nextui-org/react";
 import user from "../../assets/classCards/user.png";
 
@@ -98,9 +93,37 @@ export default function ExamPage() {
       </div>
         )
 
-      case "viewresult":
-        return <div>View Result Component Goes Here</div>;
-
+        case "viewresult":
+          const dummyData = [
+            { subject: "Opearating System", marks: 85, status: "Passed" },
+            { subject: "Software Testing", marks: 78, status: "Passed" },
+            { subject: "Computer Networks", marks: 92, status: "Passed" },
+            { subject: "Java ", marks: 65, status: "Passed" },
+            { subject: "Python", marks: 30, status: "Failed" },
+          ];
+        
+          return (
+            <Table
+              aria-label="Student Results"
+              className="min-h-[400px] w-full bg-white p-4 shadow-md rounded-lg"
+            >
+              <TableHeader>
+                <TableColumn key="subject">Subject</TableColumn>
+                <TableColumn key="marks">Marks</TableColumn>
+                <TableColumn key="status">Status</TableColumn>
+              </TableHeader>
+              <TableBody>
+                {dummyData.map((item, index) => (
+                  <TableRow key={index}>
+                    <TableCell>{item.subject}</TableCell>
+                    <TableCell>{item.marks}</TableCell>
+                    <TableCell>{item.status}</TableCell>
+                  </TableRow>
+                ))}
+              </TableBody>
+            </Table>
+          );
+        
       default:
         return <div>Please select an action or class from the sidebar.</div>;
     }
@@ -160,7 +183,7 @@ export default function ExamPage() {
                   className="w-12 h-12 rounded-full mb-2 border solid white"
                 />
               </ListItemIcon>
-              React
+              Show Result
             </ListItem>
           </List>
         </Drawer>
