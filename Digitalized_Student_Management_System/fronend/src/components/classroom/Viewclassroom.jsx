@@ -1,23 +1,23 @@
-import React, { useEffect, useState } from 'react';
-import { useSelector } from 'react-redux';
-import { useParams } from 'react-router';
-import axios from 'axios';
-import 'boxicons/css/boxicons.min.css';
-import { Avatar, Button, TextField } from '@mui/material';
-import Announcements from './Assignments';
-
+import React, { useEffect, useState } from "react";
+import { useSelector } from "react-redux";
+import { useParams } from "react-router";
+import axios from "axios";
+import "boxicons/css/boxicons.min.css";
+import { Avatar, Button, TextField } from "@mui/material";
+import Announcements from "./Assignments";
+import { toast, ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 function Viewclassroom() {
   const [showInput, setShowInput] = useState(false);
-  const [inputValue, setInput] = useState('');
+  const [inputValue, setInput] = useState("");
   const [image, setImage] = useState(null);
-  const [active, setActive] = useState('assignment');
+  const [active, setActive] = useState("assignment");
   const [students, setStudents] = useState([]);
   const { classId } = useParams();
   const classData = useSelector((state) => state.class.classData);
   const userData = useSelector((state) => state.auth.userData);
   const [classInfo, setClassInfo] = useState({});
 
-  // Update classInfo whenever classData or classId changes
   useEffect(() => {
     if (classData && classData.length > 0) {
       const classDetails = classData.find((item) => item.classCode === classId);
@@ -25,125 +25,114 @@ function Viewclassroom() {
     }
   }, [classData, classId]);
 
-  // Fetch joined students
   useEffect(() => {
     axios
-      .post('http://localhost:8000/class/joined-students', { classCode: classId })
+      .post("http://localhost:8000/class/joined-students", { classCode: classId })
       .then((result) => {
         setStudents(result.data.data.students);
       })
-      .catch((err) => {
-        console.log(err);
+      .catch((error) => {
+        const errorMessage = error.response?.data?.message || "Something went wrong!";
+        toast.error(errorMessage, { autoClose: 1500 });
       });
   }, [classId]);
 
-  // Handle file input
   const handleChange = (e) => {
     if (e.target.files && e.target.files[0]) {
       setImage(e.target.files[0]);
     }
   };
 
-  // Handle assignment upload
   const handleUpload = () => {
     const formData = new FormData();
-    formData.append('title', inputValue);
-    formData.append('classCode', classId);
-    formData.append('attachment', image);
+    formData.append("title", inputValue);
+    formData.append("classCode", classId);
+    formData.append("attachment", image);
 
     axios
-      .post('http://localhost:8000/class/post-assignment', formData)
+      .post("http://localhost:8000/class/post-assignment", formData)
       .then((result) => {
+        const message = result.data.data.message
+        // toast.success(message || "Assignment Posted!",
+        //   { 
+        //   position: "top-right",
+        //   autoClose: 1500,
+        //   hideProgressBar: false,
+        //   closeOnClick: true,
+        //   pauseOnHover: true,
+        //   draggable: true,
+        //   progress: undefined,});
         setClassInfo(result.data.data);
       })
       .catch((error) => {
-        console.log(error);
+        // const errorMessage = error.response?.data?.message || "Something went wrong!";
+        // toast.error(errorMessage, { autoClose: 1500 });
       });
-      setShowInput(false);
-      setImage(null);
-      setInput('');
-    }
+    setShowInput(false);
+    setImage(null);
+    setInput("");
+  };
 
-
-  // Render component based on active tab
   const renderComponent = () => {
     switch (active) {
-      case 'assignment':
+      case "assignment":
         return (
-          <div className="p-4 overflow-hidden -mt-[2.4rem] ml-4">
-            {
-              userData.role === "Teacher" ? 
-              (
-
-            <div className="shadow-md rounded-md overflow-hidden min-h-[4.5rem] mb-6 mt-6">
-              <div className="p-7 w-[70vw] bg-white">
-                {showInput ? (
-                  <form className="flex flex-col items-start">
-                    <TextField
-                      id="filled-multiline-flexible"
-                      multiline
-                      label="Announce Something to class"
-                      variant="filled"
-                      value={inputValue}
-                      className="w-[50vw]"
-                      onChange={(e) => setInput(e.target.value)}
-                    />
-                    <div className="flex justify-between w-[50vw] mt-5">
-                      <input
-                        onChange={handleChange}
-                        variant="outlined"
-                        color="primary"
-                        type="file"
+          <div className="mt-4">
+            {userData.role === "Teacher" && (
+              <div className="shadow-md rounded-md overflow-hidden mb-6">
+                <div className="p-5 bg-white">
+                  {showInput ? (
+                    <form className="flex flex-col gap-4">
+                      <TextField
+                        label="Announce Something to Class"
+                        variant="filled"
+                        multiline
+                        value={inputValue}
+                        onChange={(e) => setInput(e.target.value)}
                       />
-                      <div>
-                        <Button onClick={() => setShowInput(false)}>Cancel</Button>
-                        <Button onClick={handleUpload} color="primary" variant="contained">
-                          Post
-                        </Button>
+                      <div className="flex justify-between items-center gap-4">
+                        <input type="file" onChange={handleChange} />
+                        <div className="flex gap-2">
+                          <Button onClick={() => setShowInput(false)}>Cancel</Button>
+                          <Button onClick={handleUpload} color="primary" variant="contained">
+                            Post
+                          </Button>
+                        </div>
                       </div>
+                    </form>
+                  ) : (
+                    <div
+                      className="flex items-center cursor-pointer"
+                      onClick={() => setShowInput(true)}
+                    >
+                      <Avatar />
+                      <div className="ml-4 font-medium text-gray-600">Post Assignment</div>
                     </div>
-                  </form>
-                ) : (
-                  <div
-                    className="flex items-center cursor-pointer !important"
-                    onClick={() => setShowInput(true)}
-                  >
-                    <Avatar />
-                    <div className="ml-4">Post Assignment</div>
-                  </div>
-                )}
+                  )}
+                </div>
               </div>
-            </div>
-              ) : null
-            }
-            {/* {classInfo.assignment &&
-              classInfo.assignment.map((item, index) => (
-                <Announcements key={index} assignment={item} classData={classInfo} />
-              ))} */}
-              {classInfo.assignment &&
-       [...classInfo.assignment]
-    .sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt)) // Sort in descending order
-    .map((item, index) => (
-      <Announcements key={index} assignment={item} classData={classInfo} />
-    ))}
-
+            )}
+            {classInfo.assignment &&
+              [...classInfo.assignment]
+                .sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt))
+                .map((item, index) => (
+                  <Announcements key={index} assignment={item} classData={classInfo} />
+                ))}
           </div>
         );
-      case 'students':
+      case "students":
         return (
-          <div className="bg-white rounded-lg shadow p-4 mt-4 max-h-80 overflow-y-auto">
-            <h2 className="text-2xl font-semibold">Teacher</h2>
-            <ol className="list-disc pl-8">
+          <div className="bg-white rounded-lg shadow p-6 max-h-96 overflow-y-auto">
+            <h2 className="text-2xl font-bold text-gray-800 mb-4">Teacher</h2>
+            <ul className="list-disc pl-5 mb-4">
               <li>{classInfo.owner?.toUpperCase()}</li>
-            </ol>
-            <h2 className="text-2xl font-semibold mt-4">Students</h2>
-            <ol className="list-disc pl-8">
+            </ul>
+            <h2 className="text-2xl font-bold text-gray-800 mb-4">Students</h2>
+            <ul className="list-disc pl-5">
               {students.map((student) => (
-                student &&(
-                  <li key={student?.username}>{student?.username.toUpperCase()}</li>
-                )
+                student && <li key={student?.username}>{student?.username.toUpperCase()}</li>
               ))}
-            </ol>
+            </ul>
           </div>
         );
       default:
@@ -152,61 +141,58 @@ function Viewclassroom() {
   };
 
   return (
+    <>
+    <ToastContainer/>
     <div className="bg-gray-100 min-h-screen">
-      {/* Navbar */}
-      <nav className="w-full bg-white shadow-lg py-4 px-8 flex justify-between items-center">
-        <div className="flex items-center space-x-4">
-          <i className="bx bx-plus"></i>
-          <a href="#" className="text-blue-800 font-bold text-2xl">
-            StudyRoom
-          </a>
+      <nav className="w-full bg-white shadow-lg py-4 px-6 flex justify-between items-center">
+        <div className="flex items-center gap-4">
+          <i className="bx bx-plus text-blue-600"></i>
+          <span className="text-blue-800 font-bold text-2xl">StudyRoom</span>
         </div>
-        <div className="flex space-x-4 items-center">
+        <div className="flex gap-4 items-center text-gray-600">
           <i className="bx bx-plus text-2xl"></i>
           <i className="bx bxs-grid text-2xl"></i>
           <i className="bx bx-user-circle text-2xl"></i>
         </div>
       </nav>
 
-      {/* Main Content */}
-      <div className="max-w-5xl mx-auto mt-8">
-        <div className="bg-blue-600 text-white p-6 rounded-lg flex items-center space-x-4 mb-6">
-          <div>
-            <h1 className="text-3xl font-semibold">{classInfo.classname?.toUpperCase()}</h1>
-            <p className="text-lg">{classInfo.section?.toUpperCase()}</p>
-            <p className="text-sm mt-2">
-              Class Code: <span className="font-mono">{classInfo.classCode}</span>
-            </p>
-          </div>
+      <div className="max-w-5xl mx-auto mt-8 p-4">
+        <div className="bg-blue-600 text-white p-6 rounded-lg mb-6">
+          <h1 className="text-3xl font-semibold">{classInfo.classname?.toUpperCase()}</h1>
+          <p className="text-lg">{classInfo.section?.toUpperCase()}</p>
+          <p className="text-sm mt-2">
+            Class Code: <span className="font-mono">{classInfo.classCode}</span>
+          </p>
         </div>
 
-        <div className="flex flex-col gap-2">
+        <div className="flex flex-col gap-6">
           <div className="bg-white rounded-lg shadow p-4">
-            <ol className="flex gap-x-20 justify-center">
-              <li
+            <div className="flex gap-12 justify-center">
+              <span
                 className={`cursor-pointer ${
-                  active === 'assignment' ? 'font-bold text-blue-600' : ''
+                  active === "assignment" ? "font-bold text-blue-600" : "text-gray-500"
                 }`}
-                onClick={() => setActive('assignment')}
+                onClick={() => setActive("assignment")}
               >
-                <i className="bx bx-clipboard"></i> Assignment
-              </li>
-              <li
+                <i className="bx bx-clipboard mr-2"></i>Assignment
+              </span>
+              <span
                 className={`cursor-pointer ${
-                  active === 'students' ? 'font-bold text-blue-600' : ''
+                  active === "students" ? "font-bold text-blue-600" : "text-gray-500"
                 }`}
-                onClick={() => setActive('students')}
+                onClick={() => setActive("students")}
               >
-                <i className="bx bxs-user"></i> Students
-              </li>
-            </ol>
+                <i className="bx bxs-user mr-2"></i>Students
+              </span>
+            </div>
           </div>
-
-          <div>{renderComponent()}</div>
         </div>
+          {renderComponent()}
       </div>
     </div>
-  );
+    </>
 
+  );
 }
+
 export default Viewclassroom;
