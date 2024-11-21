@@ -1,386 +1,298 @@
-import * as React from "react";
-import { styled } from "@mui/material/styles";
-import Box from "@mui/material/Box";
-import Drawer from "@mui/material/Drawer";
-import CssBaseline from "@mui/material/CssBaseline";
-import MuiAppBar from "@mui/material/AppBar";
-import Toolbar from "@mui/material/Toolbar";
-import Typography from "@mui/material/Typography";
-import Divider from "@mui/material/Divider";
-import IconButton from "@mui/material/IconButton";
+import React, { useState, useEffect } from "react";
+import {
+  Box,
+  AppBar,
+  Toolbar,
+  IconButton,
+  Typography,
+  Drawer,
+  CssBaseline,
+  Divider,
+  List,
+  ListItem,
+  ListItemButton,
+  ListItemText,
+  TextField,
+  Button,
+  ListItemIcon,
+} from "@mui/material";
 import MenuIcon from "@mui/icons-material/Menu";
-import TextField from "@mui/material/TextField";
-import List from "@mui/material/List";
-import ListItem from "@mui/material/ListItem";
-import ListItemButton from "@mui/material/ListItemButton";
-import ListItemIcon from "@mui/material/ListItemIcon";
-import ListItemText from "@mui/material/ListItemText";
-import InboxIcon from "@mui/icons-material/Inbox";
-import MailIcon from "@mui/icons-material/Mail";
-import Button from "../Button"; // Ensure this is your custom button component
-import Buttons from "@mui/material/Button";
 import { MdOutlineAdd } from "react-icons/md";
-import ClassCard from "./ClassCard"; // Ensure you have this component
-import user from "../../assets/classCards/user.png"; // Ensure you have this asset
-import classBackground from "../../assets/classCards/classbackground.jpg"; // Ensure you have this asset
+import { styled } from "@mui/system";
 import axios from "axios";
-import { useDispatch, useSelector } from "react-redux";
-import { useEffect } from "react";
-import { addClass } from "../../store/classSlice";
+import { useSelector, useDispatch } from "react-redux";
 import { useNavigate } from "react-router";
-import { Icon } from "@mui/material";
 import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import ClassCard from "./ClassCard";
+import { addClass } from "../../store/classSlice";
+import user from "../../assets/classCards/user.png";
+import classBackground from "../../assets/classCards/classbackground.jpg"; // Ensure you have this asset
 
 
 const drawerWidth = 240;
 
-const Main = styled("main", { shouldForwardProp: (prop) => prop !== "open" })(
-  ({ theme, open }) => ({
-    flexGrow: 1,
-    height: "100vh",
-    transition: theme.transitions.create("margin", {
-      easing: theme.transitions.easing.sharp,
-      duration: theme.transitions.duration.leavingScreen,
-    }),
-    marginLeft: open ? 0 : `-${drawerWidth}px`,
-    backgroundImage: `url(${classBackground})`,
-    backgroundSize: "contain",
-    backgroundPosition: "center",
-  })
-);
+const StyledAppBar = styled(AppBar)({
+  backgroundColor: "#fff",
+  color: "#333",
+  boxShadow: "0px 2px 4px rgba(0, 0, 0, 0.1)",
+});
 
-const AppBar = styled(MuiAppBar, {
-  shouldForwardProp: (prop) => prop !== "open",
-})(({ theme, open }) => ({
-  transition: theme.transitions.create(["margin", "width"], {
-    easing: theme.transitions.easing.sharp,
-    duration: theme.transitions.duration.leavingScreen,
-  }),
-  marginLeft: open ? `${drawerWidth}px` : "0",
-  width: open ? `calc(100% - ${drawerWidth}px)` : "100%",
+const Main = styled("main")(({ theme }) => ({
+  flexGrow: 1,
+  padding: theme.spacing(3),
+  backgroundColor: "#f9f9f9",
+  minHeight: "100vh",
 }));
 
 export default function ClassroomHomePage() {
-  const [loading, setLoading] = React.useState(false);
-  const [createdClasses, setCreatedClasses] = React.useState([]);
-  const [joinedClasses, setJoinedClasses] = React.useState([]);
+  const [open, setOpen] = useState(false);
+  const [joinDrawerOpen, setJoinDrawerOpen] = useState(false);
+  const [classname, setClassName] = useState("");
+  const [subject, setSubject] = useState("");
+  const [section, setSection] = useState("");
+  const [year, setYear] = useState("");
+  const [joinId, setJoinId] = useState("");
+  const [classes, setClasses] = useState([]);
   const userData = useSelector((state) => state.auth.userData);
-  const [open, setOpen] = React.useState(false);
-  const [joinDrawerOpen, setJoinDrawerOpen] = React.useState(false);
-  const [classname, setClassName] = React.useState("");
-  const [subject, setSubject] = React.useState("");
-  const [section, setSection] = React.useState("");
-  const [year, setYear] = React.useState("");
-  const [joinId, setJoinId] = React.useState("");
-  const navigate = useNavigate()
-  const dispatch = useDispatch()
-  
-  const clearFields = ()=>{
-      setClassName('')
-      setSubject('')
-      setSection('')
-      setYear('')
-      setJoinId('')
-  }
-  useEffect(()=>{
-    clearFields()
-  },[joinDrawerOpen])
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
 
-  if (userData.role === "Teacher") {
-    useEffect(()=>{
-      axios
-      .get('http://localhost:8000/class/created-classes')
-      .then((result)=>{
-        setCreatedClasses(result.data.data.classes);
-        dispatch(addClass(createdClasses))
-      })
-      .catch((err)=>{
-        console.log(err);
-      })
-    },[createdClasses])  
-  }else if(userData.role === "Student"){
-    useEffect(()=>{
-      axios
-      .get('http://localhost:8000/class/joined-classes')
-      .then((result)=>{
-        setJoinedClasses(result.data.data.classArr);
-        dispatch(addClass(joinedClasses))
+  useEffect(() => {
+    const fetchClasses = async () => {
+      try {
+        const endpoint =
+          userData.role === "Teacher"
+            ? "http://localhost:8000/class/created-classes"
+            : "http://localhost:8000/class/joined-classes";
+        const { data } = await axios.get(endpoint);
+        setClasses(data.data.classes || data.data.classArr);
+        dispatch(addClass(data.data.classes || data.data.classArr));
+      } catch (error) {
+        console.error("Error fetching classes:", error);
+      }
+    };
 
-      })
-      .catch((err)=>{
-        console.log(err);
-      })
-    },[joinedClasses]) 
-  }
-  
+    fetchClasses();
+  }, [userData.role, dispatch]);
 
-  const handleSubmit = (e) => {
+  const clearFields = () => {
+    setClassName("");
+    setSubject("");
+    setSection("");
+    setYear("");
+    setJoinId("");
+  };
+
+  const handleCreateClass = async (e) => {
     e.preventDefault();
     if (!classname || !subject || !section || !year) {
-      toast.error("All fields are required.", {
-        position: "top-right",
-        autoClose: 1500,
-      });
+      toast.error("All fields are required!");
       return;
     }
-    axios
-      .post(`http://localhost:8000/class/create-class`, {
-        classname,
-        subject,
-        section,
-        year,
-      })
-      .then((result) => {
-        setCreatedClasses((prevClasses)=>{
-          return [...prevClasses,result.data.data]
-        })
-        const message = result.data.message || "Class Created"
-        toast.success(message, {
-          position: "top-right",
-          autoClose: 1500,
-          hideProgressBar: false,
-          closeOnClick: true,
-          pauseOnHover: true,
-          draggable: true,
-          progress: undefined,
-        });
-      setJoinDrawerOpen(false)
-      })
-      .catch((error) => {
-        const errorMessage = error.response?.data?.message || "Something went wrong!";
-        toast.error(errorMessage, {
-          position: "top-right",
-          autoClose: 1500,
-          hideProgressBar: false,
-          closeOnClick: true,
-          pauseOnHover: true,
-          draggable: true,
-          progress: undefined,
-        });
-      });
+
+    try {
+      const { data } = await axios.post(
+        "http://localhost:8000/class/create-class",
+        {
+          classname,
+          subject,
+          section,
+          year,
+        }
+      );
+      setClasses((prev) => [...prev, data.data]);
+      toast.success(data.message || "Class created!");
+      clearFields();
+      setJoinDrawerOpen(false);
+    } catch (error) {
+      toast.error(error.response?.data?.message || "Failed to create class!");
+    }
   };
 
-  const join = (e) => {
+  const handleJoinClass = async (e) => {
     e.preventDefault();
     if (!joinId) {
-      toast.error("Class id is required.", {
-        position: "top-right",
-        autoClose: 1500,
-      });
+      toast.error("Class ID is required!");
       return;
     }
-    axios
-      .post(`http://localhost:8000/class/join-class`, { classCode: joinId })
-      .then((result) => {
-        setJoinedClasses((prevClasses)=>{
-          return [...prevClasses,result.data.data.classroom]
-        })
-        const message = result.data.message || "Class Joined"
-        toast.success(message, {
-          position: "top-right",
-          autoClose: 1500,
-          hideProgressBar: false,
-          closeOnClick: true,
-          pauseOnHover: true,
-          draggable: true,
-          progress: undefined,
-        });
-      setJoinDrawerOpen(false)
-      })
-      .catch((error) => {
-        const errorMessage = error.response?.data?.message || "Something went wrong!";
-        toast.error(errorMessage, {
-          position: "top-right",
-          autoClose: 1500,
-          hideProgressBar: false,
-          closeOnClick: true,
-          pauseOnHover: true,
-          draggable: true,
-          progress: undefined,
-        });
-      });
+
+    try {
+      const { data } = await axios.post(
+        "http://localhost:8000/class/join-class",
+        {
+          classCode: joinId,
+        }
+      );
+      setClasses((prev) => [...prev, data.data.classroom]);
+      toast.success(data.message || "Joined class!");
+      clearFields();
+      setJoinDrawerOpen(false);
+    } catch (error) {
+      toast.error(error.response?.data?.message || "Failed to join class!");
+    }
   };
-  const renderClass =
-        userData.role === "Teacher" ? 
-        createdClasses 
-        : userData.role === "Student" ? 
-        joinedClasses : null
+
   return (
     <Box sx={{ display: "flex" }}>
-      <ToastContainer/>
       <CssBaseline />
-      <AppBar position="fixed">
+      <ToastContainer />
+      <StyledAppBar position="fixed">
         <Toolbar
           sx={{
-            display: "flex",
-            justifyContent: "space-between",
             backgroundColor: "#8E6AC4",
+            zIndex: 1,
           }}
         >
           <IconButton
-            color="inherit"
-            aria-label="open drawer"
-            onClick={() => setOpen(!open)}
             edge="start"
+            color="inherit"
+            onClick={() => setOpen(!open)}
           >
-          <MenuIcon />
+            <MenuIcon />
           </IconButton>
-          <Typography variant="h4" noWrap component="div">
+          <Typography variant="h6" sx={{ flexGrow: 1 }}>
             StudyRoom
           </Typography>
-          <div>
-            <IconButton
-              color="inherit"
-              aria-label="open right drawer"
-              onClick={() => setJoinDrawerOpen(!joinDrawerOpen)}
-              edge="end"
-            >
-              <Buttons
-                variant="contained"
-                sx={{ fontSize: "15px", backgroundColor: "#3A2B51" }}
-              >
-               {userData.role ==="Teacher" ? "Create" : "Join"} <MdOutlineAdd />
-              </Buttons>
-            </IconButton>
-          </div>
+          <Button
+            variant="contained"
+            color="primary"
+            sx={{ backgroundColor: "#3A2B51" }}
+            onClick={() => setJoinDrawerOpen(true)}
+            startIcon={<MdOutlineAdd />}
+          >
+            {userData.role === "Teacher" ? "Create Class" : "Join Class"}
+          </Button>
         </Toolbar>
-      </AppBar>
+      </StyledAppBar>
 
       <Drawer
+        open={open}
+        onClose={() => setOpen(false)}
         sx={{
           width: drawerWidth,
-          flexShrink: 0,
-          "& .MuiDrawer-paper": {
-            width: drawerWidth,
-            boxSizing: "border-box",
-            marginTop: "64px",
-          },
+          "& .MuiDrawer-paper": { width: drawerWidth, boxSizing: "border-box" },
+          zIndex: 0,
         }}
-        variant="persistent"
-        anchor="left"
-        open={open}
       >
+        <Toolbar />
         <Divider />
         <List>
-          {
-          renderClass.map((item) => (
-            <ListItem key={item.classCode} disablePadding>
-              <ListItemButton onClick={()=>navigate(`/class/${item.classCode}`)}>
+          {classes.map((cls) => (
+            <ListItem key={cls.classCode} disablePadding>
+              <ListItemButton
+                onClick={() => navigate(`/class/${cls.classCode}`)}
+              >
                 <ListItemIcon className="mr-3">
-                <img 
-                  src={user} 
-                  alt="User Profile" 
-                  className="w-12 h-12 rounded-full mb-2  border solid white " 
-                />
+                  <img
+                    src={user}
+                    alt="User Profile"
+                    className="w-12 h-12 rounded-full mb-2  border solid white "
+                  />
                 </ListItemIcon>
-                <ListItemText primary={item.classname.toUpperCase()} />
+                <ListItemText primary={cls.classname.toUpperCase()} />
               </ListItemButton>
             </ListItem>
           ))}
         </List>
       </Drawer>
 
-      <Main open={open}>
-        <Box sx={{ mt: 8, padding: "16px" }}>
-          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-4 gap-5">
-            {
-              userData.role === "Teacher" ? 
-              (createdClasses.map((item)=>(
-                <ClassCard key={item.classCode} classData={item} image={user}/>
-              ))) : userData.role === "Student" ? (
-                joinedClasses.map((item)=>(
-                  <ClassCard key={item.classCode} classData={item} image={user}/>
-                ))
-              ) : null
-            }
-
-           
-          </div>
+      <Main 
+      sx={{
+        backgroundImage: `url(${classBackground})`,
+        // backgroundSize: "cover",
+        // backgroundPosition: "center",
+        
+      }}
+      >
+        <Toolbar />
+        <Typography variant="h4" sx={{ marginBottom: 2 }}>
+          Welcome,
+        </Typography>
+        <Box
+          sx={{
+            display: "grid",
+            gridTemplateColumns: "repeat(auto-fill, minmax(300px, 1fr))",
+            gap: 2,
+          }}
+        >
+          {classes.map((cls) => (
+            <ClassCard key={cls.classCode} classData={cls} image={user} />
+          ))}
         </Box>
       </Main>
 
       <Drawer
-        sx={{
-          backgroundImage: `url(${classBackground})`,
-          backgroundSize: "cover",
-          backgroundPosition: "center",
-          width: drawerWidth,
-          flexShrink: 0,
-          "& .MuiDrawer-paper": {
-            width: drawerWidth,
-            marginTop: "64px",
-          },
-        }}
-        variant="persistent"
         anchor="right"
         open={joinDrawerOpen}
+        onClose={() => setJoinDrawerOpen(false)}
+        sx={{ "& .MuiDrawer-paper": { width: 320, padding: 2 } }}
       >
-        <Divider />
-        {
-          userData.role === "Teacher" ? (
-<div>
-        <p className="pt-2 ml-14 text-xl">Create Class</p>
-          <form
-            onSubmit={handleSubmit}
-            className="pl-5 pr-5 pb-5 flex justify-center flex-col"
-          >
+        <Typography variant="h6" sx={{ marginBottom: 2 }}>
+          {userData.role === "Teacher" ? "Create Class" : "Join Class"}
+        </Typography>
+        <form
+          onSubmit={
+            userData.role === "Teacher" ? handleCreateClass : handleJoinClass
+          }
+        >
+          {userData.role === "Teacher" && (
+            <>
+              <TextField
+                fullWidth
+                label="Class Name"
+                margin="normal"
+                value={classname}
+                onChange={(e) => setClassName(e.target.value)}
+              />
+              <TextField
+                fullWidth
+                label="Subject"
+                margin="normal"
+                value={subject}
+                onChange={(e) => setSubject(e.target.value)}
+              />
+              <TextField
+                fullWidth
+                label="Section"
+                margin="normal"
+                value={section}
+                onChange={(e) => setSection(e.target.value)}
+              />
+              <TextField
+                fullWidth
+                label="Year"
+                margin="normal"
+                value={year}
+                onChange={(e) => setYear(e.target.value)}
+              />
+            </>
+          )}
+          {userData.role === "Student" && (
             <TextField
-              label={" Class Name"}
+              fullWidth
+              label="Class Code"
               margin="normal"
-              value={classname}
-              onChange={(e) => setClassName(e.target.value)}
-            />
-            <TextField
-              label={" Subject"}
-              margin="normal"
-              value={subject}
-              onChange={(e) => setSubject(e.target.value)}
-            />
-            <TextField
-              label={" Section"}
-              margin="normal"
-              value={section}
-              onChange={(e) => setSection(e.target.value)}
-            />
-            <TextField
-              label={" Year"}
-              margin="normal"
-              value={year}
-              onChange={(e) => setYear(e.target.value)}
-            />
-            <Button
-              type="submit"
-              className="w-18 h-8 text-white text-sm text-center bg-purple-500"
-            >
-              Create
-            </Button>
-          </form>
-</div>
-          ) : userData.role === "Student" ? (
-            <div>
-              <p className="pt-3 ml-14 text-xl">Join Class</p>
-          <form
-            onSubmit={join}
-            className="p-5 pt-0 flex justify-center flex-col"
-          >
-            <TextField
-              label={"Enter Class Code"}
-              margin="normal" 
               value={joinId}
               onChange={(e) => setJoinId(e.target.value)}
             />
-            <Button
-              type="submit"
-              className="w-18 h-8  text-white text-sm text-center bg-purple-500"
-            >
-              Join
-            </Button>
-          </form>
-        </div>
-          ) : null
-        }
-          <Divider />
+          )}
+          <Button
+            type="submit"
+            fullWidth
+            variant="contained"
+            color="primary"
+            sx={{
+              marginTop: 2,
+              backgroundColor: "#9333EA",
+              "&:hover": {
+                backgroundColor: "#7E22CE",
+              },
+            }}
+          >
+            {userData.role === "Teacher" ? "Create" : "Join"}
+          </Button>
+        </form>
       </Drawer>
     </Box>
   );

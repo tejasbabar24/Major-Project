@@ -37,38 +37,52 @@ current_date = now.strftime("%Y-%m-%d")
 
 @app.route('/reg-encode', methods=['POST'])
 def regEncoding():
-    encodeArr = []
-    cloudArr = request.json.get('img', [])
-    
-    for imgId in cloudArr:
-        response = requests.get(imgId)
-        print(response)
-        if response.status_code == 200:
-            try:
+        encodeArr=[]
+        cloudArr=request.json.get('img',[])
+        for imgId in cloudArr:
+            response = requests.get(imgId)
+            print(response)
+            if response.status_code == 200:
                 img = Image.open(BytesIO(response.content))
-                # Convert the image to grayscale
-                img_gray = img.convert('L')  # 'L' mode converts to 8-bit grayscale
-                img_array = np.array(img_gray)
-                encoded_face = encode(img_array)
+                encoded_face = encode(img)
                 print(encoded_face)
                 encodeArr.append(encoded_face)
-            except Exception as e:
-                encodeArr.append({"error": f"Failed to process image with ID {imgId}: {str(e)}"})
-        else:
-            encodeArr.append({"error": f"Failed to fetch image with ID {imgId}"})
+            else:
+                encodeArr.append({"error": f"Failed to fetch image with ID {imgId}"})
 
-    return jsonify(encodeArr)
+        return jsonify(encodeArr) 
+
 def encode(image):
-        if image is None:
-            return jsonify({"error": "Could not decode the image"}), 400
+    if image is None or image.size == 0:
+        return jsonify({"error": "Could not decode the image"}), 400
+    try:
+        # Convert the image to RGB if it's not in that mode
+        if image.mode != 'RGB':
+            image = image.convert('RGB')
+        
+        # Convert image to a numpy array
+        img_array = np.array(image)
 
-        face_locations = face_recognition.face_locations(image)
-        encoded_faces = face_recognition.face_encodings(image, face_locations)
+        # Face detection using the CNN model (more accurate but slower)
+        face_locations = face_recognition.face_locations(
+            img_array, model="cnn", number_of_times_to_upsample=2
+        )
+        print("Detected face locations:", face_locations)
 
+        # Get face encodings based on the detected face locations
+        encoded_faces = face_recognition.face_encodings(img_array, face_locations)
+        print("Encoded faces:", encoded_faces)
+
+        # If faces are found, return a list of encodings
         if len(encoded_faces) > 0:
-            return encoded_faces[0].tolist()
+            # Return all encodings as a list
+            return jsonify([encoding.tolist() for encoding in encoded_faces])
+
         else:
-            return {"error": "No face found in the image"}
+            return jsonify({"error": "No face found in the image"}), 400
+    
+    except Exception as e:
+        return jsonify({"error": f"An error occurred while processing the image: {str(e)}"}), 500
 
 def save(img,name,bbox,width=180,height=227):
     x,y,w,h=bbox

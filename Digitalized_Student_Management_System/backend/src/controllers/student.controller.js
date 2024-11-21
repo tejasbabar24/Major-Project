@@ -241,13 +241,12 @@ const getCurrentUser = asyncHandler(async (req, res) => {
 const updateAccountDetails = asyncHandler(async (req, res, next) => {
     const { username, email } = req.body;
 
+    console.log(username,email)
     const profileLocalPath = req.file?.path;
 
     if (!(username || email || profileLocalPath)) {
         return next(new ApiError("Please fill in all the required fields."));
     }
-
-    const profile = await uploadOnCloudinary(profileLocalPath);
 
     const user = await Student.findByIdAndUpdate(
         req.user?._id,
@@ -255,7 +254,6 @@ const updateAccountDetails = asyncHandler(async (req, res, next) => {
             $set: {
                 username,
                 email,
-                profile: profile.url
             }
         },
         { new: true }

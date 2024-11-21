@@ -27,3 +27,4 @@ function ClassCard({classData,image}) {
 }
 
 export default ClassCard;
+
