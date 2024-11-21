@@ -95,11 +95,11 @@ export default function ExamPage() {
 
         case "viewresult":
           const dummyData = [
-            { subject: "Opearating System", marks: 85, status: "Passed" },
-            { subject: "Software Testing", marks: 78, status: "Passed" },
-            { subject: "Computer Networks", marks: 92, status: "Passed" },
-            { subject: "Java ", marks: 65, status: "Passed" },
-            { subject: "Python", marks: 30, status: "Failed" },
+            { subject: "Opearating System", marks: 19, status: "Passed" },
+            { subject: "Software Testing", marks: 10, status: "Passed" },
+            { subject: "Computer Networks", marks: 18, status: "Passed" },
+            { subject: "Java ", marks: 20, status: "Passed" },
+            { subject: "Python", marks: 5, status: "Failed" },
           ];
         
           return (
