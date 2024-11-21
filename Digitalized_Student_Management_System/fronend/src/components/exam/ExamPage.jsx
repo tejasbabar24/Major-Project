@@ -48,15 +48,15 @@ const AppBar = styled(MuiAppBar, {
 export default function ExamPage() {
   const userData = useSelector((state) => state.auth.userData);
   const [open, setOpen] = React.useState(true);
-  const [role, setRole] = React.useState("Teacher");
+  const [role, setRole] = React.useState(userData.role);
   const [uploadedFiles, setUploadedFiles] = React.useState([]);
   const handleFilesUploaded = (files) => setUploadedFiles(files);
   const [files, setFiles] = React.useState([]);
   const [selectedClass, setSelectedClass] = React.useState(""); // Initialize with an empty state or a meaningful default
 
-  const renderContent = (selectedClass) => {
-    switch (selectedClass) {
-      case "uploadresult":
+  const renderContent = () => {
+    switch (role) {
+      case "Teacher":
         return (
         <div className="flex justify-center items-center w-full   h-screen bg-gray-100">
         
@@ -93,35 +93,43 @@ export default function ExamPage() {
       </div>
         )
 
-        case "viewresult":
+        case "Student":
+          
           const dummyData = [
-            { subject: "Opearating System", marks: 19, status: "Passed" },
-            { subject: "Software Testing", marks: 10, status: "Passed" },
-            { subject: "Computer Networks", marks: 18, status: "Passed" },
-            { subject: "Java ", marks: 20, status: "Passed" },
-            { subject: "Python", marks: 5, status: "Failed" },
+            { subject: "Opearating System", marks: 19,  },
+            { subject: "Software Testing", marks: 10},
+            { subject: "Computer Networks", marks: 18,  },
+            { subject: "Java ", marks: 20,  },
+            { subject: "Python", marks: 5,  },
           ];
         
           return (
             <Table
-              aria-label="Student Results"
-              className="min-h-[400px] w-full bg-white p-4 shadow-md rounded-lg"
-            >
-              <TableHeader>
-                <TableColumn key="subject">Subject</TableColumn>
-                <TableColumn key="marks">Marks</TableColumn>
-                <TableColumn key="status">Status</TableColumn>
-              </TableHeader>
-              <TableBody>
-                {dummyData.map((item, index) => (
-                  <TableRow key={index}>
-                    <TableCell>{item.subject}</TableCell>
-                    <TableCell>{item.marks}</TableCell>
-                    <TableCell>{item.status}</TableCell>
-                  </TableRow>
-                ))}
-              </TableBody>
-            </Table>
+                aria-label="Student Results"
+                className="min-h-[400px] w-full bg-white p-4 shadow-lg rounded-lg border border-gray-200"
+              >
+                <TableHeader className="border-b-2 border-gray-200">
+                  <TableColumn key="subject" className="text-left text-lg font-semibold text-gray-700 px-4 py-2">
+                    Subject
+                  </TableColumn>
+                  <TableColumn key="marks" className="text-left text-lg font-semibold text-gray-700 px-4 py-2">
+                    Marks
+                  </TableColumn>
+                  <TableColumn key="status" className="text-left text-lg font-semibold text-gray-700 px-4 py-2">
+                    Status
+                  </TableColumn>
+                </TableHeader>
+                <TableBody>
+                  {dummyData.map((item, index) => (
+                    <TableRow key={index} className="odd:bg-gray-50 even:bg-white hover:bg-gray-100 transition-colors">
+                      <TableCell className="text-left text-sm text-gray-600 px-4 py-2">{item.subject}</TableCell>
+                      <TableCell className="text-left text-sm text-gray-600 px-4 py-2">{item.marks}</TableCell>
+                      <TableCell className="text-left text-sm text-gray-600 px-4 py-2">{item.marks> 7 ? 'Pass': "Failed " }</TableCell>
+                    </TableRow>
+                  ))}
+                </TableBody>
+              </Table>
+
           );
         
       default:
@@ -134,13 +142,14 @@ export default function ExamPage() {
       <CssBaseline />
       <AppBar position="fixed">
         <Toolbar sx={{ backgroundColor: "#8E6AC4" }}>
+          
           <Typography variant="h4" sx={{ marginLeft: "35%" }}>
             Result
           </Typography>
         </Toolbar>
-      </AppBar>
+      </AppBar> 
 
-      {role === "Teacher" && (
+      {/* {role === "Teacher" && (
         <Drawer
           sx={{
             width: drawerWidth,
@@ -187,10 +196,10 @@ export default function ExamPage() {
             </ListItem>
           </List>
         </Drawer>
-      )}
+      )} */}
 
       <Main open={open}>
-        <Box sx={{ mt: 8 }}>{renderContent(selectedClass)}</Box>
+        <Box sx={{ mt: 8 }}>{renderContent()}</Box>
       </Main>
     </Box>
   );
