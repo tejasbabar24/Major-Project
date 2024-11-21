@@ -4,12 +4,8 @@ import "react-calendar/dist/Calendar.css"; // Import base calendar styles
 import "./HighlightedCalendar.css"; // Your custom styles
 
 function HighlightedCalendar({ highlightedDates }) {
-  
-  
-
   const Dates = highlightedDates.map((item) => item.Date);
-  
-  
+
   const normalizeDate = (date) => {
     const utcDate = new Date(Date.UTC(date.getFullYear(), date.getMonth(), date.getDate()));
     return utcDate.toISOString().split("T")[0]; // Return the date in YYYY-MM-DD format
@@ -30,8 +26,8 @@ function HighlightedCalendar({ highlightedDates }) {
   };
 
   return (
-    <div className="flex justify-center items-center mt-10">
-      <div className="w-full max-w-md p-4 bg-white ">
+    <div className="flex justify-center items-center mt-10 px-4 sm:px-6 lg:px-8">
+      <div className="w-full max-w-md p-4 bg-white rounded-lg shadow-lg">
         <Calendar tileClassName={tileClassName} />
       </div>
     </div>

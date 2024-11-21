@@ -44,34 +44,36 @@ export default function ShowAttendance({ dates, presentDates }) {
   const rows = dates.map((date) => createData(date));
 
   return (
-    <TableContainer component={Paper}>
-      <Table sx={{ minWidth: 700 }} aria-label="customized table">
-        <TableHead>
-          <TableRow>
-            <StyledTableCell>Date (Lectures Conducted)</StyledTableCell>
-            <StyledTableCell align="right">Present</StyledTableCell>
-            <StyledTableCell align="right">Absent&nbsp;</StyledTableCell>
-          </TableRow>
-        </TableHead>
-        <TableBody>
-          {rows.map((row) => (
-            <StyledTableRow key={row.date}>
-              <StyledTableCell component="th" scope="row">
-                {row.date}
-              </StyledTableCell>
+    <div className="overflow-x-auto">
+      <TableContainer component={Paper}>
+        <Table sx={{ minWidth: 700 }} aria-label="customized table">
+          <TableHead>
+            <TableRow>
+              <StyledTableCell>Date (Lectures Conducted)</StyledTableCell>
+              <StyledTableCell align="right">Present</StyledTableCell>
+              <StyledTableCell align="right">Absent&nbsp;</StyledTableCell>
+            </TableRow>
+          </TableHead>
+          <TableBody>
+            {rows.map((row) => (
+              <StyledTableRow key={row.date}>
+                <StyledTableCell component="th" scope="row">
+                  {row.date}
+                </StyledTableCell>
 
-              {/* Check if the row.date is in the presDates array */}
-              <StyledTableCell align="right">
-                {presDates.includes(row.date) ? 'Present' : '-'}
-              </StyledTableCell>
+                {/* Check if the row.date is in the presDates array */}
+                <StyledTableCell align="right">
+                  {presDates.includes(row.date) ? 'Present' : '-'}
+                </StyledTableCell>
 
-              <StyledTableCell align="right">
-                {!presDates.includes(row.date) ? 'Absent' : '-'}
-              </StyledTableCell>
-            </StyledTableRow>
-          ))}
-        </TableBody>
-      </Table>
-    </TableContainer>
+                <StyledTableCell align="right">
+                  {!presDates.includes(row.date) ? 'Absent' : '-'}
+                </StyledTableCell>
+              </StyledTableRow>
+            ))}
+          </TableBody>
+        </Table>
+      </TableContainer>
+    </div>
   );
 }
