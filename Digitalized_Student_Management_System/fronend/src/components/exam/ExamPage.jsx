@@ -7,9 +7,9 @@ import MuiAppBar from "@mui/material/AppBar";
 import Toolbar from "@mui/material/Toolbar";
 import Typography from "@mui/material/Typography";
 import Divider from "@mui/material/Divider";
-import { List, ListItem, ListItemButton, ListItemIcon, ListItemText } from "@mui/material";
+import { IconButton, List, ListItem, ListItemButton, ListItemIcon, ListItemText, useMediaQuery } from "@mui/material";
 import {Table, TableHeader, TableColumn, TableBody, TableRow, TableCell, getKeyValue, Spinner} from "@nextui-org/react";
-
+import MenuIcon from "@mui/icons-material/Menu";
 import Button from "../Button"; // Custom button component
 import Buttons from "@mui/material/Button";
 import { MdOutlineAdd } from "react-icons/md";
@@ -17,6 +17,8 @@ import DragAndDropFileUpload from "../dragNdrop/DragNdrop.jsx";
 import { useSelector } from "react-redux";
 import {Select, SelectItem} from "@nextui-org/react";
 import user from "../../assets/classCards/user.png";
+import examimg from './examimg.jpg'
+
 
 import axios from "axios";
 
@@ -54,20 +56,26 @@ export default function ExamPage() {
   const [files, setFiles] = React.useState([]);
   const [selectedClass, setSelectedClass] = React.useState(""); // Initialize with an empty state or a meaningful default
 
+  const isSmallScreen = useMediaQuery("(max-width: 768px)");
+
+  const toggleDrawer = () => setOpen(!open);
+
   const renderContent = () => {
     switch (role) {
       case "Teacher":
         return (
-        <div className="flex justify-center items-center w-full   h-screen bg-gray-100">
+        <div className={`"flex  justify-center items-center w-full align-middle ${isSmallScreen ?' flex-col' : "flex-row"} "`}>
+
+        <img src={examimg} alt="" className={` ${isSmallScreen ?' h-20 w-20' : "h-46 w-46" }`} />
         
         <form
           action=""
-          className="w-full max-w-md bg-white p-6 rounded-lg shadow-lg flex flex-col gap-10"
+          className="   p-6  flex flex-col gap-10 mt-16 "
         >
           <p className=" text-center text-lg">Upload students Marks File</p>
             <Select
               label="Your Class"
-              placeholder="Select Class"
+              placeholder="Select Class"  
               className="w-full"
               color="success"
               defaultValue="CS"
@@ -142,64 +150,80 @@ export default function ExamPage() {
       <CssBaseline />
       <AppBar position="fixed">
         <Toolbar sx={{ backgroundColor: "#8E6AC4" }}>
-          
+        {isSmallScreen && ( // Show toggle button only on small screens
+            <IconButton
+              color="inherit"
+              aria-label="open drawer"
+              edge="start"
+              onClick={toggleDrawer}
+              sx={{ mr: 2 }}
+            >
+              <MenuIcon  />
+            </IconButton>
+          )}         
           <Typography variant="h4" sx={{ marginLeft: "35%" }}>
             Result
           </Typography>
         </Toolbar>
       </AppBar> 
 
-      {/* {role === "Teacher" && (
+      {role === "Teacher" && (
+
         <Drawer
-          sx={{
-            width: drawerWidth,
-            flexShrink: 0,
-            "& .MuiDrawer-paper": {
-              width: drawerWidth,
-              boxSizing: "border-box",
-              marginTop: "64px",
-            },
-          }}
-          variant="persistent"
-          anchor="left"
-          open={open}
-        >
-          <Divider />
+              sx={{
+                width: drawerWidth,
+                flexShrink: 0,
+                "& .MuiDrawer-paper": {
+                  width: drawerWidth,
+                  boxSizing: "border-box",
+                  marginTop: isSmallScreen ? "56px" : "64px", // No margin on small screens
+                  zIndex: isSmallScreen ? 1301 : "auto",  // Ensure drawer overlaps content
+                },
+              }}
+              variant={isSmallScreen ? "temporary" : "persistent"} // Responsive behavior
+              anchor="left"
+              open={open}
+              onClose={toggleDrawer} // Close drawer on small screens when clicked outside
+            >
+              <Divider />
+              <List>
+                {role === "Teacher" && (
+                  <ListItem>
+                    <Buttons
+                      className="cursor-pointer"
+                      variant="contained"
+                      onClick={() => setSelectedClass("uploadresult")}
+                      sx={{ fontSize: "15px", backgroundColor: "#3A2B51" }}
+                    >
+                      Upload Result <MdOutlineAdd />
+                    </Buttons>
+                  </ListItem>
+                )}
 
-          <List>
-            {role === "Teacher" && (
-              <ListItem>
-                <Buttons
-                  className="cursor-pointer"
-                  variant="contained"
-                  onClick={() => setSelectedClass("uploadresult")}
-                  sx={{ fontSize: "15px", backgroundColor: "#3A2B51" }}
+                <Typography variant="h6" sx={{ textAlign: "center", paddingTop: 2 }}>
+                  Your Classes
+                </Typography>
+
+                <ListItem
+                  className="hover:bg-gray-100 cursor-pointer"
+                  onClick={() => setSelectedClass("viewresult")}
                 >
-                  Upload Result <MdOutlineAdd />
-                </Buttons>
-              </ListItem>
-            )}
+                  <ListItemIcon className="mr-3">
+                    <img
+                      src={user}
+                      alt="User Profile"
+                      className="w-12 h-12 rounded-full mb-2 border solid white"
+                    />
+                  </ListItemIcon>
+                  Show Result
+                </ListItem>
+              </List>
+            </Drawer>
 
-            <Typography variant="h6" sx={{ textAlign: "center", paddingTop: 2 }}>
-              Your Classes
-            </Typography>
-
-            <ListItem className="hover:bg-gray-100 cursor-pointer" onClick={()=>setSelectedClass('viewresult')}>
-              <ListItemIcon className="mr-3">
-                <img
-                  src={user}
-                  alt="User Profile"
-                  className="w-12 h-12 rounded-full mb-2 border solid white"
-                />
-              </ListItemIcon>
-              Show Result
-            </ListItem>
-          </List>
-        </Drawer>
-      )} */}
+      )}
 
       <Main open={open}>
-        <Box sx={{ mt: 8 }}>{renderContent()}</Box>
+        <Box sx={{ mt: 8 , marginLeft: isSmallScreen ? "300px" : '0' }}>{renderContent()}</Box>
       </Main>
     </Box>
   );
