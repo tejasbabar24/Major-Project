@@ -122,7 +122,7 @@ export default function ExamPage() {
     } 
      if (selectedClass === "classes") {
       return (
-        <div className={`flex flex-wrap mt-7 ${isSmallScreen ? 'grid grid-cols-2' : 'grid grid-cols-4'}`}>
+        <div className={`flex flex-wrap mt-7 ${isSmallScreen ? 'grid grid-cols-2' : 'grid grid-cols-5'}`}>
                 <div className="p-2">
                   <AttendanceCard name={"NMA"} date={"24-11-2024"} fileUrl={examimg} />
                 </div>
