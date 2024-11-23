@@ -68,20 +68,34 @@ const registerUser = asyncHandler(async (req, res, next) => {
     );
 
     console.log(uploadedphotos)
+    // Sending the POST request with uploaded photos
     const { data: encodeData } = await axios.post("http://localhost:5001/reg-encode", { img: uploadedphotos });
 
-    const encodingErrors = encodeData.filter(result => result.error);
+    // Log the response for debugging
+    console.log("Response from /reg-encode:", encodeData);
 
-    // if (encodingErrors.length > 0) {
-    //     return next(new ApiError(500, "Face encoding failed. Please upload clear images for better recognition."));
-    // }
-
-    const faceEncodings = encodeData.filter(result => !result.error);
-    
-    if (faceEncodings.length === 0) {
-        return next(new ApiError(500, " No valid face encodings were found. Please ensure the image contains a clear, visible face"));
+    // Handle errors first
+    if (encodeData.errors && encodeData.errors.length > 0) {
+        const errorMessages = encodeData.errors.map(error => error.error || `Error with image: ${error.image_url}`);
+        return next(new ApiError(500, `Face encoding failed: ${errorMessages.join(', ')}`));
     }
 
+    // Filter valid face encodings
+    const faceEncodings = encodeData.encodings;
+
+    // Check if no valid encodings were found
+    if (faceEncodings.length === 0) {
+        return next(new ApiError(
+            500, 
+            "No valid face encodings were found. Please ensure the image contains a clear, visible face."
+        ));
+    }
+
+    // Proceed with the valid encodings
+    console.log("Valid face encodings:", faceEncodings);
+
+
+    console.log(faceEncodings)
     const user = await Student.create({
         username: username.toLowerCase(),
         role,
