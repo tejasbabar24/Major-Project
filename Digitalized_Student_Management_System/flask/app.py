@@ -1,13 +1,14 @@
-import face_recognition
-import requests
 import cv2
 import csv
-import dlib
+import numpy as np
+import time
+from insightface.app import FaceAnalysis
+from pathlib import Path
+import requests
 import os
 import cloudinary
 import cloudinary.uploader
 import cloudinary.api
-import numpy as np
 from datetime import datetime
 from dotenv import load_dotenv
 from flask_cors import CORS
@@ -18,8 +19,11 @@ from pymongo import MongoClient
 
 load_dotenv()
 
-app = Flask(__name__)
-CORS(app,supports_credentials=True, origins=["http://localhost:5173","http://localhost:8000"])
+flask = Flask(__name__)
+CORS(flask,supports_credentials=True, origins=["http://localhost:5173","http://localhost:8000"])
+
+app = FaceAnalysis(providers=['CPUExecutionProvider']) 
+app.prepare(ctx_id=0, det_size=(640, 640))  
 
 cloudinary.config(
     cloud_name=os.getenv('CLOUDINARY_CLOUD_NAME'),
@@ -30,27 +34,79 @@ cloudinary.config(
 client = MongoClient(os.getenv('MONGODB_URI'))
 db = client.acadamix 
 
-detector = dlib.get_frontal_face_detector()
 new_path = "./photos"
 now = datetime.now()
 current_date = now.strftime("%Y-%m-%d")
 
-@app.route('/reg-encode', methods=['POST'])
+@flask.route('/reg-encode', methods=['POST'])
 def regEncoding():
-        encodeArr=[]
-        cloudArr=request.json.get('img',[])
-        for imgId in cloudArr:
-            response = requests.get(imgId)
-            print(response)
-            if response.status_code == 200:
-                img = Image.open(BytesIO(response.content))
-                encoded_face = encode(img)
-                print(encoded_face)
-                encodeArr.append(encoded_face)
-            else:
-                encodeArr.append({"error": f"Failed to fetch image with ID {imgId}"})
+    # Extract Cloudinary image URLs from the request
+    cloud_image_links = request.json.get('img', [])
+    print("cloud_image_links:", cloud_image_links)
 
-        return jsonify(encodeArr) 
+    if not cloud_image_links:
+        return jsonify({"error": "No image links provided"}), 400
+
+    # Prepare lists to store results
+    downloaded_images = []
+    errors = []
+
+    # Download images and store in a list
+    for img_url in cloud_image_links:
+        try:
+            response = requests.get(img_url)
+            if response.status_code == 200:
+                # Convert the downloaded image to a format usable by OpenCV
+                image = np.array(Image.open(BytesIO(response.content)))
+                downloaded_images.append((img_url, image))
+            else:
+                errors.append({"image_url": img_url, "error": "Failed to fetch image"})
+        except Exception as e:
+            errors.append({"image_url": img_url, "error": str(e)})
+
+    if not downloaded_images:
+        return jsonify({
+            "errors": errors,
+            "encodings": []
+        }), 400
+
+    # Compute the average encoding for the downloaded images
+    average_encoding = compute_average_encoding_from_images([img[1] for img in downloaded_images])
+
+    # Check if a valid average encoding was computed
+    if average_encoding is None:
+        return jsonify({
+            "errors": errors + [{"error": "No valid face embeddings found in the images."}],
+            "encodings": []
+        }), 400
+
+    # Return the structured response with the average encoding
+    return jsonify({
+        "errors": errors,
+        "encodings": average_encoding.tolist()
+    }), 200
+
+def compute_average_encoding_from_images(images):
+    """
+    Computes the average face encoding from a list of OpenCV image arrays.
+    """
+    embeddings = []
+    for image in images:
+        # Analyze the image and extract faces
+        faces = app.get(image)  # Replace with your face detection model/method
+        if not faces:
+            print("No faces detected in one of the images")
+            continue
+
+        # Use the embedding of the first detected face
+        embeddings.append(faces[0].embedding)
+
+    # Compute the average embedding if there are any valid embeddings
+    if embeddings:
+        return np.mean(embeddings, axis=0)
+    else:
+        return None
+
 
 def encode(image):
     if image is None or image.size == 0:
@@ -114,7 +170,7 @@ def faces(images):
     print("Encoding done of cropped faces")
     return encodedFaces
 
-@app.route('/face_recognition',methods=['POST'])
+@flask.route('/face_recognition',methods=['POST'])
 def detection():
     filename=f"{current_date}.csv"
     f = open(filename,'w+',newline='')
@@ -193,4 +249,4 @@ def detection():
     return jsonify(response),200
 
 if __name__ == "__main__":
-    app.run(debug=True,port=5001)
+    flask.run(debug=True,port=5001)
