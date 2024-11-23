@@ -405,35 +405,41 @@ useEffect(()=>{
             )}
 
             {selectedClass !== "uploadAttendance" && (
-              <div className="ml-4 md:ml-12">
-                {userData.role === "Teacher" ? (
-                  createdClasses.find(
-                    (item) => item.classname === selectedClass.toLowerCase()
-                  ) ? (
-                    createdClasses.find(
-                      (item) => item.classname === selectedClass.toLowerCase()
-                    ).attendance?.length > 0 ? (
-                      createdClasses
-                        .find(
-                          (item) => item.classname === selectedClass.toLowerCase()
-                        )
-                        .attendance.sort(
-                          (a, b) => new Date(b.createdAt) - new Date(a.createdAt)
-                        ) // Sorting by createdAt
-                        .map((item) => (
-                          <AttendanceCard
-                            key={item.createdAt}
-                            name={selectedClass}
-                            date={item.createdAt}
-                            fileUrl={item.attachment}
-                          />
-                        ))
-                    ) : (
-                      <div>No attendance found</div>
-                    )
-                  ) : (
-                    <div>Class not found</div>
-                  )
+  <div className={`flex ${isSmallScreen ? 'flex-wrap justify-between' : 'flex-wrap justify-start'} `}>
+    {userData.role === "Teacher" ? (
+      createdClasses.find(
+        (item) => item.classname === selectedClass.toLowerCase()
+      ) ? (
+        createdClasses
+          .find(
+            (item) => item.classname === selectedClass.toLowerCase()
+          )
+          .attendance?.length > 0 ? (
+            createdClasses
+              .find(
+                (item) => item.classname === selectedClass.toLowerCase()
+              )
+              .attendance.sort(
+                (a, b) => new Date(b.createdAt) - new Date(a.createdAt)
+              ) // Sorting by createdAt
+              .map((item) => (
+                <div
+                  key={item.createdAt}
+                  className={`p-2 ${isSmallScreen ? 'w-1/2' : 'w-1/5'}`}
+                >
+                  <AttendanceCard
+                    name={selectedClass}
+                    date={item.createdAt}
+                    fileUrl={item.attachment}
+                  />
+                </div>
+              ))
+          ) : (
+            <div className="col-span-2">No attendance found</div> // Centered message
+          )
+      ) : (
+        <div className="col-span-2">Class not found</div> // Centered message
+      )
                 ) : userData.role === "Student" ? (
                   
                   <div className="absolute inset-0 flex flex-col gap-8 md:gap-12 bg-gray-50 border border-gray-200 shadow-lg">
