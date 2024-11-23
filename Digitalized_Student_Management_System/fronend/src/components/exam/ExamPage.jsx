@@ -189,7 +189,7 @@ export default function ExamPage() {
               <Buttons
                 className="cursor-pointer"
                 variant="contained"
-                onClick={() => { setselectedClass('upload')}}
+                onClick={() => { setselectedClass('upload'), isSmallScreen? toggleDrawer() :null }}
                 sx={{ fontSize: "15px", backgroundColor: "#3A2B51" }}
               >
                 Upload Result <MdOutlineAdd />
@@ -199,7 +199,7 @@ export default function ExamPage() {
           <Typography variant="h6" sx={{ textAlign: "center", paddingTop: 2 }}>
             Your Classes
           </Typography>
-          <ListItem className="hover:bg-gray-100 cursor-pointer" onClick={()=>{ setselectedClass('classes')}}>
+          <ListItem className="hover:bg-gray-100 cursor-pointer" onClick={()=>{ setselectedClass('classes'), isSmallScreen? toggleDrawer() :null}}>
             <ListItemIcon>
               <img src={user} alt="User Profile" className="w-12 h-12 rounded-full" />
             </ListItemIcon>
