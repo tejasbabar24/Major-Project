@@ -289,7 +289,7 @@ useEffect(()=>{
         <List>
           {userData.role === "Teacher" ? (
             <>
-              <ListItem>
+              <ListItem onClick={()=>{toggleDrawer()}}>
                 <Button
                   className="cursor-pointer"
                   variant="contained"
@@ -309,9 +309,10 @@ useEffect(()=>{
                 <ListItem
                   key={item.classCode}
                   className="hover:bg-gray-100 cursor-pointer"
-                  onClick={() =>
-                    handleClassClick(item.classname.toUpperCase())
-                  }
+                  onClick={() =>{
+                    handleClassClick(item.classname.toUpperCase()),
+                    toggleDrawer()
+                  }}
                 >
                   <ListItemIcon className="mr-3">
                     <img
@@ -329,9 +330,10 @@ useEffect(()=>{
               <ListItem
                 key={item.classCode}
                 className="hover:bg-gray-100 cursor-pointer"
-                onClick={() =>
+                onClick={() =>{
                   handleClassClick(item.classname.toUpperCase())
-                  
+                  toggleDrawer()
+                }
                 }
               >
                 <ListItemIcon className="mr-3">
