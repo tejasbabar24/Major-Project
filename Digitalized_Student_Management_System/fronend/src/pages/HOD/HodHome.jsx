@@ -1,9 +1,9 @@
 import React, { useState } from 'react';
 import Card from '../../components/Card'; 
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import {
-  teacherAttendance, ClassListLogo, CreateClass, HomeworkLogo, TimetableLogo,
-  ExamLogo, NotifyLogo, ResultLogo, ProfileLogo, BookLogo ,sideBarLogo,studentAttendance
+  teacherAttendance, ClassListLogo, CreateClass, TimetableLogo,
+NotifyLogo, ResultLogo, ProfileLogo, BookLogo ,sideBarLogo,studentAttendance
 } from '../../assets/HodHomePageLogo';
 import { useNavigate } from 'react-router';
 import "boxicons/css/boxicons.min.css";
@@ -11,10 +11,11 @@ import { RxCross2 } from "react-icons/rx";
 import { FiLogOut } from "react-icons/fi";
 import axios from 'axios';
 import { IoCameraOutline, IoCloseSharp } from "react-icons/io5";
-import myimg1 from './myimg1.png'
-import rasmika from './rashmika.png'
 import {Input} from "@nextui-org/react";
 import { FaUserEdit } from "react-icons/fa";
+import { login } from '../../store/authSlice';
+import { toast, ToastContainer } from 'react-toastify';
+import "react-toastify/dist/ReactToastify.css";
 
 
 function Home() {
@@ -22,9 +23,8 @@ function Home() {
   const [isDrawerOpen, setDrawerOpen] = useState(false); // State for right drawer
   const userData = useSelector(state => state.auth.userData);
   const navigate = useNavigate();
-
+  const dispatch = useDispatch()
   const [isEditing, setIsEditing] = useState({ username: false, email: false });
-  const [profile,setProfile]=useState([]);
   const [formData, setFormData] = useState({
     username: userData.username,
     email: userData.email,
@@ -34,24 +34,43 @@ function Home() {
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData((prev) => ({ ...prev, [name]: value }));
-    console.log(formData.username)
   };
-
-  const handleSubmit = () => {
-    
+  const updateProfile = (e)=>{
+    const profile = e.target.files[0]
     const setProfileEndpoint =
-      userData.role === "Student" ? "student/profile" : userData.role === "Teacher" ? "faculty/profile" : null;
+    userData.role === "Student" ? "student/profile" : userData.role === "Teacher" ? "faculty/profile" : null;
+    const form=new FormData();
+    form.append("profile",profile)
+    if (profile) {
+      axios
+        .patch(`http://localhost:8000/${setProfileEndpoint}`, 
+            form
+        )
+        .then((result) => {
+          if (result.data?.data) {
+            const  user  = result.data.data;
+            const message = result.data.message;
+            toast.success(message,{autoClose:1500})
+            dispatch(login(user))
+          }
+        })
+        .catch((error) => {
+          const errorMessage = error.response?.data?.message || "Something went wrong!";
+          toast.error(errorMessage,{autoClose:1500})
+ 
+        })
+    }
+
+  }
+  const handleSubmit = (e) => {
+    e.preventDefault();
     const updateEndpoint =
       userData.role === "Student" ? "student/update-account" : userData.role === "Teacher" ? "faculty/update-account" : null;
 
-    
     if (!updateEndpoint) {
       toast.error("Please select a valid role before logging in.", { autoClose: 3000 });
       return;
     }
-
-    const form=new FormData();
-    form.append("profile",profile)
 
     axios
       .patch(`http://localhost:8000/${updateEndpoint}`, {
@@ -60,35 +79,19 @@ function Home() {
       })
       .then((result) => {
         if (result.data?.data) {
-          const { user } = result.data.data;
-          const message = result.data.message;
-          console.log(user)
+          const  user = result.data.data;
+          const message = result.data.message || "Profile updated";
+          toast.success(message,{autoClose:1500})
+          dispatch(login(user))
         }
       })
       .catch((error) => {
         const errorMessage = error.response?.data?.message || "Something went wrong!";
-        console.log(error)
+        toast.error(errorMessage,{autoClose:1500})
+      })      
+      .finally(()=>{
+        setIsEditing((prev) => ({ ...prev, username: false,email:false }))
       })
-
-    if (profile) {
-
-     axios
-       .patch(`http://localhost:8000/${setProfileEndpoint}`, 
-           form
-       )
-       .then((result) => {
-         if (result.data?.data) {
-           const { user } = result.data.data;
-           const message = result.data.message;
-           console.log(message)
-         }
-       })
-       .catch((error) => {
-         const errorMessage = error.response?.data?.message || "Something went wrong!";
-         console.log(error)
-       })
-   }
-      
   };
 
   const navItems = [
@@ -121,7 +124,7 @@ function Home() {
 
   return (
     <div className="w-full min-h-screen flex flex-col md:flex-row bg-gradient-to-br from-blue-100 to-indigo-200">
-      
+      <ToastContainer/>
       {/* Sidebar Toggle Button for Mobile */}
       <button
         className={`md:hidden p-4 text-gray-600 focus:outline-none ml-${setDrawerOpen == true ? '20' : 0 }`}
@@ -181,12 +184,12 @@ function Home() {
         <div className="bg-white rounded-lg shadow-md p-4 md:p-6 mb-6 flex flex-col md:flex-row justify-between items-center">
           <div>
             <h1 className="text-lg md:text-2xl font-semibold text-gray-700">{userData?.role || "Guest"}</h1>
-            <h2 className="text-md md:text-lg text-gray-500">{userData?.username || "Guest User"}</h2>
+            <h2 className="text-md md:text-lg text-gray-500">{userData?.username.toUpperCase() || "Guest User"}</h2>
           </div>
           <div className="flex items-center gap-x-3 md:gap-x-4 mt-4 md:mt-0">
             <img
               className="w-10 h-10 md:w-12 md:h-12 rounded-full border-2 border-indigo-300 cursor-pointer hover:scale-105 transition-transform duration-200 object-cover"
-              src={userData.profile}  
+              src={userData.profile || ProfileLogo}  
               alt="profile"
               onClick={() => setDrawerOpen(!isDrawerOpen)}  // Toggle drawer
             />
@@ -224,7 +227,7 @@ function Home() {
               {/* Profile Image with Hover Icon */}
               <div className="relative group w-36 h-36">
                 <img
-                  src={userData.profile} // Use a default image if none is set
+                  src={userData.profile || ProfileLogo} // Use a default image if none is set
                   alt="your profile"
                   className="w-36 h-36 rounded-full border border-indigo-500 shadow-lg object-cover"
                 />
@@ -237,7 +240,8 @@ function Home() {
                       type="file"
                       className="hidden"
                       accept="image/*"
-                      onChange={(e)=>setProfile(e.target.files[0])}
+                      onChange={updateProfile}
+
                     />
                   </label>
                 </div>
@@ -246,7 +250,7 @@ function Home() {
                 <form 
                 action="" 
                 className="mt-14 space-y-4"
-                onSubmit={(e) => e.preventDefault()} // Prevent default form submission
+                onSubmit={handleSubmit}
               >
                 {/* Username Section */}
                 <div className="flex items-center space-x-2">
@@ -316,8 +320,7 @@ function Home() {
                 {/* Submit Button */}
                 <div className="flex justify-center mt-4">
                   <button
-                    type="button"
-                    onClick={handleSubmit}
+                    type="submit"
                     className="bg-indigo-600 text-white px-4 py-2 rounded-md hover:bg-indigo-700 focus:outline-none"
                   >
                     Update

@@ -13,6 +13,7 @@ import MenuItem from "@mui/material/MenuItem";
 import FormControl from "@mui/material/FormControl";
 import Select from "@mui/material/Select";
 import Button from "@mui/material/Button";
+import MenuIcon from "@mui/icons-material/Menu";
 import { MdOutlineAdd } from "react-icons/md";
 import DragAndDropFileUpload from "../dragNdrop/DragNdrop.jsx";
 import { useSelector } from "react-redux";
@@ -29,39 +30,25 @@ import DonutChart from "./DonutChart.jsx";
 import ShowAttendance from "./ShowAttendace.jsx";
 import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import useMediaQuery from "@mui/material/useMediaQuery";
 import Loading from "../Loading.jsx"
 const drawerWidth = 300;
 
-const Main = styled("main", { shouldForwardProp: (prop) => prop !== "open" })(
-  ({ theme, open }) => ({
-    flexGrow: 1,
-    height: "100vh",
-    transition: theme.transitions.create("margin", {
-      easing: theme.transitions.easing.sharp,
-      duration: theme.transitions.duration.leavingScreen,
-    }),
-    marginLeft: open ? 0 : `-${drawerWidth}px`,
-    backgroundImage: `url(${classBackground})`,
-    backgroundSize: "contain",
-    backgroundPosition: "center",
-  })
-);
-
-const StyledAppBar = styled(AppBar, {
-  shouldForwardProp: (prop) => prop !== "open",
-})(({ theme, open }) => ({
-  transition: theme.transitions.create(["margin", "width"], {
-    easing: theme.transitions.easing.sharp,
-    duration: theme.transitions.duration.leavingScreen,
-  }),
-  marginLeft: open ? `${drawerWidth}px` : "0",
-  width: open ? `calc(100% - ${drawerWidth}px)` : "100%",
+const Main = styled("main")(({ theme }) => ({
+  flexGrow: 1,
+  padding: theme.spacing(3),
+  backgroundColor: "#f9f9f9",
+  minHeight: "100vh",
 }));
-
+const StyledAppBar = styled(AppBar)({
+  backgroundColor: "#fff",
+  color: "#333",
+  boxShadow: "0px 2px 4px rgba(0, 0, 0, 0.1)",
+});
 export default function Attendance() {
   const userData = useSelector((state) => state.auth.userData);
   const defaultSelect = userData.role === "Teacher" ? "uploadAttendance" : null
-  const [open, setOpen] = useState(true);
+  const [open, setOpen] = useState(false);
   const [classes, setClasses] = useState("");
   const [role, setRole] = useState(userData.role);
   const [dupRole, setDupRole] = useState("");
@@ -76,11 +63,15 @@ export default function Attendance() {
 const [processedUrls, setProcessedUrls] = useState([]);
 const [loading,setLoading] = useState(false)
 
-// console.log(myAttendance);
+const isSmallScreen = useMediaQuery("(max-width: 768px)"); // Use media query for small screens
 
-const handleParseFromUrl = (csvUrl) => {
+const toggleDrawer = () => setOpen(!open); // Drawer toggle function
+
+//  console.log(myAttendance);
+
+ const handleParseFromUrl = (csvUrl) => {
   // Check if the URL has already been processed
-  if (!processedUrls.includes(csvUrl)) {
+   if (!processedUrls.includes(csvUrl)) {
     setProcessedUrls((prevUrls) => [...prevUrls, csvUrl]);
 
     Papa.parse(csvUrl, {
@@ -107,6 +98,7 @@ const handleParseFromUrl = (csvUrl) => {
 };
 
 useEffect(() => {
+  
   if (userData.role === "Student") {
     const selectedClassData = joinedClasses.find(
       (item) => item.classname === selectedClass?.toLowerCase()
@@ -136,6 +128,10 @@ useEffect(() => {
   }
 }, [selectedClass, joinedClasses, userData.role]);
 
+useEffect(()=>{
+  setSelectedClassDates([])
+  // setMyAttendance([])
+},[selectedClass])
 
   const handleClassChange = (event) => setClasses(event.target.value);
 
@@ -237,243 +233,254 @@ useEffect(() => {
     }, [joinedClasses]);
   }
   return (
-    <Box sx={{ display: "flex" }}>
-      <ToastContainer/>
+    <Box sx={{ display: "grid" }}>
+      
+      <ToastContainer />
       <CssBaseline />
+      
       <StyledAppBar position="fixed">
         <Toolbar sx={{ backgroundColor: "#8E6AC4" }}>
-          
-          <Typography variant="h4" sx={{ marginLeft: "35%" }}>
+          {isSmallScreen && ( // Show toggle button only on small screens
+            <IconButton
+              color="inherit"
+              aria-label="open drawer"
+              edge="start"
+              onClick={toggleDrawer}
+              sx={{ mr: 2 }}
+            >
+              <MenuIcon />
+            </IconButton>
+           )} 
+          <Typography variant="h4" sx={{ marginLeft: isSmallScreen ? "0" : "35%" }}>
             Attendance
           </Typography>
         </Toolbar>
       </StyledAppBar>
+    
 
       <Drawer
         sx={{
-          width: drawerWidth,
-          flexShrink: 0,
-          "& .MuiDrawer-paper": {
-            width: drawerWidth,
-            boxSizing: "border-box",
-            marginTop: "64px",
-            backgroundColor: "",
-          },
+          
+          "& .MuiDrawer-paper": { width: drawerWidth, boxSizing: "border-box" ,marginTop:"3.5rem"},
+          zIndex: 0,
         }}
-        variant="persistent"
+        variant={isSmallScreen ? "temporary" : "permanent"} // Temporary drawer for small screens
         anchor="left"
         open={open}
+        onClose={toggleDrawer} // Handle close for temporary drawer
       >
         <Divider />
-        
-        
-        <List >
+        <List>
           {userData.role === "Teacher" ? (
             <>
-            <ListItem
-            >
-              <Button
-              className="cursor-pointer"
-
-                variant="contained"
-            onClick={() => handleClassClick("Upload Attendance")}
-
-                sx={{ fontSize: "15px", backgroundColor: "#3A2B51" }}
+              <ListItem onClick={()=>{isSmallScreen ?  toggleDrawer() : null }}>
+                <Button
+                  className="cursor-pointer"
+                  variant="contained"
+                  onClick={() =>{ handleClassClick("Upload Attendance") , isSmallScreen ?  toggleDrawer() : null }}
+                  sx={{ fontSize: "15px", backgroundColor: "#3A2B51" }}
+                >
+                  Upload Attendance <MdOutlineAdd />
+                </Button>
+              </ListItem>
+              <Typography
+                variant="h6"
+                sx={{ textAlign: "center", paddingTop: 2 }}
               >
-                Upload Attendance <MdOutlineAdd />
-              </Button>
-            </ListItem>
-            <Typography variant="h6" sx={{ textAlign: "center", paddingTop: 2 }}>
-          Your Classes
-        </Typography>
-            {createdClasses.map((item) => (
+                Your Classes
+              </Typography>
+              {createdClasses.map((item) => (
+                <ListItem
+                  key={item.classCode}
+                  className="hover:bg-gray-100 cursor-pointer"
+                  onClick={() =>{
+                    handleClassClick(item.classname.toUpperCase()),
+                     isSmallScreen ?  toggleDrawer() : null 
+                  }}
+                >
+                  <ListItemIcon className="mr-3">
+                    <img
+                      src={user}
+                      alt="User Profile"
+                      className="w-12 h-12 rounded-full mb-2 border solid white "
+                    />
+                  </ListItemIcon>
+                  {item.classname.toUpperCase()}
+                </ListItem>
+              ))}
+            </>
+          ) : userData.role === "Student" ? (
+            joinedClasses.map((item) => (
               <ListItem
                 key={item.classCode}
                 className="hover:bg-gray-100 cursor-pointer"
-                onClick={() => handleClassClick(item.classname.toUpperCase())}
+                onClick={() =>{
+                  handleClassClick(item.classname.toUpperCase())
+                  isSmallScreen ?  toggleDrawer() : null 
+                }
+                }
               >
                 <ListItemIcon className="mr-3">
-                <img 
-                  src={user} 
-                  alt="User Profile" 
-                  className="w-12 h-12 rounded-full mb-2  border solid white " 
-                />
+                  <img
+                    src={user}
+                    alt="User Profile"
+                    className="w-12 h-12 rounded-full mb-2 border solid white "
+                  />
                 </ListItemIcon>
                 {item.classname.toUpperCase()}
               </ListItem>
-            ))}
-            </>
-
-          ) : userData.role === "Student" ? (joinedClasses.map((item) => (
-            <ListItem
-                key={item.classCode}
-                className="hover:bg-gray-100 cursor-pointer"
-                onClick={() => handleClassClick(item.classname.toUpperCase())}
-              >
-                <ListItemIcon className="mr-3">
-                <img 
-                  src={user} 
-                  alt="User Profile" 
-                  className="w-12 h-12 rounded-full mb-2  border solid white " 
-                />
-                </ListItemIcon>
-                {item.classname.toUpperCase()}
-              </ListItem>
-          )))
-          :
-            null
-        }
-
-          
+            ))
+          ) : null}
         </List>
-        {/* <List>
-          {
-          renderClass.map((item) => (
-            <ListItem key={item.classCode} disablePadding>
-              <ListItemButton onClick={()=>navigate(`/class/${item.classCode}`)}>
-                <ListItemIcon className="mr-3">
-                <img 
-                  src={user} 
-                  alt="User Profile" 
-                  className="w-12 h-12 rounded-full mb-2  border solid white " 
-                />
-                </ListItemIcon>
-                <ListItemText primary={item.classname.toUpperCase()} />
-              </ListItemButton>
-            </ListItem>
-          ))}
-        </List> */}
       </Drawer>
 
       <Main open={open}>
-        <Box sx={{ mt: 8, padding: "16px" }}>
-          {selectedClass === "uploadAttendance" && (
-            <div className="flex items-center justify-center mt-16">
-              <img
-                src={attendancelogo}
-                alt="Attendance Logo"
-                className="h-100 w-26"
-              />
-              <div className="w-56">
-                <form
-                  className="flex flex-col justify-center"
-                  onSubmit={uploadAttendance}
-                >
-                  <FormControl sx={{ m: 1, minWidth: 120 }} size="small">
-                    <InputLabel id="select-class-label">Classes</InputLabel>
-                    <Select
-                      labelId="select-class-label"
-                      id="select-class"
-                      value={classes}
-                      label="Select Class"
-                      onChange={handleClassChange}
-                      sx={{ width: "200px" }}
-                    >
-                      {createdClasses.map((item) => (
-                        <MenuItem
-                          key={item.classCode}
-                          value={item.classname.toUpperCase()}
-                        >
-                          {item.classname.toUpperCase()}
-                        </MenuItem>
-                      ))}
-                    </Select>
-                    <Typography variant="subtitle2" sx={{ mt: 2 }}>
-                      Select Images to Upload
-                    </Typography>
-                  </FormControl>
-                  <DragAndDropFileUpload
-                    onFilesUploaded={handleFilesUploaded}
-                    files={files} 
-                    setFiles={setFiles}
-                  />
-                  <Loading show={loading}/>
-                  <Button
-                    type="submit"
-                    className="w-18 h-8 mt-4 text-white text-sm text-center bg-purple-500"
-                  >
-                    Upload Attendance
-                  </Button>
-                </form>
-              </div>
-            </div>
-          )}
-
-          {selectedClass !== "uploadAttendance" && (
-            <div className="ml-50">
+          <Box
+            sx={{
               
-              {
-              userData.role === "Teacher" ? (
+              mt: 8,
+              padding: "16px",
+              marginLeft: isSmallScreen ? '0px': "300px", // Adjust marginLeft for small screens
+              position: "relative", // Set relative for absolute child alignment if needed
+              // width: "calc(100% - 300px)", // Adjust width to account for marginLeft
+            }}
+          >
+            {selectedClass === "uploadAttendance" && (
+              <div className={`flex ${isSmallScreen ? 'flex-col' : 'flex-row'} items-center justify-center mt-16 md:mt-8`}>
+                <img
+                  src={attendancelogo}
+                  alt="Attendance Logo"
+                  className={` ${isSmallScreen ? 'h-36 w-36' : 'h-100 w-100'}  mb-8`}
+                />
+                <div className="w-full max-w-md px-4">
+                  <form
+                    className="flex flex-col justify-center"
+                    onSubmit={uploadAttendance}
+                  >
+                    <FormControl sx={{ m: 1, minWidth: 120 }} size="small">
+                      <InputLabel id="select-class-label">Classes</InputLabel>
+                      <Select
+                        labelId="select-class-label"
+                        id="select-class"
+                        value={classes}
+                        label="Select Class"
+                        onChange={handleClassChange}
+                        sx={{ width: "100%" }}
+                      >
+                        {createdClasses.map((item) => (
+                          <MenuItem
+                            key={item.classCode}
+                            value={item.classname.toUpperCase()}
+                          >
+                            {item.classname.toUpperCase()}
+                          </MenuItem>
+                        ))}
+                      </Select>
+                      <Typography variant="subtitle2" sx={{ mt: 2 }}>
+                        Select Images to Upload
+                      </Typography>
+                    </FormControl>
+                    <DragAndDropFileUpload
+                      onFilesUploaded={handleFilesUploaded}
+                      files={files}
+                      setFiles={setFiles}
+                    />
+                    <Loading show={loading} />
 
-                createdClasses.find(
-                  (item) => item.classname === selectedClass.toLowerCase()
-                ) ? (
+                    <Button
+                      type="submit"
+                      sx={{
+                              width: '100%',          
+                              marginTop: '2rem',    
+                              color: 'white',         
+                              fontSize: '0.875rem',  
+                              backgroundColor: '#6b46c1' 
+                            }}
+                    >
+                      Upload Attendance
+                    </Button>
+                  </form>
+                </div>
+              </div>
+            )}
+
+            {selectedClass !== "uploadAttendance" && (
+              <div className="ml-4 md:ml-12">
+                {userData.role === "Teacher" ? (
                   createdClasses.find(
                     (item) => item.classname === selectedClass.toLowerCase()
-                  ).attendance?.length > 0 ? (
-                    createdClasses
-                      .find(
-                        (item) => item.classname === selectedClass.toLowerCase()
-                      )
-                      .attendance.sort(
-                        (a, b) => new Date(b.createdAt) - new Date(a.createdAt)
-                      ) // Sorting by createdAt
-                      .map((item) => (
-                        <AttendanceCard
-                          key={item.createdAt}
-                          name={selectedClass}
-                          date={item.createdAt}
-                          fileUrl={item.attachment}
-                        />
-                      ))
+                  ) ? (
+                    createdClasses.find(
+                      (item) => item.classname === selectedClass.toLowerCase()
+                    ).attendance?.length > 0 ? (
+                      createdClasses
+                        .find(
+                          (item) => item.classname === selectedClass.toLowerCase()
+                        )
+                        .attendance.sort(
+                          (a, b) => new Date(b.createdAt) - new Date(a.createdAt)
+                        ) // Sorting by createdAt
+                        .map((item) => (
+                          <AttendanceCard
+                            key={item.createdAt}
+                            name={selectedClass}
+                            date={item.createdAt}
+                            fileUrl={item.attachment}
+                          />
+                        ))
+                    ) : (
+                      <div>No attendance found</div>
+                    )
                   ) : (
-                    <div>No attendance found</div>
+                    <div>Class not found</div>
                   )
-                ) : (
-                  <div>Class not found</div>
-                )
-              ) : userData.role === "Student" ? (
-                <div className="flex flex-col gap-12 bg-gray-50 p-0 border-box border border-gray-200 shadow-lg w-full h-full">
-                      {/* Header Section */}
-                      <h1 className="text-xl font-bold text-center text-gray-800 py-4 border-b border-gray-300">
-                       {selectedClass} Attendance Dashboard
-                      </h1>
+                ) : userData.role === "Student" ? (
+                  
+                  <div className="absolute inset-0 flex flex-col gap-8 md:gap-12 bg-gray-50 border border-gray-200 shadow-lg">
 
-                      {/* Top Section: Calendar and Donut Chart */}
-                      <div className="flex flex-col md:flex-row justify-between items-start gap-8 px-4">
-                        {/* Calendar Section */}
-                        <div className="flex-1 bg-white rounded-md border border-gray-300 shadow-md p-4">
-                          <h2 className="text-lg font-semibold text-gray-700 mb-4 text-center">
-                            Highlighted Calendar
-                          </h2>
-                          <HighlightedCalendar highlightedDates={myAttendance} />
+                        {/* Header Section */}
+                        <h1 className="text-2xl font-bold text-center text-gray-800 py-4 bg-white border-b border-gray-300 shadow-sm">
+                          {selectedClass} Attendance Dashboard
+                        </h1>
+
+                        {/* Top Section: Calendar and Donut Chart */}
+                        <div className="flex flex-col md:flex-row justify-between items-stretch gap-8 px-4">
+                          
+                          {/* Calendar Section */}
+                          <div className="flex-1 bg-white rounded-md border border-gray-300 shadow-md p-6">
+                            <h2 className="text-xl font-semibold text-gray-700 mb-6 text-center">
+                              Attendance Calendar
+                            </h2>
+                            <HighlightedCalendar highlightedDates={myAttendance} />
+                          </div>
+
+                          {/* Donut Chart Section */}
+                          <div className="flex-1 bg-white rounded-md border border-gray-300 shadow-md p-6">
+                            <h2 className="text-xl font-semibold text-gray-700 mb-6 text-center">
+                              Attendance Overview
+                            </h2>
+                            <DonutChart
+                              myAttendance={myAttendance}
+                              selectedClassDates={selectedClassDates.length}
+                            />
+                          </div>
                         </div>
 
-                        {/* Donut Chart Section */}
-                        <div className="flex-1 bg-white rounded-md border border-gray-300 shadow-md p-4">
-                          <h2 className="text-lg font-semibold text-gray-700 mb-4 text-center">
-                            Attendance Overview
+                        {/* Bottom Section: Show Attendance */}
+                        <div className="bg-white rounded-md border border-gray-300 shadow-md p-6 mx-4">
+                          <h2 className="text-xl font-semibold text-gray-700 mb-6 text-center">
+                            Detailed Attendance Records
                           </h2>
-                          <DonutChart myAttendance={myAttendance} selectedClassDates={selectedClassDates.length}/>
+                          <ShowAttendance dates={selectedClassDates} presentDates={myAttendance} />
                         </div>
-                      </div>
+                  </div>
 
-                      {/* Bottom Section: Show Attendance */}
-                      <div className="bg-white rounded-md border border-gray-300 shadow-md p-4 mx-4">
-                        <h2 className="text-lg font-semibold text-gray-700 mb-4 text-center">
-                          Detailed Attendance Records
-                        </h2>
-                        <ShowAttendance dates={selectedClassDates} presentDates={myAttendance}/>
-                      </div>
-                    </div> 
-                ) : (
-                  null
-                )
-              }
-            </div>
-          )}
-        </Box>
-      </Main>
+                ) : null}
+              </div>
+            )}
+          </Box>
+        </Main>
+            
     </Box>
   );
 }
