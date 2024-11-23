@@ -288,7 +288,7 @@ useEffect(()=>{
         <List>
           {userData.role === "Teacher" ? (
             <>
-              <ListItem onClick={()=>{toggleDrawer()}}>
+              <ListItem onClick={()=>{isSmallScreen ?  toggleDrawer() : null }}>
                 <Button
                   className="cursor-pointer"
                   variant="contained"
