@@ -34,36 +34,21 @@ import useMediaQuery from "@mui/material/useMediaQuery";
 import Loading from "../Loading.jsx"
 const drawerWidth = 300;
 
-const Main = styled("main", { shouldForwardProp: (prop) => prop !== "open" })(
-  ({ theme, open }) => ({
-    flexGrow: 1,
-    height: "100vh",
-    transition: theme.transitions.create("margin", {
-      easing: theme.transitions.easing.sharp,
-      duration: theme.transitions.duration.leavingScreen,
-    }),
-    marginLeft: open ? 0 : `-${drawerWidth}px`,
-    // backgroundImage: `url(${classBackground})`,
-    // backgroundSize: "contain",
-    // backgroundPosition: "center",
-  })
-);
-
-const StyledAppBar = styled(AppBar, {
-  shouldForwardProp: (prop) => prop !== "open",
-})(({ theme, open }) => ({
-  transition: theme.transitions.create(["margin", "width"], {
-    easing: theme.transitions.easing.sharp,
-    duration: theme.transitions.duration.leavingScreen,
-  }),
-  marginLeft: open ? `${drawerWidth}px` : "0",
-  width: open ? `calc(100% - ${drawerWidth}px)` : "100%",
+const Main = styled("main")(({ theme }) => ({
+  flexGrow: 1,
+  padding: theme.spacing(3),
+  backgroundColor: "#f9f9f9",
+  minHeight: "100vh",
 }));
-
+const StyledAppBar = styled(AppBar)({
+  backgroundColor: "#fff",
+  color: "#333",
+  boxShadow: "0px 2px 4px rgba(0, 0, 0, 0.1)",
+});
 export default function Attendance() {
   const userData = useSelector((state) => state.auth.userData);
   const defaultSelect = userData.role === "Teacher" ? "uploadAttendance" : null
-  const [open, setOpen] = useState(true);
+  const [open, setOpen] = useState(false);
   const [classes, setClasses] = useState("");
   const [role, setRole] = useState(userData.role);
   const [dupRole, setDupRole] = useState("");
@@ -265,7 +250,7 @@ useEffect(()=>{
             >
               <MenuIcon />
             </IconButton>
-          )}
+           )} 
           <Typography variant="h4" sx={{ marginLeft: isSmallScreen ? "0" : "35%" }}>
             Attendance
           </Typography>
@@ -279,7 +264,7 @@ useEffect(()=>{
           "& .MuiDrawer-paper": { width: drawerWidth, boxSizing: "border-box" ,marginTop:"3.5rem"},
           zIndex: 0,
         }}
-        variant={isSmallScreen ? "temporary" : "persistent"} // Temporary drawer for small screens
+        variant={isSmallScreen ? "temporary" : "permanent"} // Temporary drawer for small screens
         anchor="left"
         open={open}
         onClose={toggleDrawer} // Handle close for temporary drawer
@@ -355,9 +340,9 @@ useEffect(()=>{
               
               mt: 8,
               padding: "16px",
-              marginLeft: isSmallScreen ? '300px': "300px", // Adjust marginLeft for small screens
+              marginLeft: isSmallScreen ? '0px': "300px", // Adjust marginLeft for small screens
               position: "relative", // Set relative for absolute child alignment if needed
-              width: "calc(100% - 300px)", // Adjust width to account for marginLeft
+              // width: "calc(100% - 300px)", // Adjust width to account for marginLeft
             }}
           >
             {selectedClass === "uploadAttendance" && (

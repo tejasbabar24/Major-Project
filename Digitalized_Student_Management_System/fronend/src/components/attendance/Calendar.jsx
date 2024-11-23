@@ -26,8 +26,8 @@ function HighlightedCalendar({ highlightedDates }) {
   };
 
   return (
-    <div className="flex justify-center items-center mt-10 px-4 sm:px-6 lg:px-8">
-      <div className="w-full max-w-md p-4 rounded-lg ">
+    <div className="flex justify-center items-center mt-10 lg:px-4 sm:px-6 lg:px-8">
+      <div className="w-full max-w-md rounded-lg ">
         <Calendar tileClassName={tileClassName} />
       </div>
     </div>
