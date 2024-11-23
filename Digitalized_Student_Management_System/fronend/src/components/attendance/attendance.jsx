@@ -310,7 +310,7 @@ useEffect(()=>{
                   className="hover:bg-gray-100 cursor-pointer"
                   onClick={() =>{
                     handleClassClick(item.classname.toUpperCase()),
-                    toggleDrawer()
+                     isSmallScreen ?  toggleDrawer() : null 
                   }}
                 >
                   <ListItemIcon className="mr-3">
@@ -331,7 +331,7 @@ useEffect(()=>{
                 className="hover:bg-gray-100 cursor-pointer"
                 onClick={() =>{
                   handleClassClick(item.classname.toUpperCase())
-                  toggleDrawer()
+                  isSmallScreen ?  toggleDrawer() : null 
                 }
                 }
               >
