@@ -249,8 +249,10 @@ useEffect(()=>{
   }
   return (
     <Box sx={{ display: "grid" }}>
+      
       <ToastContainer />
       <CssBaseline />
+      
       <StyledAppBar position="fixed">
         <Toolbar sx={{ backgroundColor: "#8E6AC4" }}>
           {isSmallScreen && ( // Show toggle button only on small screens
@@ -269,17 +271,14 @@ useEffect(()=>{
           </Typography>
         </Toolbar>
       </StyledAppBar>
+    
 
       <Drawer
         sx={{
           width: drawerWidth,
-          flexShrink: 0,
-          "& .MuiDrawer-paper": {
-            width: drawerWidth,
-            boxSizing: "border-box",
-            marginTop: "64px",
-            backgroundColor: "",
-          },
+          marginTop:"",
+          "& .MuiDrawer-paper": { width: drawerWidth, boxSizing: "border-box" ,marginTop:"4rem"},
+          zIndex: 0,
         }}
         variant={isSmallScreen ? "temporary" : "persistent"} // Temporary drawer for small screens
         anchor="left"
@@ -495,7 +494,7 @@ useEffect(()=>{
             )}
           </Box>
         </Main>
-
+            
     </Box>
   );
 }

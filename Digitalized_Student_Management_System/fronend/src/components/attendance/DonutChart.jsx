@@ -6,11 +6,11 @@ function DonutChart({ myAttendance, selectedClassDates }) {
   const [lecturesCount, setLecturesCount] = useState(0);
   const userData = useSelector((state) => state.auth.userData);
 
-  console.log(userData.username);
+  // console.log(userData.username);
   
 
-  console.log("my attendance" , myAttendance);
-  console.log("selected class dates" , selectedClassDates);
+  // console.log("my attendance" , myAttendance);
+  // console.log("selected class dates" , selectedClassDates);
   
   
 
