@@ -43,9 +43,9 @@ const Main = styled("main", { shouldForwardProp: (prop) => prop !== "open" })(
       duration: theme.transitions.duration.leavingScreen,
     }),
     marginLeft: open ? 0 : `-${drawerWidth}px`,
-    backgroundImage: `url(${classBackground})`,
-    backgroundSize: "contain",
-    backgroundPosition: "center",
+    // backgroundImage: `url(${classBackground})`,
+    // backgroundSize: "contain",
+    // backgroundPosition: "center",
   })
 );
 
@@ -82,11 +82,11 @@ const isSmallScreen = useMediaQuery("(max-width: 768px)"); // Use media query fo
 
 const toggleDrawer = () => setOpen(!open); // Drawer toggle function
 
-// console.log(myAttendance);
+//  console.log(myAttendance);
 
-const handleParseFromUrl = (csvUrl) => {
+ const handleParseFromUrl = (csvUrl) => {
   // Check if the URL has already been processed
-  if (!processedUrls.includes(csvUrl)) {
+   if (!processedUrls.includes(csvUrl)) {
     setProcessedUrls((prevUrls) => [...prevUrls, csvUrl]);
 
     Papa.parse(csvUrl, {
@@ -113,6 +113,7 @@ const handleParseFromUrl = (csvUrl) => {
 };
 
 useEffect(() => {
+  
   if (userData.role === "Student") {
     const selectedClassData = joinedClasses.find(
       (item) => item.classname === selectedClass?.toLowerCase()
@@ -142,6 +143,10 @@ useEffect(() => {
   }
 }, [selectedClass, joinedClasses, userData.role]);
 
+useEffect(()=>{
+  setSelectedClassDates([])
+  // setMyAttendance([])
+},[selectedClass])
 
   const handleClassChange = (event) => setClasses(event.target.value);
 
@@ -243,7 +248,7 @@ useEffect(() => {
     }, [joinedClasses]);
   }
   return (
-    <Box sx={{ display: "flex" }}>
+    <Box sx={{ display: "grid" }}>
       <ToastContainer />
       <CssBaseline />
       <StyledAppBar position="fixed">
@@ -347,9 +352,12 @@ useEffect(() => {
       <Main open={open}>
           <Box
             sx={{
+              
               mt: 8,
               padding: "16px",
-              marginLeft: isSmallScreen ? '300px': null, // Adjust marginLeft for small screens
+              marginLeft: isSmallScreen ? '300px': "300px", // Adjust marginLeft for small screens
+              position: "relative", // Set relative for absolute child alignment if needed
+              width: "calc(100% - 300px)", // Adjust width to account for marginLeft
             }}
           >
             {selectedClass === "uploadAttendance" && (
@@ -442,42 +450,46 @@ useEffect(() => {
                     <div>Class not found</div>
                   )
                 ) : userData.role === "Student" ? (
-                  <div className="flex flex-col gap-8 md:gap-12 bg-gray-50 p-0 border-box border border-gray-200 shadow-lg w-full h-full">
-                    {/* Header Section */}
-                    <h1 className="text-xl font-bold text-center text-gray-800 py-4 border-b border-gray-300">
-                      {selectedClass} Attendance Dashboard
-                    </h1>
+                  
+                  <div className="absolute inset-0 flex flex-col gap-8 md:gap-12 bg-gray-50 border border-gray-200 shadow-lg">
 
-                    {/* Top Section: Calendar and Donut Chart */}
-                    <div className="flex flex-col md:flex-row justify-between items-center gap-8 px-4">
-                      {/* Calendar Section */}
-                      <div className="flex-1 bg-white rounded-md border border-gray-300 shadow-md p-4">
-                        <h2 className="text-lg font-semibold text-gray-700 mb-4 text-center">
-                          Highlighted Calendar
-                        </h2>
-                        <HighlightedCalendar highlightedDates={myAttendance} />
-                      </div>
+                        {/* Header Section */}
+                        <h1 className="text-2xl font-bold text-center text-gray-800 py-4 bg-white border-b border-gray-300 shadow-sm">
+                          {selectedClass} Attendance Dashboard
+                        </h1>
 
-                      {/* Donut Chart Section */}
-                      <div className="flex-1 bg-white rounded-md border border-gray-300 shadow-md p-4">
-                        <h2 className="text-lg font-semibold text-gray-700 mb-4 text-center">
-                          Attendance Overview
-                        </h2>
-                        <DonutChart
-                          myAttendance={myAttendance}
-                          selectedClassDates={selectedClassDates.length}
-                        />
-                      </div>
-                    </div>
+                        {/* Top Section: Calendar and Donut Chart */}
+                        <div className="flex flex-col md:flex-row justify-between items-stretch gap-8 px-4">
+                          
+                          {/* Calendar Section */}
+                          <div className="flex-1 bg-white rounded-md border border-gray-300 shadow-md p-6">
+                            <h2 className="text-xl font-semibold text-gray-700 mb-6 text-center">
+                              Attendance Calendar
+                            </h2>
+                            <HighlightedCalendar highlightedDates={myAttendance} />
+                          </div>
 
-                    {/* Bottom Section: Show Attendance */}
-                    <div className="bg-white rounded-md border border-gray-300 shadow-md p-4 mx-4">
-                      <h2 className="text-lg font-semibold text-gray-700 mb-4 text-center">
-                        Detailed Attendance Records
-                      </h2>
-                      <ShowAttendance dates={selectedClassDates} presentDates={myAttendance} />
-                    </div>
+                          {/* Donut Chart Section */}
+                          <div className="flex-1 bg-white rounded-md border border-gray-300 shadow-md p-6">
+                            <h2 className="text-xl font-semibold text-gray-700 mb-6 text-center">
+                              Attendance Overview
+                            </h2>
+                            <DonutChart
+                              myAttendance={myAttendance}
+                              selectedClassDates={selectedClassDates.length}
+                            />
+                          </div>
+                        </div>
+
+                        {/* Bottom Section: Show Attendance */}
+                        <div className="bg-white rounded-md border border-gray-300 shadow-md p-6 mx-4">
+                          <h2 className="text-xl font-semibold text-gray-700 mb-6 text-center">
+                            Detailed Attendance Records
+                          </h2>
+                          <ShowAttendance dates={selectedClassDates} presentDates={myAttendance} />
+                        </div>
                   </div>
+
                 ) : null}
               </div>
             )}
