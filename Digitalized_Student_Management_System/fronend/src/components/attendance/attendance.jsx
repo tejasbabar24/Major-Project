@@ -292,7 +292,7 @@ useEffect(()=>{
                 <Button
                   className="cursor-pointer"
                   variant="contained"
-                  onClick={() => handleClassClick("Upload Attendance")}
+                  onClick={() =>{ handleClassClick("Upload Attendance") , isSmallScreen ?  toggleDrawer() : null }}
                   sx={{ fontSize: "15px", backgroundColor: "#3A2B51" }}
                 >
                   Upload Attendance <MdOutlineAdd />
