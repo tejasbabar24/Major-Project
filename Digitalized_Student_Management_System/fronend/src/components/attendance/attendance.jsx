@@ -165,6 +165,15 @@ useEffect(()=>{
       });
       return;
     }
+    toast.info("Please be patient! Recording attendance may take a few moments as we process your images.", {
+      position: "top-right",
+      autoClose: 1500,
+      hideProgressBar: false,
+      closeOnClick: true,
+      pauseOnHover: true,
+      draggable: true,
+      progress: undefined,
+    });
     const classDetails = createdClasses.find(
       (item) => item.classname === classes.toLowerCase()
     );
@@ -444,7 +453,8 @@ useEffect(()=>{
         <div className="col-span-2">Class not found</div> // Centered message
       )
                 ) : userData.role === "Student" ? (
-                  
+                  selectedClass !== null ? (
+
                   <div className="absolute inset-0 flex flex-col gap-8 md:gap-12 bg-gray-50 border border-gray-200 shadow-lg">
 
                         {/* Header Section */}
@@ -483,6 +493,9 @@ useEffect(()=>{
                           <ShowAttendance dates={selectedClassDates} presentDates={myAttendance} />
                         </div>
                   </div>
+                  ) :(
+                    <div>Please select class from the drawer to view attendance</div>
+                  )
 
                 ) : null}
               </div>
