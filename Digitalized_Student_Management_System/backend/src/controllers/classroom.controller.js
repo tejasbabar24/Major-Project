@@ -6,6 +6,7 @@ import { Teacher } from "../models/teacher.models.js";
 import { uploadOnCloudinary, downloadFromCloudinary } from "../utils/cloudinary.js"
 import { v4 as uuidv4 } from "uuid";
 import { Student } from "../models/student.models.js";
+import path from "path";
 
 
 const generateClassCode = async () => {
@@ -19,6 +20,156 @@ const generateClassCode = async () => {
 
 }
 
+const generateTimetable = asyncHandler(async (req, res, next) => {
+    const { config, subjects,title,classCode} = req.body;
+
+    // Validate the input
+    if (!config || !subjects || subjects.length === 0) {
+        return next(new ApiError(400, "Please provide configuration and subjects."));
+    }
+
+    const { lectureDuration, practicalDuration, breakDuration, breakTime, dayDuration, includeSaturday, startTime } = config;
+
+    if (
+        [lectureDuration, practicalDuration, breakDuration, breakTime, dayDuration, startTime].some(
+            (field) => field === undefined || field === null || field === ""
+        )
+    ) {
+        return next(new ApiError(400, "All configuration fields must be provided."));
+    }
+
+    const daysOfWeek = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday"];
+    if (includeSaturday) daysOfWeek.push("Saturday");
+
+    const timetable = {};
+    const totalSlots = Math.floor((dayDuration * 60) / lectureDuration);
+
+    daysOfWeek.forEach((day) => {
+        timetable[day] = Array(totalSlots).fill(null);
+    });
+
+    // Helper to assign subjects
+    function assignSubjectToSlot(day, subject, isPractical, slotsAssigned, teacherAvailability) {
+        for (let i = 0; i < totalSlots; i++) {
+            if (
+                timetable[day][i] === null && // Slot is empty
+                (i === 0 || timetable[day][i - 1]?.split(" ")[0] !== subject.name) // No consecutive repeats
+            ) {
+                timetable[day][i] = isPractical ? `${subject.name} (Practical)` : subject.name;
+                if (!teacherAvailability[subject.teacher]) teacherAvailability[subject.teacher] = [];
+                teacherAvailability[subject.teacher].push(`${day}-${i}`);
+                slotsAssigned++;
+                break;
+            }
+        }
+        return slotsAssigned;
+    }
+
+    const teacherAvailability = {};
+    subjects.forEach((subject) => {
+        let remainingLectureHours = subject.lectureHours;
+        let remainingPracticalHours = subject.practicalHours;
+
+        for (const day of daysOfWeek) {
+            if (remainingLectureHours > 0) {
+                remainingLectureHours = assignSubjectToSlot(day, subject, false, remainingLectureHours, teacherAvailability);
+            }
+            if (remainingPracticalHours > 0) {
+                remainingPracticalHours = assignSubjectToSlot(day, subject, true, remainingPracticalHours, teacherAvailability);
+            }
+        }
+    });
+
+    // Add break
+    const breakSlotIndex = Math.floor(
+        (new Date(`01/01/2022 ${breakTime}`) - new Date(`01/01/2022 ${startTime}`)) /
+            (1000 * 60 * lectureDuration)
+    );
+    daysOfWeek.forEach((day) => {
+        if (breakSlotIndex >= 0 && breakSlotIndex < totalSlots) {
+            timetable[day][breakSlotIndex] = `Break (${breakTime} - ${breakDuration} mins)`;
+        }
+    });
+
+    // Convert timetable to CSV
+    function timetableToCSV({ timetable, daysOfWeek, totalSlots, lectureDuration, startTime }) {
+        const slotTimes = [];
+        const timetableMatrix = [];
+
+        for (let i = 0; i < totalSlots; i++) {
+            const timeSlotStart = new Date(new Date(`01/01/2022 ${startTime}`).getTime() + i * lectureDuration * 60000);
+            const timeSlotEnd = new Date(timeSlotStart.getTime() + lectureDuration * 60000);
+            slotTimes.push(
+                `${timeSlotStart.getHours()}:${timeSlotStart.getMinutes().toString().padStart(2, "0")} - ${timeSlotEnd.getHours()}:${timeSlotEnd.getMinutes().toString().padStart(2, "0")}`
+            );
+        }
+
+        timetableMatrix.push(["Day", ...slotTimes]);
+        daysOfWeek.forEach((day) => {
+            const row = [day];
+            for (let i = 0; i < totalSlots; i++) {
+                row.push(timetable[day][i] || "Free");
+            }
+            timetableMatrix.push(row);
+        });
+
+        let csvContent = "";
+        timetableMatrix.forEach((row) => {
+            csvContent += row.join(",") + "\n";
+        });
+
+        return csvContent;
+    }
+
+    const csvContent = timetableToCSV({
+        timetable,
+        daysOfWeek,
+        totalSlots,
+        lectureDuration,
+        startTime,
+    });
+
+    const localFilePath = path.join(__dirname, "../../public", `${title}.csv`);
+    fs.writeFileSync(localFilePath, csvContent);
+
+    // Upload to Cloudinary
+    const uploaded = await uploadOnCloudinary(localFilePath);
+
+    // Delete local file after uploading
+    fs.unlinkSync(localFilePath);
+
+    if (!uploaded) {
+        return next(new ApiError(500, "An error occurred while uploading the file. Please try again later."));
+    }
+
+    fs.unlinkSync(localFilePath);
+
+    const classroom = await Classroom.findOneAndUpdate(
+        { classname },
+        {
+            $push: {
+                result: {
+                    title,
+                    attachment: uploaded.url,
+                    createdAt: new Date(),
+                },
+            },
+        },
+        { new: true }
+    ).select("-members");
+
+
+    return res.status(200).json(
+        new ApiResponse(
+            200,
+            {
+                classroom
+            },
+            "Timetable generated and uploaded successfully!"
+        )
+    );
+});
+
 const createClass = asyncHandler(async (req, res, next) => {
     const { classname, subject, section, year } = req.body;
 
@@ -29,17 +180,17 @@ const createClass = asyncHandler(async (req, res, next) => {
     ) {
         return next(new ApiError(400, "Please fill out all the required fields before submitting"));
     }
-    // console.log(req.user.username);
+    console.log(req.user.username);
 
-    // const existClass = Classroom.findOne({
-    //     classname,
-    //     owner:req.user.username
-    // })
-    // if(existClass){
-    //     return next(new ApiError(400,"Class already exists with same name"))
-    // }
+    const existClass = Classroom.findOne({
+        classname,
+        owner:req.user.username
+    })
+    if(existClass){
+        return next(new ApiError(400,"Class already exists with same name"))
+    }
+
     const code = await generateClassCode();
-    // console.log(code);
 
     const user = await Teacher.findById(req.user._id);
 
@@ -336,5 +487,6 @@ export {
     getJoinedStudents,
     postNotice,
     postResult,
+    generateTimetable,
     download
 }
