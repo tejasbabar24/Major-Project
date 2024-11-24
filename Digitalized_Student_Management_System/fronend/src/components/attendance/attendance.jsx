@@ -264,8 +264,7 @@ useEffect(()=>{
 
       <Drawer
         sx={{
-          
-          "& .MuiDrawer-paper": { width: drawerWidth, boxSizing: "border-box" ,marginTop:"3.5rem"},
+          "& .MuiDrawer-paper": { width: drawerWidth, boxSizing: "border-box", paddingTop:"3.5rem"},
           zIndex: 0,
         }}
         variant={isSmallScreen ? "temporary" : "permanent"} // Temporary drawer for small screens
