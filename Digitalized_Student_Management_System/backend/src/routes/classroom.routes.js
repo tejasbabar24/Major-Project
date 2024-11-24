@@ -8,7 +8,8 @@ import {
     postAssignment,
     postNotice,
     postResult,
-    download
+    download,
+    generateTimetable
 } from "../controllers/classroom.controller.js"
 import { verifyJWT } from "../middlewares/auth.middleware.js";
 import { stud_verifyJWT } from "../middlewares/auth_stud.middleware.js";
@@ -32,6 +33,8 @@ router.route('/notice').post(
 router.route('/result').post(
     upload.single('attachment'),
     postResult)
+
+router.route('/titetable').post(generateTimetable);
 
 router.route('/download-assignment').post(download);
 
