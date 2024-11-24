@@ -69,9 +69,9 @@ const toggleDrawer = () => setOpen(!open); // Drawer toggle function
 
 //  console.log(myAttendance);
 
- const handleParseFromUrl = (csvUrl) => {
+const handleParseFromUrl = (csvUrl) => {
   // Check if the URL has already been processed
-   if (!processedUrls.includes(csvUrl)) {
+  if (!processedUrls.includes(csvUrl)) {
     setProcessedUrls((prevUrls) => [...prevUrls, csvUrl]);
 
     Papa.parse(csvUrl, {
@@ -79,15 +79,19 @@ const toggleDrawer = () => setOpen(!open); // Drawer toggle function
       header: true, // Adjust based on your CSV structure
       skipEmptyLines: true,
       complete: (results) => {
-        console.log(results.data);
         const foundData = results.data.find(
           (item) => item.Enrollment_Number === userData.username
         );
         console.log("Found Data:", foundData);
 
         if (foundData) {
-          // Appending the found data to the attendance state
-          setMyAttendance((prevAttendance) => [...prevAttendance, foundData]);
+          // Add unique attendance record to the state
+          setMyAttendance((prevAttendance) => {
+            const isDuplicate = prevAttendance.some(
+              (record) => record.Date === foundData.Date
+            );
+            return isDuplicate ? prevAttendance : [...prevAttendance, foundData];
+          });
         }
       },
       error: (error) => {
@@ -98,8 +102,8 @@ const toggleDrawer = () => setOpen(!open); // Drawer toggle function
 };
 
 useEffect(() => {
-  
   if (userData.role === "Student") {
+
     const selectedClassData = joinedClasses.find(
       (item) => item.classname === selectedClass?.toLowerCase()
     );
@@ -111,14 +115,12 @@ useEffect(() => {
           const formattedDate = new Date(item.createdAt).toISOString().split("T")[0];
 
           // Add the date only if it doesn't already exist in the state
-          if (!selectedClassDates.includes(formattedDate)) {
-            setSelectedClassDates((prevDates) => [...prevDates, formattedDate]);
-          }
+          setSelectedClassDates((prevDates) =>
+            prevDates.includes(formattedDate) ? prevDates : [...prevDates, formattedDate]
+          );
         }
       });
-    }
 
-    if (selectedClassData && selectedClassData.attendance?.length > 0) {
       selectedClassData.attendance.forEach((item) => {
         if (item.attachment) {
           handleParseFromUrl(item.attachment);
@@ -128,9 +130,11 @@ useEffect(() => {
   }
 }, [selectedClass, joinedClasses, userData.role]);
 
+
 useEffect(()=>{
   setSelectedClassDates([])
-  // setMyAttendance([])
+  setProcessedUrls([])
+  setMyAttendance([])
 },[selectedClass])
 
   const handleClassChange = (event) => setClasses(event.target.value);
