@@ -66,7 +66,7 @@ export default function ExamPage() {
       return (
         <div className={`flex justify-center items-center w-full align-middle ${isSmallScreen ? 'flex-col' : 'flex-row'}`}>
           <img src={examimg} alt="Exam" className={` ${isSmallScreen ? 'h-42 w-42' : "h-46 w-46"}`} />
-          <form className="p-6 flex flex-col gap-10 mt-16">
+          <form className="p-6 flex flex-col gap-10 mt-16" onSubmit={on}>
             <p className="text-center text-lg">Upload Students' Marks File</p>
             <Select 
               label="Your Class" 
