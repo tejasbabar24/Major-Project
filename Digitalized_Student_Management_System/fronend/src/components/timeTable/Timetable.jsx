@@ -206,6 +206,7 @@ export default function Timetable() {
                   }}
                 />
                 <Input
+                  className={`${isSmallScreen ? 'text-sm' : null} `}
                   label="Practical Hours"
                   placeholder="Enter hours"
                   value={subject.practicalHours}
@@ -323,7 +324,7 @@ export default function Timetable() {
               <MenuIcon />
             </IconButton>
           )}
-          <Typography variant="h4" sx={{ marginLeft: "35%" }}>
+          <Typography variant="h4"  sx={{ marginLeft: isSmallScreen ? '22%' : '40%' }}>
             Time Table
           </Typography>
         </Toolbar>
