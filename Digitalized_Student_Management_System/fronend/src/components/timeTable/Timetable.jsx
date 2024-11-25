@@ -22,6 +22,8 @@ import AttendanceCard from "../attendance/attendanceCard.jsx";
 import {Input} from "@nextui-org/react";
 import {Checkbox} from "@nextui-org/react";
 import {Button} from "@nextui-org/react";
+import axios from "axios";
+import { toast, ToastContainer } from "react-toastify";
 
 const drawerWidth = 320;
 
@@ -85,6 +87,35 @@ export default function Timetable() {
   const handleSubmit = () => {
     console.log("Config Data:", config);
     console.log("Subjects Data:", subjects);
+    console.log(tableName)
+    axios
+      .post("http://localhost:8000/class/genrate-timetable", {config,subjects,title:tableName,classCode:"f5cbacf14e6a"})
+      .then((result) => {
+        const message = result.data.message || "Timetable Generated"
+        toast.success(message, {
+          position: "top-right",
+          autoClose: 1500,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+        });
+        clearFields()
+
+      })
+      .catch((error) => {
+        const errorMessage = error.response?.data?.message || "Something went wrong!";
+        toast.error(errorMessage, {
+          position: "top-right",
+          autoClose: 1500,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+        });
+      })
   };
 
   const removeSubject = (index) => {
@@ -122,7 +153,7 @@ export default function Timetable() {
                 label="Time Table Name" 
                 placeholder="Enter Name"
                 value={tableName}
-                onChange={ ()=>{setTableName()} }
+                onChange={ (e)=>{setTableName(e.target.value)} }
               />
           </div>
             <div className="flex flex-row gap-3">

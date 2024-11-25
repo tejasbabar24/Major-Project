@@ -17,7 +17,7 @@ import MenuIcon from "@mui/icons-material/Menu";
 import { MdOutlineAdd } from "react-icons/md";
 import DragAndDropFileUpload from "../dragNdrop/DragNdrop.jsx";
 import { useSelector } from "react-redux";
-import { useEffect, useState } from "react";
+
 import attendancelogo from "./attendancelogo.png";
 import AttendanceCard from "./attendanceCard.jsx";
 import axios from "axios";
@@ -173,6 +173,7 @@ useEffect(()=>{
       draggable: true,
       progress: undefined,
     });
+    
     const classDetails = createdClasses.find(
       (item) => item.classname === classes.toLowerCase()
     );

@@ -19,6 +19,8 @@ import { Select, SelectItem } from "@nextui-org/react";
 import user from "../../assets/classCards/user.png";
 import examimg from './examimg.jpg';
 import AttendanceCard from "../attendance/attendanceCard.jsx";
+import axios from "axios";
+import { toast, ToastContainer } from "react-toastify";
 
 const drawerWidth = 320;
 
@@ -58,15 +60,95 @@ export default function ExamPage() {
   const [selectedClass ,setselectedClass] = React.useState('')
   const [files, setFiles] = React.useState([]);
   const isSmallScreen = useMediaQuery("(max-width: 768px)");
+  const [createdClasses, setCreatedClasses] = React.useState([]);
+  const [joinedClasses, setJoinedClasses] = React.useState([]);
+  const [classes, setClasses] = React.useState("");
 
   const toggleDrawer = () => setOpen(!open);
+
+  if (userData.role === "Teacher") {
+    React.useEffect(() => {
+      axios
+        .get("http://localhost:8000/class/created-classes")
+        .then((result) => {
+          setCreatedClasses(result.data.data.classes);
+        })
+        .catch((err) => {
+          console.log(err);
+        });
+    }, [createdClasses]);
+  } else if (userData.role === "Student") {
+    useEffect(() => {
+      axios
+        .get("http://localhost:8000/class/joined-classes")
+        .then((result) => {
+          setJoinedClasses(result.data.data.classArr);
+        })
+        .catch((err) => {
+          console.log(err);
+        });
+    }, [joinedClasses]);
+  }
+
+  const handleClassChange = (event) => setClasses(event.target.value);
+  
+  const uploadResult=(e)=>{
+      e.preventDefault();
+      if (!files || !classes) {
+        toast.error("Class and files are required.", {
+          position: "top-right",
+          autoClose: 1500,
+        });
+        return;
+      }
+
+    const formData = new FormData();
+    formData.append("classname", classes);
+    files.forEach((files, index) => {
+      formData.append("attachment", files);
+    });
+
+    axios
+      .post("http://localhost:8000/class/result", formData, {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+        withCredentials: true,
+      })
+      .then((result) => {
+        const message = result.data.message || "Result Uploaded"
+        toast.success(message, {
+          position: "top-right",
+          autoClose: 1500,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+        });
+        clearFields()
+
+      })
+      .catch((error) => {
+        const errorMessage = error.response?.data?.message || "Something went wrong!";
+        toast.error(errorMessage, {
+          position: "top-right",
+          autoClose: 1500,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+        });
+      })
+  };
 
   const renderContent = () => {
     if ( selectedClass ==='upload') {
       return (
         <div className={`flex justify-center items-center w-full align-middle ${isSmallScreen ? 'flex-col' : 'flex-row'}`}>
           <img src={examimg} alt="Exam" className={` ${isSmallScreen ? 'h-42 w-42' : "h-46 w-46"}`} />
-          <form className="p-6 flex flex-col gap-10 mt-16">
+          <form className="p-6 flex flex-col gap-10 mt-16" onSubmit={uploadResult}>
             <p className="text-center text-lg">Upload Students' Marks File</p>
             <Select 
               label="Your Class" 
@@ -74,16 +156,20 @@ export default function ExamPage() {
               className="w-full" 
               color="success" 
               defaultValue="CS"
-              onChange={(e) => setselectedClass(e.target.value)}
+              onChange={handleClassChange}
             >
-              <SelectItem value="CS">CS</SelectItem>
-              <SelectItem value="ST">ST</SelectItem>
-              <SelectItem value="NMA">NMA</SelectItem>
-              <SelectItem value="DAR">DAR</SelectItem>
+              {createdClasses.map((item) => (
+                          <SelectItem
+                            key={item.classCode}
+                            value={item.classname.toUpperCase()}
+                          >
+                            {item.classname.toUpperCase()}
+                          </SelectItem>
+                        ))}
             </Select>
             <DragAndDropFileUpload files={files} setFiles={setFiles} />
             <Button type="submit" className="w-18 h-8 mt-4 text-white text-sm text-center bg-purple-500">
-              Upload Attendance
+              Upload Result
             </Button>
           </form>
         </div>
@@ -199,12 +285,25 @@ export default function ExamPage() {
           <Typography variant="h6" sx={{ textAlign: "center", paddingTop: 2 }}>
             Your Classes
           </Typography>
-          <ListItem className="hover:bg-gray-100 cursor-pointer" onClick={()=>{ setselectedClass('classes'), isSmallScreen? toggleDrawer() :null}}>
-            <ListItemIcon>
-              <img src={user} alt="User Profile" className="w-12 h-12 rounded-full" />
-            </ListItemIcon>
-            <ListItemText primary=" NMA" />
-          </ListItem>
+          {createdClasses.map((item) => (
+                <ListItem
+                  key={item.classCode}
+                  className="hover:bg-gray-100 cursor-pointer"
+                  onClick={() =>{
+                    handleClassClick(item.classname.toUpperCase()),
+                     isSmallScreen ?  toggleDrawer() : null 
+                  }}
+                >
+                  <ListItemIcon className="mr-3">
+                    <img
+                      src={user}
+                      alt="User Profile"
+                      className="w-12 h-12 rounded-full mb-2 border solid white "
+                    />
+                  </ListItemIcon>
+                  {item.classname.toUpperCase()}
+                </ListItem>
+              ))}
         </List>
       </Drawer>
       :null}
