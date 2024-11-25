@@ -169,40 +169,27 @@ def recognize_faces_in_photos():
                 if similarity > 0.6:  # Threshold for match
                     print(f"Match found for {person_name} with similarity {similarity:.2f}")
                     recognized_students.add(person_name)
-
-                    # Annotate the image
-                    x1, y1, x2, y2 = face.bbox.astype(int)
-                    cv2.rectangle(image, (x1, y1), (x2, y2), (0, 255, 0), 2)
-                    cv2.putText(
-                        image,
-                        f"{person_name}: {similarity:.2f}",
-                        (x1, y1 - 10),
-                        cv2.FONT_HERSHEY_SIMPLEX,
-                        0.5,
-                        (0, 255, 0),
-                        1,
-                    )
                     matched = True
                     break
 
             if not matched:
                 print("Face detected but no match found.")
 
-        # Save the annotated image
         end_time = time.time()
         print(f"Time taken for {photo_file}: {end_time - start_time:.2f} seconds")
 
-    # Write recognized names to the CSV file
+    
     with csv_file.open('w', newline='') as f:
         writer = csv.writer(f)
-        writer.writerow(["Name", "Timestamp"])
+        writer.writerow(["Date","Name", "Timestamp"])
         timestamp = datetime.now().strftime("%H:%M:%S")
         for student in recognized_students:
-            writer.writerow([student, timestamp])
+            writer.writerow([current_date,student, timestamp])
 
     upload_result = cloudinary.uploader.upload(
     csv_file,
-    resource_type="raw",  # Specify "raw" for non-image files
+    resource_type="raw",  
+    public_id=current_date
     )
     os.unlink(csv_file)
 
