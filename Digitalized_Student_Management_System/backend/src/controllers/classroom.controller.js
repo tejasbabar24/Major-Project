@@ -387,10 +387,10 @@ const postNotice = asyncHandler(async (req, res, next) => {
 
 const postResult = asyncHandler(async (req, res, next) => {
 
-    const { description, classname } = req.body;
+    const { classname } = req.body;
 
     if (
-        [description, classname].some((field) =>
+        [classname].some((field) =>
             field?.trim() === "")
     ) {
         return next(new ApiError(400, "Please fill out all the required fields before submitting"));
@@ -424,7 +424,7 @@ const postResult = asyncHandler(async (req, res, next) => {
         {
             $push: {
                 result: {
-                    description,
+                    description:uploaded.public_id,
                     attachment: uploaded?.url || "",
                     createdAt: new Date(),
                 },
