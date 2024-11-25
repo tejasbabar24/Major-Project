@@ -10,7 +10,7 @@ function NoticeCard({ fileUrls = [], desc, from, to, date }) {
 
   return (
     <div
-      className="w-full p-6 rounded-xl shadow-lg bg-white transition transform hover:-translate-y-1 hover:shadow-2xl"
+      className="m-4 p-6 rounded-xl shadow-lg bg-white transition transform hover:-translate-y-1 hover:shadow-2xl"
       style={{ borderLeft: `6px solid ${randomColor}` }}
     >
       <div className="flex justify-between items-center mb-4">

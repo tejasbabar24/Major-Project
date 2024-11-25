@@ -29,12 +29,11 @@ const drawerWidth = 320;
 const Main = styled("main", { shouldForwardProp: (prop) => prop !== "open" })(
   ({ theme, open }) => ({
     flexGrow: 1,
-    height: "100vh",
     transition: theme.transitions.create("margin", {
       easing: theme.transitions.easing.sharp,
       duration: theme.transitions.duration.leavingScreen,
     }),
-    marginLeft: open ? 0 : `-${drawerWidth}px`,
+    // marginLeft: open ? 0 : `-${drawerWidth}px`,
   })
 );
 
@@ -162,11 +161,11 @@ export default function Noticeboard() {
       })
   };
   return (
-    <Box sx={{ display: "flex" }}>
+    <Box sx={{height:"100%", display: "flex" ,backgroundColor:"#CCD0CF" }}>
       <ToastContainer/>
       <CssBaseline />
       <AppBar position="fixed">
-        <Toolbar sx={{ backgroundColor: "#8E6AC4" }}>
+        <Toolbar sx={{  backgroundColor: "#253745" }}>
           {role === "Teacher" && (
             <IconButton
               color="inherit"
@@ -175,8 +174,9 @@ export default function Noticeboard() {
               edge="end"
             >
               <Buttons
+              className="hover:bg-[#06141B]"
                 variant="contained"
-                sx={{ fontSize: "15px", backgroundColor: "#3A2B51" }}
+                sx={{ fontSize: "15px", backgroundColor: "#11212D" }}
               >
                 Post Notice <MdOutlineAdd />
               </Buttons>
@@ -199,18 +199,20 @@ export default function Noticeboard() {
               marginTop: "64px",
             },
           }}
-          variant="persistent"
+          variant="temporary"
           anchor="left"
           open={open}
+          onClose={()=>setOpen(!open)}
         >
           <Divider />
-          <Typography variant="h6" className="pt-2 ml-6">
-            Publish Notice
-          </Typography>
+          
           <form
             onSubmit={handleFormSubmit}
             className="pl-5 pr-5 pb-5 flex flex-col"
           >
+            <Typography variant="h6" className="pt-2">
+            Publish Notice
+            </Typography>
             <TextField
               label="Description"
               margin="normal"
@@ -218,7 +220,7 @@ export default function Noticeboard() {
               multiline
               onChange={(e) => setDescription(e.target.value)}
             />
-            <FormControl sx={{ m: 1, minWidth: 120 }} size="large">
+            <FormControl sx={{ marginBottom:1, minWidth: 120 }} size="large">
               <InputLabel id="demo-select-small-label">Classes</InputLabel>
               <Select
                 labelId="demo-select-small-label"
@@ -241,7 +243,7 @@ export default function Noticeboard() {
             <Loading show={loading}/>
             <Button
               type="submit"
-              className="w-18 h-8 mt-4 text-white text-sm text-center bg-purple-500"
+              className="w-18 h-8 mt-4 text-white text-sm text-center bg-[#11212D] hover:bg-[#253745]"
             >
               Post Notice
             </Button>

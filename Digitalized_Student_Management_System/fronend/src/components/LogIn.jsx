@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import "boxicons/css/boxicons.min.css";
 import StudentLogo from "../assets/studentsImg.png";
 import FacultyLogo from "../assets/Faculty.png";
-import backgroundImage from "../assets/lightBackground.jpg";
+import backgroundImage from "../assets/background2.jpg";
 import AcademixLogo from "../assets/academixLogo.png"; // Add your logo image here
 import axios from "axios";
 import Cookies from "universal-cookie";
@@ -91,7 +91,7 @@ function LogIn() {
   };
 
   return (
-    <div className="flex flex-col lg:flex-row w-full min-h-screen bg-gray-100">
+    <div className="flex flex-col lg:flex-row w-full min-h-screen bg-[#CCD0CF]">
       <ToastContainer />
       {/* Left Section for Desktop */}
       <div
@@ -105,9 +105,9 @@ function LogIn() {
               key={item}
               className={`px-6 py-2 rounded-full border ${
                 role === item
-                  ? "bg-blue-100 text-blue-600 border-blue-300"
-                  : "bg-gray-200 text-gray-600 border-gray-300"
-              } hover:bg-blue-200 hover:text-blue-800`}
+                  ? "bg-[#253745] text-white border-[#06141B]"
+                  : "bg-[#CCD0CF] text-gray-600 border-[#06141B]"
+              } hover:bg-[#4A5C6A] hover:text-white`}
               onClick={() => setRole(item)}
             >
               {item}
@@ -122,10 +122,10 @@ function LogIn() {
           {/* Header with Logo and Name */}
           <div className="text-center mb-8">
             <img src={AcademixLogo} alt="Academix Logo" className="w-16 mx-auto mb-3" />
-            <h1 className="text-3xl font-bold text-blue-600">Academix</h1>
+            <h1 className="text-3xl font-bold text-[#4A5C6A]">Academix</h1>
           </div>
 
-          <h2 className="text-2xl font-semibold text-center text-blue-600 mb-6">{role} Login</h2>
+          <h2 className="text-2xl font-semibold text-center text-[#4A5C6A] mb-6">{role} Login</h2>
           <form onSubmit={handleSubmit} className="space-y-6">
             {/* Role Selection for Mobile */}
             <div className="lg:hidden space-y-2">
@@ -149,7 +149,7 @@ function LogIn() {
               <Input
                 type="text"
                 placeholder="Username"
-                className="pl-10 w-full border border-gray-300 rounded-md py-2 px-3 focus:outline-none focus:ring-2 focus:ring-blue-400"
+                className="pl-10 w-full border border-gray-300 rounded-md py-2 px-3 focus:outline-none focus:ring-2 focus:ring-[#CCD0CF]"
                 onChange={(e) => setUsername(e.target.value)}
               />
             </div>
@@ -160,13 +160,13 @@ function LogIn() {
               <Input
                 type="password"
                 placeholder="Password"
-                className="pl-10 w-full border border-gray-300 rounded-md py-2 px-3 focus:outline-none focus:ring-2 focus:ring-blue-400"
+                className="pl-10 w-full border border-gray-300 rounded-md py-2 px-3 focus:outline-none focus:ring-2 focus:ring-[#CCD0CF]"
                 onChange={(e) => setPassword(e.target.value)}
               />
             </div>
 
             <div className="text-right">
-              <button type="button" className="text-blue-500 text-sm hover:underline">
+              <button type="button" className="text-[#4A5C6A] text-sm hover:underline">
                 Forgot password?
               </button>
             </div>
@@ -176,26 +176,18 @@ function LogIn() {
               <Loading show={loading} />
               <Button
                 type="submit"
-                className="w-full bg-blue-500 text-white py-2 rounded-md hover:bg-blue-600"
+                className="w-full bg-[#4A5C6A] text-white py-2 rounded-md hover:bg-[#253745]"
               >
                 Login
               </Button>
             </div>
           </form>
 
-          {/* Social Login */}
-          <div className="text-center mt-6">
-            <span className="text-gray-600">or login with</span>
-          </div>
-          <div className="text-center mt-4">
-            <button className="text-red-500 hover:text-red-600 text-2xl">
-              <i className="bx bxl-google-plus-circle"></i>
-            </button>
-          </div>
+          
 
           {/* Signup Link */}
           <div className="text-center mt-6">
-            <Link to="/signup" className="text-blue-500 hover:underline">
+            <Link to="/signup" className="text-[#4A5C6A] hover:underline">
               Don’t have an account? Sign up
             </Link>
           </div>

@@ -41,8 +41,7 @@ const Main = styled("main")(({ theme }) => ({
   minHeight: "100vh",
 }));
 const StyledAppBar = styled(AppBar)({
-  backgroundColor: "#fff",
-  color: "#333",
+  color: "#fff",
   boxShadow: "0px 2px 4px rgba(0, 0, 0, 0.1)",
 });
 export default function Attendance() {
@@ -252,7 +251,7 @@ useEffect(()=>{
       <CssBaseline />
       
       <StyledAppBar position="fixed">
-        <Toolbar sx={{ backgroundColor: "#8E6AC4" }}>
+        <Toolbar sx={{ backgroundColor: "#253745" }}>
           {isSmallScreen && ( // Show toggle button only on small screens
             <IconButton
               color="inherit"
@@ -273,7 +272,7 @@ useEffect(()=>{
 
       <Drawer
         sx={{
-          "& .MuiDrawer-paper": { width: drawerWidth, boxSizing: "border-box", paddingTop:"3.5rem"},
+          "& .MuiDrawer-paper": { width: drawerWidth, boxSizing: "border-box", paddingTop:"3.5rem" ,backgroundColor:"#eef0ef"},
           zIndex: 0,
         }}
         variant={isSmallScreen ? "temporary" : "permanent"} // Temporary drawer for small screens
@@ -287,16 +286,18 @@ useEffect(()=>{
             <>
               <ListItem onClick={()=>{isSmallScreen ?  toggleDrawer() : null }}>
                 <Button
-                  className="cursor-pointer"
+                 
+                  className="cursor-pointer hover:bg-[#11212D]"
                   variant="contained"
                   onClick={() =>{ handleClassClick("Upload Attendance") , isSmallScreen ?  toggleDrawer() : null }}
-                  sx={{ fontSize: "15px", backgroundColor: "#3A2B51" }}
+                  sx={{ fontSize: "15px", backgroundColor: "#253745" }}
                 >
                   Upload Attendance <MdOutlineAdd />
                 </Button>
               </ListItem>
               <Typography
                 variant="h6"
+                className="text-[#253745]"
                 sx={{ textAlign: "center", paddingTop: 2 }}
               >
                 Your Classes
@@ -304,7 +305,7 @@ useEffect(()=>{
               {createdClasses.map((item) => (
                 <ListItem
                   key={item.classCode}
-                  className="hover:bg-gray-100 cursor-pointer"
+                  className="hover:bg-gray-100 cursor-pointer text-[#253745]"
                   onClick={() =>{
                     handleClassClick(item.classname.toUpperCase()),
                      isSmallScreen ?  toggleDrawer() : null 
@@ -400,13 +401,14 @@ useEffect(()=>{
                     <Loading show={loading} />
 
                     <Button
+                    className="hover:bg-[#11212D]"
                       type="submit"
                       sx={{
                               width: '100%',          
                               marginTop: '2rem',    
                               color: 'white',         
                               fontSize: '0.875rem',  
-                              backgroundColor: '#6b46c1' 
+                              backgroundColor: '#253745' 
                             }}
                     >
                       Upload Attendance

@@ -112,7 +112,7 @@ function Viewclassroom() {
                 </div>
               </div>
             )}
-            {classInfo.assignment &&
+            {classInfo.assignment  &&
               [...classInfo.assignment]
                 .sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt))
                 .map((item, index) => (
@@ -122,7 +122,7 @@ function Viewclassroom() {
         );
       case "students":
         return (
-          <div className="bg-white rounded-lg shadow p-6 max-h-96 overflow-y-auto">
+          <div className="bg-white rounded-lg shadow p-6 max-h-96 overflow-y-auto mt-4">
             <h2 className="text-2xl font-bold text-gray-800 mb-4">Teacher</h2>
             <ul className="list-disc pl-5 mb-4">
               <li>{classInfo.owner?.toUpperCase()}</li>
@@ -143,21 +143,15 @@ function Viewclassroom() {
   return (
     <>
     <ToastContainer/>
-    <div className="bg-gray-100 min-h-screen">
-      <nav className="w-full bg-white shadow-lg py-4 px-6 flex justify-between items-center">
-        <div className="flex items-center gap-4">
-          <i className="bx bx-plus text-blue-600"></i>
-          <span className="text-blue-800 font-bold text-2xl">StudyRoom</span>
-        </div>
-        <div className="flex gap-4 items-center text-gray-600">
-          <i className="bx bx-plus text-2xl"></i>
-          <i className="bx bxs-grid text-2xl"></i>
-          <i className="bx bx-user-circle text-2xl"></i>
-        </div>
+    <div className="bg-[#CCD0CF] min-h-screen">
+      <nav className="w-full bg-[#4A5C6A] shadow-lg py-4 px-6">
+        
+          <span className="text-[#eef0ef] font-bold text-2xl">StudyRoom</span>
+        
       </nav>
 
       <div className="max-w-5xl mx-auto mt-8 p-4">
-        <div className="bg-blue-600 text-white p-6 rounded-lg mb-6">
+        <div className="bg-[#4A5C6A] text-white p-6 rounded-lg mb-6">
           <h1 className="text-3xl font-semibold">{classInfo.classname?.toUpperCase()}</h1>
           <p className="text-lg">{classInfo.section?.toUpperCase()}</p>
           <p className="text-sm mt-2">
@@ -170,7 +164,7 @@ function Viewclassroom() {
             <div className="flex gap-12 justify-center">
               <span
                 className={`cursor-pointer ${
-                  active === "assignment" ? "font-bold text-blue-600" : "text-gray-500"
+                  active === "assignment" ? "font-bold text-[#4A5C6A]" : "text-gray-500"
                 }`}
                 onClick={() => setActive("assignment")}
               >
@@ -178,7 +172,7 @@ function Viewclassroom() {
               </span>
               <span
                 className={`cursor-pointer ${
-                  active === "students" ? "font-bold text-blue-600" : "text-gray-500"
+                  active === "students" ? "font-bold text-[#4A5C6A]" : "text-gray-500"
                 }`}
                 onClick={() => setActive("students")}
               >

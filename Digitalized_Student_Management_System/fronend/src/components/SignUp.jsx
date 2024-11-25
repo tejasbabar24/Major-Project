@@ -119,6 +119,7 @@ function SignUp() {
         })
         .finally(() => {
           setLoading(false);
+          clearFields();
         });
     } else if (role === "Teacher") {
       setLoading(true);
@@ -171,12 +172,13 @@ function SignUp() {
         })
         .finally(() => {
           setLoading(false);
+          clearFields();
         });
     }
   };
 
   return (
-    <div className="flex flex-col lg:flex-row w-full min-h-screen bg-gray-100">
+    <div className="flex flex-col lg:flex-row w-full min-h-screen bg-[#CCD0CF]">
       <ToastContainer />
       {/* Left Section */}
       <div
@@ -206,10 +208,10 @@ function SignUp() {
         <div className="bg-white shadow-lg rounded-lg p-8 w-full sm:w-3/4 md:w-1/2 lg:w-2/3 xl:w-1/2">
           <div className="text-center mb-8">
             <img src={AcademixLogo} alt="Academix Logo" className="w-16 mx-auto mb-3" />
-            <h1 className="text-3xl font-bold text-blue-600">Academix</h1>
+            <h1 className="text-3xl font-bold text-[#4A5C6A]">Academix</h1>
           </div>
 
-          <h2 className="text-2xl font-semibold text-center text-blue-600 mb-6">
+          <h2 className="text-2xl font-semibold text-center text-[#4A5C6A] mb-6">
             {role} Registration
           </h2>
 
@@ -221,7 +223,7 @@ function SignUp() {
                 type="text"
                 placeholder="Username"
                 value={username}
-                className="pl-10 w-full border border-gray-300 rounded-md py-2 px-3 focus:outline-none focus:ring-2 focus:ring-blue-400"
+                className="pl-10 w-full border border-gray-300 rounded-md py-2 px-3 focus:outline-none focus:ring-2 focus:ring-[#CCD0CF]"
                 onChange={(e) => setUsername(e.target.value)}
               />
             </div>
@@ -233,7 +235,7 @@ function SignUp() {
                 type="email"
                 placeholder="Email"
                 value={email}
-                className="pl-10 w-full border border-gray-300 rounded-md py-2 px-3 focus:outline-none focus:ring-2 focus:ring-blue-400"
+                className="pl-10 w-full border border-gray-300 rounded-md py-2 px-3 focus:outline-none focus:ring-2 focus:ring-[#CCD0CF]"
                 onChange={(e) => setEmail(e.target.value)}
               />
             </div>
@@ -245,7 +247,7 @@ function SignUp() {
                 type="password"
                 placeholder="Password"
                 value={password}
-                className="pl-10 w-full border border-gray-300 rounded-md py-2 px-3 focus:outline-none focus:ring-2 focus:ring-blue-400"
+                className="pl-10 w-full border border-gray-300 rounded-md py-2 px-3 focus:outline-none focus:ring-2 focus:ring-[#CCD0CF]"
                 onChange={(e) => setPassword(e.target.value)}
               />
             </div>
@@ -255,7 +257,7 @@ function SignUp() {
               <div>
                 <label
                   htmlFor="images"
-                  className="block text-gray-600 text-sm font-medium mb-2"
+                  className="block text-[#4A5C6A] text-sm font-medium mb-2"
                 >
                   Upload at least 3 images
                 </label>
@@ -284,7 +286,7 @@ function SignUp() {
               <Loading show={loading} />
               <Button
                 type="submit"
-                className="w-full bg-blue-500 text-white py-2 rounded-md hover:bg-blue-600"
+                className="w-full bg-[#4A5C6A] text-white py-2 rounded-md hover:bg-[#253745]"
               >
                 Register
               </Button>
@@ -292,12 +294,12 @@ function SignUp() {
           </form>
 
           {/* Login Link */}
-          <div className="text-center mt-6">
+          <div className="text-center text-[#4A5C6A] mt-6">
             <p>
               Already have an account?{" "}
               <span
                 onClick={() => navigate("/")}
-                className="text-blue-500 cursor-pointer hover:underline"
+                className="text-[#253745] cursor-pointer hover:underline"
               >
                 Log in
               </span>

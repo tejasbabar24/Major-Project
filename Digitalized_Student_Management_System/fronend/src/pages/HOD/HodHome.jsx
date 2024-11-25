@@ -5,6 +5,7 @@ import {
   teacherAttendance, ClassListLogo, CreateClass, TimetableLogo,
 NotifyLogo, ResultLogo, ProfileLogo, BookLogo ,sideBarLogo,studentAttendance
 } from '../../assets/HodHomePageLogo';
+import AcademixLogo from "../../assets/academixLogo.png"; // Add your logo image here
 import { useNavigate } from 'react-router';
 import "boxicons/css/boxicons.min.css";
 import { RxCross2 } from "react-icons/rx";
@@ -123,7 +124,7 @@ function Home() {
   };
 
   return (
-    <div className="w-full min-h-screen flex flex-col md:flex-row bg-gradient-to-br from-blue-100 to-indigo-200">
+    <div className="w-full min-h-screen flex flex-col bg-[#9BA8AB] md:flex-row">
       <ToastContainer/>
       {/* Sidebar Toggle Button for Mobile */}
       <button
@@ -137,7 +138,7 @@ function Home() {
       {/* Sidebar */}
       {isDrawerOpen ? null : 
       <div
-        className={`fixed inset-y-0 left-0 z-30 w-64 bg-gradient-to-b from-gray-800 to-gray-600 min-h-screen shadow-2xl transition-transform duration-300 transform ${
+        className={`fixed inset-y-0 left-0 z-30 w-64 bg-[#11212D] min-h-screen shadow-2xl transition-transform duration-300 transform ${
           isSidebarOpen ? 'translate-x-0' : '-translate-x-full'
         } md:static md:translate-x-0`}
       >
@@ -145,8 +146,8 @@ function Home() {
        
         <div className="flex px-4 pt-4 justify-between">
           <div className='flex items-center'>
-            <img className="w-10 h-10 md:w-12 md:h-12 mr-3" src={BookLogo} alt="College Logo" />
-            <h1 className="text-indigo-200 font-bold text-lg md:text-xl">COLLEGE</h1>
+            <img className="w-8 h-8 md:w-12 md:h-12 mr-3" src={AcademixLogo} alt="College Logo" />
+            <h1 className="text-[#eef0ef] font-bold text-lg md:text-xl">ACADEMIX</h1>
           </div>
           <button className='md:hidden' onClick={() => setSidebarOpen(false)}>
             <RxCross2 className="text-white w-8 h-8 opacity-80 hover:opacity-100 transition-opacity cursor-pointer"/>
@@ -161,7 +162,7 @@ function Home() {
               item.active ? (
                 <li
                   key={item.name}
-                  className="flex items-center px-4 md:px-6 py-3 text-white transition-transform transform hover:scale-105 hover:bg-gray-700 hover:shadow-md rounded-lg cursor-pointer"
+                  className="flex items-center px-4 md:px-6 py-3 text-[#eef0ef] transition-transform transform hover:scale-105 hover:bg-gray-700 hover:shadow-md rounded-lg cursor-pointer"
                   onClick={() => {
                     navigate(item.slug);
                     setSidebarOpen(false);  // Close sidebar on navigation
@@ -181,14 +182,14 @@ function Home() {
       <div className="flex flex-col w-full p-4 md:p-6">
         
         {/* Header Section */}
-        <div className="bg-white rounded-lg shadow-md p-4 md:p-6 mb-6 flex flex-col md:flex-row justify-between items-center">
+        <div className="bg-[#eef0ef] rounded-lg shadow-md p-4 md:p-6 mb-6 flex flex-col md:flex-row justify-between items-center">
           <div>
             <h1 className="text-lg md:text-2xl font-semibold text-gray-700">{userData?.role || "Guest"}</h1>
             <h2 className="text-md md:text-lg text-gray-500">{userData?.username.toUpperCase() || "Guest User"}</h2>
           </div>
           <div className="flex items-center gap-x-3 md:gap-x-4 mt-4 md:mt-0">
             <img
-              className="w-10 h-10 md:w-12 md:h-12 rounded-full border-2 border-indigo-300 cursor-pointer hover:scale-105 transition-transform duration-200 object-cover"
+              className="w-10 h-10 md:w-12 md:h-12 rounded-full border-2 border-[#9BA8AB] cursor-pointer hover:scale-105 transition-transform duration-200 object-cover"
               src={userData.profile || ProfileLogo}  
               alt="profile"
               onClick={() => setDrawerOpen(!isDrawerOpen)}  // Toggle drawer
@@ -221,17 +222,17 @@ function Home() {
         }`}
       >
             <div className="p-4">
-            <IoCloseSharp size={25} onClick={()=>setDrawerOpen(!isDrawerOpen)} />
-              <h2 className="text-xl font-bold text-gray-700 ml-9">  Profile Settings</h2>
+            <IoCloseSharp className='text-[#4A5C6A] hover:text-[#253745] cursor-pointer' size={25} onClick={()=>setDrawerOpen(!isDrawerOpen)} />
+              <h2 className="text-xl font-bold text-[#4A5C6A] ml-9">  Profile Settings</h2>
               <div className="flex justify-center flex-col items-center mt-4 relative">
               {/* Profile Image with Hover Icon */}
               <div className="relative group w-36 h-36">
                 <img
                   src={userData.profile || ProfileLogo} // Use a default image if none is set
                   alt="your profile"
-                  className="w-36 h-36 rounded-full border border-indigo-500 shadow-lg object-cover"
+                  className="w-36 h-36 rounded-full border border-[#253745] shadow-lg object-cover"
                 />
-                <p className="text-gray-600 font-bold text-lg mt-0 ml-4 mt-2">{userData?.username}</p>
+                <p className="text-[#4A5C6A] font-bold text-lg mt-0 ml-4 mt-2">{userData?.username.toUpperCase()}</p>
                 {/* Update Icon on Hover */}
                 <div className="absolute inset-0 flex items-center justify-center bg-black bg-opacity-50 rounded-full opacity-0 group-hover:opacity-100 transition-opacity ">
                   <label className="text-white cursor-pointer">
@@ -278,7 +279,7 @@ function Home() {
                   </div>
                   <button
                     type="button"
-                    className="text-indigo-600 hover:text-indigo-800 focus:outline-none"
+                    className="text-[#4A5C6A] hover:text-[#253745] focus:outline-none"
                     onClick={() => setIsEditing((prev) => ({ ...prev, username: !prev.username }))}
                   >
                     <FaUserEdit size={20} />
@@ -310,7 +311,7 @@ function Home() {
                   </div>
                   <button
                     type="button"
-                    className="text-indigo-600 hover:text-indigo-800 focus:outline-none"
+                    className="text-[#4A5C6A] hover:text-[#253745] focus:outline-none"
                     onClick={() => setIsEditing((prev) => ({ ...prev, email: !prev.email }))}
                   >
                     <FaUserEdit size={20} />
@@ -321,7 +322,7 @@ function Home() {
                 <div className="flex justify-center mt-4">
                   <button
                     type="submit"
-                    className="bg-indigo-600 text-white px-4 py-2 rounded-md hover:bg-indigo-700 focus:outline-none"
+                    className="bg-[#4A5C6A] text-white px-4 py-2 rounded-md hover:bg-[#253745] focus:outline-none"
                   >
                     Update
                   </button>

@@ -34,14 +34,12 @@ const drawerWidth = 240;
 
 const StyledAppBar = styled(AppBar)({
   backgroundColor: "#fff",
-  color: "#333",
   boxShadow: "0px 2px 4px rgba(0, 0, 0, 0.1)",
 });
 
 const Main = styled("main")(({ theme }) => ({
   flexGrow: 1,
   padding: theme.spacing(3),
-  backgroundColor: "#f9f9f9",
   minHeight: "100vh",
 }));
 
@@ -140,7 +138,7 @@ export default function ClassroomHomePage() {
       <StyledAppBar position="fixed">
         <Toolbar
           sx={{
-            backgroundColor: "#8E6AC4",
+            backgroundColor: "#253745",
             zIndex: 1,
           }}
         >
@@ -155,9 +153,10 @@ export default function ClassroomHomePage() {
             StudyRoom
           </Typography>
           <Button
+          className="hover:bg-[#06141B]"
             variant="contained"
             color="primary"
-            sx={{ backgroundColor: "#3A2B51" }}
+            sx={{ backgroundColor: "#11212D" }}
             onClick={() => setJoinDrawerOpen(true)}
             startIcon={<MdOutlineAdd />}
           >
@@ -171,7 +170,7 @@ export default function ClassroomHomePage() {
         onClose={() => setOpen(false)}
         sx={{
           width: drawerWidth,
-          "& .MuiDrawer-paper": { width: drawerWidth, boxSizing: "border-box" },
+          "& .MuiDrawer-paper": { width: drawerWidth, boxSizing: "border-box" ,backgroundColor:"#eef0ef"},
           zIndex: 0,
         }}
       >
@@ -190,7 +189,7 @@ export default function ClassroomHomePage() {
                     className="w-12 h-12 rounded-full mb-2  border solid white "
                   />
                 </ListItemIcon>
-                <ListItemText primary={cls.classname.toUpperCase()} />
+                <ListItemText className="text-[#253745]" primary={cls.classname.toUpperCase()} />
               </ListItemButton>
             </ListItem>
           ))}
@@ -198,6 +197,7 @@ export default function ClassroomHomePage() {
       </Drawer>
 
       <Main 
+      
       sx={{
         backgroundImage: `url(${classBackground})`,
         // backgroundSize: "cover",
@@ -239,6 +239,7 @@ export default function ClassroomHomePage() {
           {userData.role === "Teacher" && (
             <>
               <TextField
+                
                 fullWidth
                 label="Class Name"
                 margin="normal"
@@ -284,9 +285,9 @@ export default function ClassroomHomePage() {
             color="primary"
             sx={{
               marginTop: 2,
-              backgroundColor: "#9333EA",
+              backgroundColor: "#253745",
               "&:hover": {
-                backgroundColor: "#7E22CE",
+                backgroundColor: "#11212D",
               },
             }}
           >
