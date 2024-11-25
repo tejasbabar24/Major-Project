@@ -20,6 +20,7 @@ import user from "../../assets/classCards/user.png";
 import examimg from './examimg.jpg';
 import AttendanceCard from "../attendance/attendanceCard.jsx";
 import axios from "axios";
+import { toast, ToastContainer } from "react-toastify";
 
 const drawerWidth = 320;
 
@@ -115,7 +116,7 @@ export default function ExamPage() {
         withCredentials: true,
       })
       .then((result) => {
-        const message = result.data.message || "Attendance Uploaded"
+        const message = result.data.message || "Result Uploaded"
         toast.success(message, {
           position: "top-right",
           autoClose: 1500,
