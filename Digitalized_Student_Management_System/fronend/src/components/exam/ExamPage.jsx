@@ -109,7 +109,7 @@ export default function ExamPage() {
     });
 
     axios
-      .post("http://localhost:5001/result", formData, {
+      .post("http://localhost:8000/class/result", formData, {
         headers: {
           "Content-Type": "multipart/form-data",
         },

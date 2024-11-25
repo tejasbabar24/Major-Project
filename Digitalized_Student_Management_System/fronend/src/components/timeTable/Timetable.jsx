@@ -87,8 +87,9 @@ export default function Timetable() {
   const handleSubmit = () => {
     console.log("Config Data:", config);
     console.log("Subjects Data:", subjects);
+    console.log(tableName)
     axios
-      .post("http://localhost:5001/genrate-timetable", {config,subjects,title:tableName,classCode})
+      .post("http://localhost:8000/class/genrate-timetable", {config,subjects,title:tableName,classCode:"f5cbacf14e6a"})
       .then((result) => {
         const message = result.data.message || "Timetable Generated"
         toast.success(message, {
@@ -152,7 +153,7 @@ export default function Timetable() {
                 label="Time Table Name" 
                 placeholder="Enter Name"
                 value={tableName}
-                onChange={ ()=>{setTableName()} }
+                onChange={ (e)=>{setTableName(e.target.value)} }
               />
           </div>
             <div className="flex flex-row gap-3">
