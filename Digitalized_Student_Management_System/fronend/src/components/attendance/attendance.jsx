@@ -69,9 +69,9 @@ const toggleDrawer = () => setOpen(!open); // Drawer toggle function
 
 //  console.log(myAttendance);
 
- const handleParseFromUrl = (csvUrl) => {
+const handleParseFromUrl = (csvUrl) => {
   // Check if the URL has already been processed
-   if (!processedUrls.includes(csvUrl)) {
+  if (!processedUrls.includes(csvUrl)) {
     setProcessedUrls((prevUrls) => [...prevUrls, csvUrl]);
 
     Papa.parse(csvUrl, {
@@ -79,15 +79,19 @@ const toggleDrawer = () => setOpen(!open); // Drawer toggle function
       header: true, // Adjust based on your CSV structure
       skipEmptyLines: true,
       complete: (results) => {
-        console.log(results.data);
         const foundData = results.data.find(
           (item) => item.Enrollment_Number === userData.username
         );
         console.log("Found Data:", foundData);
 
         if (foundData) {
-          // Appending the found data to the attendance state
-          setMyAttendance((prevAttendance) => [...prevAttendance, foundData]);
+          // Add unique attendance record to the state
+          setMyAttendance((prevAttendance) => {
+            const isDuplicate = prevAttendance.some(
+              (record) => record.Date === foundData.Date
+            );
+            return isDuplicate ? prevAttendance : [...prevAttendance, foundData];
+          });
         }
       },
       error: (error) => {
@@ -98,8 +102,8 @@ const toggleDrawer = () => setOpen(!open); // Drawer toggle function
 };
 
 useEffect(() => {
-  
   if (userData.role === "Student") {
+
     const selectedClassData = joinedClasses.find(
       (item) => item.classname === selectedClass?.toLowerCase()
     );
@@ -111,14 +115,12 @@ useEffect(() => {
           const formattedDate = new Date(item.createdAt).toISOString().split("T")[0];
 
           // Add the date only if it doesn't already exist in the state
-          if (!selectedClassDates.includes(formattedDate)) {
-            setSelectedClassDates((prevDates) => [...prevDates, formattedDate]);
-          }
+          setSelectedClassDates((prevDates) =>
+            prevDates.includes(formattedDate) ? prevDates : [...prevDates, formattedDate]
+          );
         }
       });
-    }
 
-    if (selectedClassData && selectedClassData.attendance?.length > 0) {
       selectedClassData.attendance.forEach((item) => {
         if (item.attachment) {
           handleParseFromUrl(item.attachment);
@@ -128,9 +130,11 @@ useEffect(() => {
   }
 }, [selectedClass, joinedClasses, userData.role]);
 
+
 useEffect(()=>{
   setSelectedClassDates([])
-  // setMyAttendance([])
+  setProcessedUrls([])
+  setMyAttendance([])
 },[selectedClass])
 
   const handleClassChange = (event) => setClasses(event.target.value);
@@ -161,6 +165,15 @@ useEffect(()=>{
       });
       return;
     }
+    toast.info("Please be patient! Recording attendance may take a few moments as we process your images.", {
+      position: "top-right",
+      autoClose: 1500,
+      hideProgressBar: false,
+      closeOnClick: true,
+      pauseOnHover: true,
+      draggable: true,
+      progress: undefined,
+    });
     const classDetails = createdClasses.find(
       (item) => item.classname === classes.toLowerCase()
     );
@@ -260,8 +273,7 @@ useEffect(()=>{
 
       <Drawer
         sx={{
-          
-          "& .MuiDrawer-paper": { width: drawerWidth, boxSizing: "border-box" ,marginTop:"3.5rem"},
+          "& .MuiDrawer-paper": { width: drawerWidth, boxSizing: "border-box", paddingTop:"3.5rem"},
           zIndex: 0,
         }}
         variant={isSmallScreen ? "temporary" : "permanent"} // Temporary drawer for small screens
@@ -441,7 +453,8 @@ useEffect(()=>{
         <div className="col-span-2">Class not found</div> // Centered message
       )
                 ) : userData.role === "Student" ? (
-                  
+                  selectedClass !== null ? (
+
                   <div className="absolute inset-0 flex flex-col gap-8 md:gap-12 bg-gray-50 border border-gray-200 shadow-lg">
 
                         {/* Header Section */}
@@ -480,6 +493,9 @@ useEffect(()=>{
                           <ShowAttendance dates={selectedClassDates} presentDates={myAttendance} />
                         </div>
                   </div>
+                  ) :(
+                    <div>Please select class from the drawer to view attendance</div>
+                  )
 
                 ) : null}
               </div>
