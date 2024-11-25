@@ -15,6 +15,7 @@ import Viewclassroom from './components/classroom/Viewclassroom.jsx'
 import Noticeboard from './components/noticeboard/noticeboard.jsx'
 import Attendance from './components/attendance/attendance.jsx'
 import ExamPage from './components/exam/ExamPage.jsx'
+import Timetable from './components/timeTable/Timetable.jsx'
 
 const router = createBrowserRouter([
   {
@@ -89,7 +90,7 @@ const router = createBrowserRouter([
         path:"/timetable",
         element:(
           <AuthLayout authentication>
-          <Home/>
+          <Timetable/>
         </AuthLayout>
         )
       },
