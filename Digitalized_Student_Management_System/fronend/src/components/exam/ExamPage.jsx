@@ -21,6 +21,7 @@ import examimg from './examimg.jpg';
 import AttendanceCard from "../attendance/attendanceCard.jsx";
 import axios from "axios";
 import { toast, ToastContainer } from "react-toastify";
+import { useState,useEffect } from "react";
 
 const drawerWidth = 320;
 
@@ -168,7 +169,7 @@ export default function ExamPage() {
                         ))}
             </Select>
             <DragAndDropFileUpload files={files} setFiles={setFiles} />
-            <Button type="submit" className="w-18 h-8 mt-4 text-white text-sm text-center bg-purple-500">
+            <Button type="submit" className="w-18 h-8 mt-4 text-white text-sm text-center bg-[#253745] hover:bg-[#11212D]">
               Upload Result
             </Button>
           </form>
@@ -241,7 +242,7 @@ export default function ExamPage() {
     <Box sx={{ display: "flex" }}>
       <CssBaseline />
       <AppBar position="fixed" open={open}>
-        <Toolbar sx={{ backgroundColor: "#8E6AC4" }}>
+        <Toolbar sx={{ backgroundColor: "#253745" }}>
           {isSmallScreen && (
             <IconButton color="inherit" edge="start" onClick={toggleDrawer}>
               <MenuIcon />
@@ -261,6 +262,7 @@ export default function ExamPage() {
             width: drawerWidth,
             boxSizing: "border-box",
             marginTop: isSmallScreen ? "56px" : "64px",
+            backgroundColor:"#eef0ef"
           },
         }}
         variant={isSmallScreen ? "temporary" : "persistent"}
@@ -273,10 +275,10 @@ export default function ExamPage() {
           {role === "Teacher" && (
             <ListItem>
               <Buttons
-                className="cursor-pointer"
+                className="cursor-pointer hover:bg-[#11212D]"
                 variant="contained"
                 onClick={() => { setselectedClass('upload'), isSmallScreen? toggleDrawer() :null }}
-                sx={{ fontSize: "15px", backgroundColor: "#3A2B51" }}
+                sx={{ fontSize: "15px", backgroundColor: "#253745" }}
               >
                 Upload Result <MdOutlineAdd />
               </Buttons>

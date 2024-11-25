@@ -17,7 +17,7 @@ import MenuIcon from "@mui/icons-material/Menu";
 import { MdOutlineAdd } from "react-icons/md";
 import DragAndDropFileUpload from "../dragNdrop/DragNdrop.jsx";
 import { useSelector } from "react-redux";
-
+import { useState,useEffect } from "react";
 import attendancelogo from "./attendancelogo.png";
 import AttendanceCard from "./attendanceCard.jsx";
 import axios from "axios";
@@ -47,11 +47,11 @@ const StyledAppBar = styled(AppBar)({
 export default function Attendance() {
   const userData = useSelector((state) => state.auth.userData);
   const defaultSelect = userData.role === "Teacher" ? "uploadAttendance" : null
-  const [open, setOpen] = useState(false);
+  const [open, setOpen] = React.useState(false);
   const [classes, setClasses] = useState("");
   const [role, setRole] = useState(userData.role);
   const [dupRole, setDupRole] = useState("");
-  const [uploadedFiles, setUploadedFiles] = useState([]);
+  const [uploadedFiles, setUploadedFiles] = React.useState([]);
   const [selectedClass, setSelectedClass] = useState(defaultSelect);
   const [createdClasses, setCreatedClasses] = React.useState([]);
   const [joinedClasses, setJoinedClasses] = React.useState([]);

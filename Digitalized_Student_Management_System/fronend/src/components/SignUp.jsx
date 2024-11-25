@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import "boxicons/css/boxicons.min.css";
 import StudentLogo from "../assets/studentsImg.png";
 import FacultyLogo from "../assets/Faculty.png";
-import backgroundImage from "../assets/lightBackground.jpg";
+import backgroundImage from "../assets/background2.jpg";
 import AcademixLogo from "../assets/academixLogo.png";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";

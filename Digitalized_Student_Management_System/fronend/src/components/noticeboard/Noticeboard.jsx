@@ -24,29 +24,20 @@ import axios from "axios";
 import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import Loading from "../Loading.jsx"
+import useMediaQuery from "@mui/material/useMediaQuery";
+
 const drawerWidth = 320;
 
-const Main = styled("main", { shouldForwardProp: (prop) => prop !== "open" })(
-  ({ theme, open }) => ({
-    flexGrow: 1,
-    transition: theme.transitions.create("margin", {
-      easing: theme.transitions.easing.sharp,
-      duration: theme.transitions.duration.leavingScreen,
-    }),
-    // marginLeft: open ? 0 : `-${drawerWidth}px`,
-  })
-);
-
-const AppBar = styled(MuiAppBar, {
-  shouldForwardProp: (prop) => prop !== "open",
-})(({ theme, open }) => ({
-  transition: theme.transitions.create(["margin", "width"], {
-    easing: theme.transitions.easing.sharp,
-    duration: theme.transitions.duration.leavingScreen,
-  }),
-  marginLeft: open ? `${drawerWidth}px` : "0",
-  width: open ? `calc(100% - ${drawerWidth}px)` : "100%",
+const Main = styled("main")(({ theme }) => ({
+  flexGrow: 1,
+  padding: theme.spacing(3),
+  backgroundColor: "#f9f9f9",
+  minHeight: "100vh",
 }));
+const StyledAppBar = styled(AppBar)({
+  color: "#fff",
+  boxShadow: "0px 2px 4px rgba(0, 0, 0, 0.1)",
+});
 
 export default function Noticeboard() {
   const [loading,setLoading] = React.useState(false)
@@ -62,6 +53,7 @@ export default function Noticeboard() {
   const handleFilesUploaded = (files) => {  
     setUploadedFiles(files[0]);
   };
+  const isSmallScreen = useMediaQuery("(max-width: 768px)"); // Use media query for small screens
 
   useEffect(() => {
     if (userData.role === "Teacher") {
@@ -252,7 +244,12 @@ export default function Noticeboard() {
       )}
 
       <Main open={open}>
-        <Box sx={{ mt: 8, paddingLeft: userData.role === "Student" ? "320px" : "0px" }}>
+        <Box  sx={{
+              mt: 8,
+              padding: "16px",
+              marginLeft: isSmallScreen ? '0px': "300px", // Adjust marginLeft for small screens
+              // width: "calc(100% - 300px)", // Adjust width to account for marginLeft
+            }}>
           <div className="flex flex-col gap-2">
             {userData.role === "Teacher"
               ? createdClasses
