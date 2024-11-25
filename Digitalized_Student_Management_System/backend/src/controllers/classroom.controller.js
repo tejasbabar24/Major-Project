@@ -7,6 +7,7 @@ import { uploadOnCloudinary, downloadFromCloudinary } from "../utils/cloudinary.
 import { v4 as uuidv4 } from "uuid";
 import { Student } from "../models/student.models.js";
 import path from "path";
+import fs from "fs";
 
 
 const generateClassCode = async () => {
@@ -23,7 +24,6 @@ const generateClassCode = async () => {
 const generateTimetable = asyncHandler(async (req, res, next) => {
     const { config, subjects,title,classCode} = req.body;
 
-    // Validate the input
     if (!config || !subjects || subjects.length === 0) {
         return next(new ApiError(400, "Please provide configuration and subjects."));
     }
@@ -129,26 +129,32 @@ const generateTimetable = asyncHandler(async (req, res, next) => {
         startTime,
     });
 
-    const localFilePath = path.join(__dirname, "../../public", `${title}.csv`);
+    const __dirname = path.resolve();
+    // Define the path to the public folder
+    const FolderPath = path.join(__dirname, "/public/temp");
+    
+    const localFilePath = path.join(FolderPath, `${title}.csv`);
     fs.writeFileSync(localFilePath, csvContent);
 
     // Upload to Cloudinary
     const uploaded = await uploadOnCloudinary(localFilePath);
 
-    // Delete local file after uploading
-    fs.unlinkSync(localFilePath);
-
     if (!uploaded) {
         return next(new ApiError(500, "An error occurred while uploading the file. Please try again later."));
     }
-
-    fs.unlinkSync(localFilePath);
-
+    const username=req.user.username;
+   
+    if(!username){
+        return next(new ApiError(400,"User is not authenticated or invalid"))
+    }
+   
     const classroom = await Classroom.findOneAndUpdate(
-        { classname },
+        { 
+            classCode
+        },
         {
             $push: {
-                result: {
+                timetable: {
                     title,
                     attachment: uploaded.url,
                     createdAt: new Date(),
@@ -298,6 +304,10 @@ const postAssignment = asyncHandler(async (req, res, next) => {
         { new: true }
     ).select("-members");
 
+    if(!classroom){
+        return next(new ApiError(400,"Something Went Wrong"))
+    }
+
     return res
         .status(200)
         .json(
@@ -340,8 +350,18 @@ const postNotice = asyncHandler(async (req, res, next) => {
         return next(new ApiError(500, "There was an error while uploading the file. Please try again later."));
     }
 
+    const username=req.user?._username;
+    if(!username){
+        return next(new ApiError(400,"User is not authenticated or invalid"))
+    }
+
     const classroom = await Classroom.findOneAndUpdate(
-        { classname },
+        { 
+            $and: [
+                { classname: classname }, 
+                { owner: req.user?._username }
+            ] 
+        },
         {
             $push: {
                 notice: {
@@ -354,6 +374,9 @@ const postNotice = asyncHandler(async (req, res, next) => {
         { new: true }
     ).select("-members");
 
+    if(!classroom){
+        return next(new ApiError(400,"Something Went Wrong"))
+    }
 
     return res
         .status(200)
@@ -385,20 +408,35 @@ const postResult = asyncHandler(async (req, res, next) => {
         return next(new ApiError(500, "There was an error while uploading the file. Please try again later."));
     }
 
+    const username=req.user?.username;
+
+    if(!username){
+        return next(new ApiError(400,"User is not authenticated or invalid"))
+    }
+
     const classroom = await Classroom.findOneAndUpdate(
-        { classname },
+        { 
+            $and: [
+                { classname: classname }, 
+                { owner: username }
+            ] 
+        },
         {
             $push: {
                 result: {
                     description,
-                    attachment: uploaded.url,
+                    attachment: uploaded?.url || "",
                     createdAt: new Date(),
                 },
             },
         },
         { new: true }
-    ).select("-members");
+    ).select("-members");    
 
+
+    if(!classroom){
+        return next(new ApiError(400,"Something Went Wrong"))
+    }
 
     return res
         .status(200)

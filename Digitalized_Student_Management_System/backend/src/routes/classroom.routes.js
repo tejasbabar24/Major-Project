@@ -26,15 +26,15 @@ router.route('/post-assignment').post(
     upload.single('attachment'),
     postAssignment)
 
-router.route('/notice').post(
+router.route('/notice').post(verifyJWT,
     upload.single('attachment'),
     postNotice)
 
-router.route('/result').post(
+router.route('/result').post(verifyJWT,
     upload.single('attachment'),
     postResult)
 
-router.route('/titetable').post(generateTimetable);
+router.route('/genrate-timetable').post(verifyJWT,generateTimetable);
 
 router.route('/download-assignment').post(download);
 
