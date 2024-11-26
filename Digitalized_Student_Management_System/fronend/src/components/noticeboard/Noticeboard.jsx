@@ -248,7 +248,7 @@ export default function Noticeboard() {
         <Box  sx={{
               mt: 8,
               padding: "16px",
-              marginLeft: isSmallScreen ? '0px': "300px", // Adjust marginLeft for small screens
+              marginLeft: isSmallScreen ? '300px': "", // Adjust marginLeft for small screens
               // width: "calc(100% - 300px)", // Adjust width to account for marginLeft
             }}>
           <div className="flex flex-col gap-2">
