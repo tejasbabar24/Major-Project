@@ -387,10 +387,10 @@ const postNotice = asyncHandler(async (req, res, next) => {
 
 const postResult = asyncHandler(async (req, res, next) => {
 
-    const { classname } = req.body;
+    const { classcode } = req.body;
 
     if (
-        [classname].some((field) =>
+        [classcode].some((field) =>
             field?.trim() === "")
     ) {
         return next(new ApiError(400, "Please fill out all the required fields before submitting"));
@@ -417,7 +417,7 @@ const postResult = asyncHandler(async (req, res, next) => {
     const classroom = await Classroom.findOneAndUpdate(
         { 
             $and: [
-                { classname: classname }, 
+                { classCode: classcode }, 
                 { owner: username }
             ] 
         },

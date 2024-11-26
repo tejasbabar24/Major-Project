@@ -22,8 +22,8 @@ import AttendanceCard from "../attendance/attendanceCard.jsx";
 import axios from "axios";
 import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-
 import { useState,useEffect } from "react";
+import Papa from 'papaparse';
 
 const drawerWidth = 320;
 
@@ -53,12 +53,15 @@ const AppBar = styled(MuiAppBar, { shouldForwardProp: (prop) => prop !== "open" 
       width: "100%", // Full width for small screens
       marginLeft: "0", // No margin for small screens
     },
+    zIndex:1
   })
 );
 
 export default function ExamPage() {
   const userData = useSelector((state) => state.auth.userData);
   const [open, setOpen] = React.useState(true);
+const [processedUrls, setProcessedUrls] = useState([]);
+
   const [role] = React.useState(userData.role);
   const [selectedClass ,setselectedClass] = React.useState('')
   const [files, setFiles] = React.useState([]);
@@ -68,8 +71,55 @@ export default function ExamPage() {
   const [classes, setClasses] = React.useState("");
   const [uploadedFiles, setUploadedFiles] = React.useState([]);
   const handleFilesUploaded = (files) => setUploadedFiles(files);
-
+  const [myMarks,setMarks] = useState([])
   const toggleDrawer = () => setOpen(!open);
+  const [currentClass,setCurrentClass] = useState('')
+
+
+  const clearFields = ()=>{
+    setFiles([])
+    setClasses("")
+
+  }
+  const handleParseFromUrl = (csvUrl,subject) => {
+    // Check if the URL has already been processed
+    if (!processedUrls.includes(csvUrl)) {
+      setProcessedUrls((prevUrls) => [...prevUrls, csvUrl]);
+      Papa.parse(csvUrl, {
+        download: true, // Enables fetching from a remote URL
+        header: true, // Adjust based on your CSV structure
+        skipEmptyLines: true,
+        complete: (results) => {
+          console.log(results.data);
+          
+          const foundData = results.data.find(
+            (item) => item.EnrollmentNumber === "FS22CO005"
+          );
+          console.log("Found Data:", foundData);
+          foundData.classname = subject
+          
+          if (foundData) {
+            setMarks((prevData)=>{
+              return [...prevData,foundData]
+            })
+          }
+        },
+        error: (error) => {
+          console.error("Error parsing CSV:", error);
+        },
+      });
+    }
+  };
+  // console.log(myMarks);
+  if(userData.role === "Student"){
+    useEffect(()=>{
+      joinedClasses.map((item)=>(
+        item.result?.map((resUrl)=>(
+        handleParseFromUrl(resUrl.attachment,item.classname)
+        ))
+      ))
+    },[joinedClasses])
+  }
 
   if (userData.role === "Teacher") {
     React.useEffect(() => {
@@ -106,10 +156,9 @@ export default function ExamPage() {
         });
         return;
       }
-    console.log(classes); // bhenchod hya mdhe classcode ch ahe mahit nahi kasa pn tech printhot 
     
     const formData = new FormData();
-    formData.append("classname", classes);
+    formData.append("classcode", classes);
     uploadedFiles.forEach((files, index) => {
       formData.append("attachment", files);
     });
@@ -133,8 +182,7 @@ export default function ExamPage() {
           draggable: true,
           progress: undefined,
         });
-        clearFields()
-
+        setselectedClass("classes")
       })
       .catch((error) => {
         const errorMessage = error.response?.data?.message || "Something went wrong!";
@@ -148,19 +196,25 @@ export default function ExamPage() {
           progress: undefined,
         });
       })
+      .finally(()=>{
+        clearFields()
+      })
   };
 
   const renderContent = () => {
     if ( selectedClass ==='upload') {
+      
       return (
         <div className={`flex justify-center items-center w-full align-middle ${isSmallScreen ? 'flex-col' : 'flex-row'}`}>
+    <ToastContainer/>
+
           <img src={examimg} alt="Exam" className={` ${isSmallScreen ? 'h-42 w-42' : "h-46 w-46"}`} />
           <form className="p-6 flex flex-col gap-10 mt-16" onSubmit={uploadResult}>
             <p className="text-center text-lg">Upload Students' Marks File</p>
             <Select 
               label="Your Class" 
               placeholder="Select Class" 
-              className="w-full" 
+              className="w-full z-0" 
               color="success"
               onChange={handleClassChange}
             >
@@ -206,11 +260,12 @@ export default function ExamPage() {
               <TableColumn>Status</TableColumn>
             </TableHeader>
             <TableBody>
-              {dummyData.map((item, index) => (
+              {
+              myMarks.map((item, index) => (
                 <TableRow key={index}>
-                  <TableCell>{item.subject}</TableCell>
-                  <TableCell >{item.marks}</TableCell>
-                  <TableCell className={`${item.marks < 7 ? 'text-red-400' : 'text-green-400' }`}>{item.marks > 7 ? "Pass" : "Fail"}</TableCell>
+                  <TableCell>{item.classname}</TableCell>
+                  <TableCell >{item.Marks}</TableCell>
+                  <TableCell className={`${item.Marks < 7 ? 'text-red-400' : 'text-green-400' }`}>{item.Marks > 7 ? "Pass" : "Fail"}</TableCell>
                 </TableRow>
               ))}
             </TableBody>
@@ -219,29 +274,27 @@ export default function ExamPage() {
       );
     } 
      if (selectedClass === "classes") {
+      const findClass = createdClasses?.find((item)=>{
+        return item.classCode === currentClass.toLowerCase()
+      })
       return (
         <div className={`flex flex-wrap mt-7 ${isSmallScreen ? 'grid grid-cols-2' : 'grid grid-cols-5'}`}>
                 <div className="p-2">
-                  <AttendanceCard name={"NMA"} date={"24-11-2024"} fileUrl={examimg} />
-                </div>
-                <div className="p-2">
-                  <AttendanceCard name={"NMA"} date={"24-11-2024"} fileUrl={examimg} />
-                </div>
-                <div className="p-2">
-                  <AttendanceCard name={"NMA"} date={"24-11-2024"} fileUrl={examimg} />
-                </div>
-                <div className="p-2">
-                  <AttendanceCard name={"NMA"} date={"24-11-2024"} fileUrl={examimg} />
-                </div>
-                <div className="p-2">
-                  <AttendanceCard name={"NMA"} date={"24-11-2024"} fileUrl={examimg} />
-                </div>
-                <div className="p-2">
-                  <AttendanceCard name={"NMA"} date={"24-11-2024"} fileUrl={examimg} />
-                </div>
+                {
+                  findClass?.result !== null ? (
+                    findClass?.result?.map((urls)=>(
+                      <AttendanceCard
+                      name={findClass.classname}
+                      date={urls.createdAt}
+                      fileUrl={urls.attachment}
+                      />
+                    ))
+                  ) : (
+                    <div>No results yet</div>
+                  )
+                }
+                </div>  
          </div>
-
-
       );
     }
   
@@ -250,8 +303,9 @@ export default function ExamPage() {
   };
   
   return (
+    <>
+    <ToastContainer/>
     <Box sx={{ display: "flex" }}>
-      <ToastContainer/>
       <CssBaseline />
       <AppBar position="fixed" open={open}>
         <Toolbar sx={{ backgroundColor: "#253745" }}>
@@ -268,12 +322,13 @@ export default function ExamPage() {
       {role === "Teacher" ?
       <Drawer
         sx={{
+          zIndex:0,
           width: drawerWidth,
           flexShrink: 0,
           "& .MuiDrawer-paper": {
             width: drawerWidth,
             boxSizing: "border-box",
-            marginTop: isSmallScreen ? "56px" : "64px",
+            paddingTop: isSmallScreen ? "56px" : "64px",
             backgroundColor:"#eef0ef"
           },
         }}
@@ -304,8 +359,9 @@ export default function ExamPage() {
                   key={item.classCode}
                   className="hover:bg-gray-100 cursor-pointer"
                   onClick={() =>{
-                    handleClassClick(item.classname.toUpperCase()),
-                     isSmallScreen ?  toggleDrawer() : null 
+                    setselectedClass('classes')
+                    setCurrentClass(item.classCode.toLowerCase()),
+                    isSmallScreen ?  toggleDrawer() : null 
                   }}
                 >
                   <ListItemIcon className="mr-3">
@@ -326,5 +382,6 @@ export default function ExamPage() {
         <Box sx={{ mt: 8 }}>{renderContent()}</Box>
       </Main>
     </Box>
+    </>
   );
 }

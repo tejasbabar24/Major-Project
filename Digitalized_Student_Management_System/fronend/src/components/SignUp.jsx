@@ -192,9 +192,9 @@ function SignUp() {
               key={item}
               className={`px-6 py-2 rounded-full border ${
                 role === item
-                  ? "bg-blue-100 text-blue-600 border-blue-300"
-                  : "bg-gray-200 text-gray-600 border-gray-300"
-              } hover:bg-blue-200 hover:text-blue-800`}
+                  ? "bg-[#253745] text-white border-[#06141B]"
+                  : "bg-[#CCD0CF] text-gray-600 border-[#06141B]"
+                } hover:bg-[#4A5C6A] hover:text-white`}
               onClick={() => setRole(item)}
             >
               {item}
