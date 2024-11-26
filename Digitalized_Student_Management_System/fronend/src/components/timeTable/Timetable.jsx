@@ -515,13 +515,20 @@ const [processedUrls, setProcessedUrls] = useState([]);
           <Typography variant="h6" sx={{ textAlign: "center", paddingTop: 2 }}>
             Your Timetables
           </Typography>
+          {role === "Teacher" ?
+          <ListItem className="hover:bg-gray-100 cursor-pointer" onClick={()=>{ setselectedClass('classes'), isSmallScreen? toggleDrawer() :null}}>
+            <ListItemIcon>
+              <img src={user} alt="User Profile" className="w-12 h-12 rounded-full" />
+            </ListItemIcon>
+            <ListItemText primary="View Timetable" />
+          </ListItem>:null}
+
           {joinedClasses.map((item) => (
                 <ListItem
                   key={item.classCode}
                   className="hover:bg-gray-100 cursor-pointer"
                   onClick={() =>{
                     setselectedClass('classes')
-                    setCurrentClass(item.classCode.toLowerCase()),
                     isSmallScreen ?  toggleDrawer() : null 
                   }}
                 >
