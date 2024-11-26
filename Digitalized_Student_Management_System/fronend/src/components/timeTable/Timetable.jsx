@@ -1,4 +1,5 @@
 import * as React from "react";
+import { useState , useEffect } from "react";
 import { styled } from "@mui/material/styles";
 import Box from "@mui/material/Box";
 import Drawer from "@mui/material/Drawer";
@@ -22,8 +23,10 @@ import {Input} from "@nextui-org/react";
 import {Checkbox} from "@nextui-org/react";
 import {Button} from "@nextui-org/react";
 import axios from "axios";
+import Papa from 'papaparse';
 import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+
 
 
 const drawerWidth = 320;
@@ -69,8 +72,10 @@ export default function Timetable() {
   const[tableName , setTableName] = React.useState('')
   const [myIndex , setMyIndex] = React.useState(0)
   const [classes, setClasses] = React.useState("");
-
+  const [parsedData, setParsedData] = React.useState([]); // State to store parsed CSV data
+  const [timeSlots , setTimeSlots] = React.useState([]);
   const handleClassChange = (event) => setClasses(event.target.value);
+  const toggleDrawer = () => setOpen(!open);
 
   const [config, setConfig] =React.useState({
     lectureDuration: "",
@@ -108,6 +113,52 @@ export default function Timetable() {
   const handleAddSubject = () => {
     setSubjects([...subjects, { name: "", lectureHours: "", practicalHours: "", teacher: "" }]);
   };
+
+  const handleParseFromUrl = (csvUrl) => {
+    Papa.parse(csvUrl, {
+      download: true, // Enable fetching from a remote URL
+      header: true, // Assuming your CSV has a header row
+      skipEmptyLines: true,
+      complete: (results) => {
+        // Handle parsed data
+        console.log("CSV Parsing Complete:", results.data);
+        const parsedRows = results.data;
+        let v = '10:00 - 11:00'
+
+        // Check if the data exists and structure it
+        if (parsedRows && parsedRows.length > 0) {
+          console.log(" testing",parsedRows[1][v]);
+  
+          // Extract days (all keys except 'timeSlots')
+           setTimeSlots(Object.keys(parsedRows[0]).filter(key => key !== 'timeSlots'))
+  
+          console.log("Days:", days);  // Log the days
+        
+        
+        // Set the parsed data
+        setParsedData(results.data);
+        }
+      },
+      error: (error) => {
+        console.error("Error parsing CSV:", error);
+      },
+    });
+  };
+   // Log the time slots
+
+  useEffect(() => {
+    // Log parsedData whenever it changes
+    if (parsedData) {
+      console.log("Updated parsed data:", parsedData);
+       
+  
+    }
+  }, [parsedData]);
+
+  // Example usage of CSV URL (you can replace this with a URL or trigger it differently)
+  useEffect(() => {
+    handleParseFromUrl("http://res.cloudinary.com/acadamix/raw/upload/v1732610445/TYFS.csv" );
+  }, []); // Run on component mount
 
   if (userData.role === "Teacher") {
     React.useEffect(() => {
@@ -176,7 +227,7 @@ export default function Timetable() {
     setSubjects(subjects.filter((_, i) => i !== index));
   };
 
-  const toggleDrawer = () => setOpen(!open);
+ 
 
   const renderContent = () => {
     if ( selectedClass ==='upload') {
@@ -356,7 +407,10 @@ export default function Timetable() {
       </div>
       );
     } 
-    if (role === "Student") {
+    if (role === "Student" ) {
+      
+    
+
       const dummyData = [
         { name: "Math", lectureHours: 3, practicalHours: 1, teacher: "Tejas" },
         { name: "Physics", lectureHours: 4, practicalHours: 2, teacher: "Swapnil" },
@@ -369,7 +423,8 @@ export default function Timetable() {
           className="min-h-[400px] w-full bg-white p-4 shadow-lg rounded-lg border border-gray-200"
         >
           <TableHeader>
-            <TableColumn>Subject</TableColumn>
+          
+            <TableColumn></TableColumn>
             <TableColumn>Lecture Hours</TableColumn>
             <TableColumn>Practical Hours</TableColumn>
             <TableColumn>Teacher</TableColumn>
@@ -391,6 +446,7 @@ export default function Timetable() {
      if (selectedClass === "classes") {
       return (
         <div className={`flex flex-wrap mt-7 ${isSmallScreen ? 'grid grid-cols-2' : 'grid grid-cols-5'}`}>
+            
                 <div className="p-2">
                   {
                     createdClasses.map((item)=>(
