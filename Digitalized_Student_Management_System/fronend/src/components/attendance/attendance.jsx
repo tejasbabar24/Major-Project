@@ -150,7 +150,6 @@ useEffect(()=>{
   const clearFields = () => {
     setUploadedFiles([]);
     setClasses("");
-    setSelectedClass(classes)
     setLoading(false)
     setFiles([])
     
@@ -202,6 +201,7 @@ useEffect(()=>{
           draggable: true,
           progress: undefined,
         });
+        setSelectedClass(classes)
         clearFields()
 
       })
@@ -218,6 +218,7 @@ useEffect(()=>{
         });
       })
       .finally(()=>{
+        clearFields()
         setLoading(false)
       })
   };
