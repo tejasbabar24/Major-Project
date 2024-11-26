@@ -189,7 +189,7 @@ export default function Noticeboard() {
             "& .MuiDrawer-paper": {
               width: drawerWidth,
               boxSizing: "border-box",
-              marginTop: "64px",
+              marginTop: "66px",
             },
           }}
           variant="temporary"
@@ -248,7 +248,7 @@ export default function Noticeboard() {
         <Box  sx={{
               mt: 8,
               padding: "16px",
-              marginLeft: isSmallScreen ? '300px': "", // Adjust marginLeft for small screens
+              // Adjust marginLeft for small screens
               // width: "calc(100% - 300px)", // Adjust width to account for marginLeft
             }}>
           <div className="flex flex-col gap-2">
