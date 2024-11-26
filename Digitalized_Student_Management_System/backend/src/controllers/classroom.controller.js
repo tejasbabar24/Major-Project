@@ -224,6 +224,7 @@ const joinClass = asyncHandler(async (req, res, next) => {
 
     const classroom = await Classroom.findOne({ classCode })
 
+    if(!classroom) return next(new ApiError(400,"Class not found"))
     const userId = req.user?._id;
 
     if (!userId) {
@@ -440,7 +441,6 @@ const postResult = asyncHandler(async (req, res, next) => {
 })
 
 const getJoinedClasses = asyncHandler(async (req, res) => {
-
 
     const stud = await Student.findById(req.user?._id);
 
