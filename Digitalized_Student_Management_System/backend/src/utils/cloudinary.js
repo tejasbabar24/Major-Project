@@ -18,7 +18,6 @@ const uploadOnCloudinary = async (localFilePath) => {
         if (!localFilePath) return null;
 
         const fileName = path.basename(localFilePath,path.extname(localFilePath))
-        console.log(fileName)
         const response = await cloudinary.uploader.upload(localFilePath, {
             public_id: fileName, 
             overwrite: true,
@@ -29,7 +28,6 @@ const uploadOnCloudinary = async (localFilePath) => {
         return response;
     } catch (error) {
         fs.unlinkSync(localFilePath)
-        console.log(error);
         return null;
     }
 }

@@ -48,12 +48,11 @@ const generateTimetable = asyncHandler(async (req, res, next) => {
         timetable[day] = Array(totalSlots).fill(null);
     });
 
-    // Helper to assign subjects
     function assignSubjectToSlot(day, subject, isPractical, slotsAssigned, teacherAvailability) {
         for (let i = 0; i < totalSlots; i++) {
             if (
-                timetable[day][i] === null && // Slot is empty
-                (i === 0 || timetable[day][i - 1]?.split(" ")[0] !== subject.name) // No consecutive repeats
+                timetable[day][i] === null && 
+                (i === 0 || timetable[day][i - 1]?.split(" ")[0] !== subject.name) 
             ) {
                 timetable[day][i] = isPractical ? `${subject.name} (Practical)` : subject.name;
                 if (!teacherAvailability[subject.teacher]) teacherAvailability[subject.teacher] = [];
@@ -80,7 +79,6 @@ const generateTimetable = asyncHandler(async (req, res, next) => {
         }
     });
 
-    // Add break
     const breakSlotIndex = Math.floor(
         (new Date(`01/01/2022 ${breakTime}`) - new Date(`01/01/2022 ${startTime}`)) /
             (1000 * 60 * lectureDuration)
@@ -91,7 +89,6 @@ const generateTimetable = asyncHandler(async (req, res, next) => {
         }
     });
 
-    // Convert timetable to CSV
     function timetableToCSV({ timetable, daysOfWeek, totalSlots, lectureDuration, startTime }) {
         const slotTimes = [];
         const timetableMatrix = [];
@@ -130,13 +127,11 @@ const generateTimetable = asyncHandler(async (req, res, next) => {
     });
 
     const __dirname = path.resolve();
-    // Define the path to the public folder
     const FolderPath = path.join(__dirname, "/public/temp");
     
     const localFilePath = path.join(FolderPath, `${title}.csv`);
     fs.writeFileSync(localFilePath, csvContent);
 
-    // Upload to Cloudinary
     const uploaded = await uploadOnCloudinary(localFilePath);
 
     if (!uploaded) {
@@ -179,14 +174,12 @@ const generateTimetable = asyncHandler(async (req, res, next) => {
 const createClass = asyncHandler(async (req, res, next) => {
     const { classname, subject, section, year } = req.body;
 
-    // console.log(classname, subject, section, year);
     if (
         [classname, subject, section, year].some((field) =>
             field?.trim() === "")
     ) {
         return next(new ApiError(400, "Please fill out all the required fields before submitting"));
     }
-    console.log(req.user.username);
 
     const existClass = Classroom.findOne({
         classname,
@@ -466,8 +459,6 @@ const getJoinedClasses = asyncHandler(async (req, res) => {
 
         classArr.push(classInfo);
     }
-
-    // console.log(classArr)
 
     return res
         .status(200)

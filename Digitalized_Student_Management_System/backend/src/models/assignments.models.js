@@ -1,30 +1,30 @@
-import mongoose,{Schema} from "mongoose";
+import mongoose, { Schema } from "mongoose";
 import { Classroom } from "./classroom.models";
 
-const assignmentSchema=new Schema({
-    title:{
-        type:String,
-        required:true
-    },   
-    description:{
-        type:String
+const assignmentSchema = new Schema({
+    title: {
+        type: String,
+        required: true
     },
-    duedate:{
-        type:Date
+    description: {
+        type: String
     },
-    file:{
-        type:String,
-        required:true
+    duedate: {
+        type: Date
     },
-    classId:{
-        type:chema.Types.ObjectId,
-        ref:Classroom,
-        required:true
+    file: {
+        type: String,
+        required: true
     },
-    classCode:{
-        type:String
+    classId: {
+        type: chema.Types.ObjectId,
+        ref: Classroom,
+        required: true
+    },
+    classCode: {
+        type: String
     }
-},{timestamps:true})
+}, { timestamps: true })
 
 
-export const Assignment=mongoose.Model("Assignment",assignmentSchema)
+export const Assignment = mongoose.Model("Assignment", assignmentSchema)
