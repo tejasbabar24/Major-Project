@@ -195,13 +195,31 @@ export default function Timetable() {
   
           {/* Config Fields */}
           <div className="flex flex-col gap-3">
-          <div>
-          <Input
-                label="Time Table Name" 
-                placeholder="Enter Name"
-                value={tableName}
-                onChange={ (e)=>setTableName(e.target.value) }
+          <div className="flex flex-row gap-3">
+            <Input
+                  label="Time Table Name" 
+                  placeholder="Enter Name"
+                  value={tableName}
+                  onChange={ (e)=>setTableName(e.target.value) }
               />
+                
+              <Select 
+              label="Your Class" 
+              placeholder="Select Class" 
+              className="w-full" 
+              color="" 
+              defaultValue="CS" 
+              onChange={handleClassChange}
+            >
+              {createdClasses.map((item) => (
+                          <SelectItem
+                            key={item.classCode}
+                            value={item.classname.toUpperCase()}
+                          >
+                            {item.classname.toUpperCase()}
+                          </SelectItem>
+                        ))}
+            </Select>
           </div>
             <div className="flex flex-row gap-3">
           {/* select options */}

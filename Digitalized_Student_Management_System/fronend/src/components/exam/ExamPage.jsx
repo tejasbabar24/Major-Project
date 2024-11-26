@@ -159,7 +159,7 @@ export default function ExamPage() {
               placeholder="Select Class" 
               className="w-full" 
               color="success" 
-              defaultValue="CS"
+              defaultValue="CS" 
               onChange={handleClassChange}
             >
               {createdClasses.map((item) => (
