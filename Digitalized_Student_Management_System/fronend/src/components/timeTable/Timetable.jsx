@@ -74,6 +74,8 @@ export default function Timetable() {
   const [classes, setClasses] = React.useState("");
   const [parsedData, setParsedData] = React.useState([]); // State to store parsed CSV data
   const [timeSlots , setTimeSlots] = React.useState([]);
+const [processedUrls, setProcessedUrls] = useState([]);
+
   const handleClassChange = (event) => setClasses(event.target.value);
   const toggleDrawer = () => setOpen(!open);
 
@@ -115,45 +117,48 @@ export default function Timetable() {
   };
 
   const handleParseFromUrl = (csvUrl) => {
+    if (!processedUrls.includes(csvUrl)) {
+      setProcessedUrls((prevUrls) => [...prevUrls, csvUrl]);
+
     Papa.parse(csvUrl, {
       download: true, // Enable fetching from a remote URL
       header: true, // Assuming your CSV has a header row
       skipEmptyLines: true,
       complete: (results) => {
-        // Handle parsed data
-        console.log("CSV Parsing Complete:", results.data);
         const parsedRows = results.data;
         let v = '10:00 - 11:00'
 
         // Check if the data exists and structure it
         if (parsedRows && parsedRows.length > 0) {
-          console.log(" testing",parsedRows[1][v]);
-  
-          // Extract days (all keys except 'timeSlots')
            setTimeSlots(Object.keys(parsedRows[0]).filter(key => key !== 'timeSlots'))
-  
-          console.log("Days:", days);  // Log the days
-        
-        
-        // Set the parsed data
-        setParsedData(results.data);
+          // Set the parsed data
+           setParsedData(results.data);
         }
       },
+      
       error: (error) => {
         console.error("Error parsing CSV:", error);
       },
     });
+  }
   };
-   // Log the time slots
 
-  useEffect(() => {
-    // Log parsedData whenever it changes
-    if (parsedData) {
-      console.log("Updated parsed data:", parsedData);
-       
+  //  useEffect(() => { will be rendered afterwards
+  //   if (userData.role === "Student") { 
   
-    }
-  }, [parsedData]);
+  //     const selectedClassData = joinedClasses.find(
+  //       (item) => item.classname === selectedClass?.toLowerCase()
+  //     );
+  
+  //     if (selectedClassData && selectedClassData.timetable?.length > 0) {
+  //       selectedClassData.timetable.forEach((item) => {
+  //         if (item.attachment) {
+  //           handleParseFromUrl(item.attachment);
+  //         }
+  //       });
+  //     }
+  //   }
+  // }, [joinedClasses]);
 
   // Example usage of CSV URL (you can replace this with a URL or trigger it differently)
   useEffect(() => {
@@ -408,36 +413,30 @@ export default function Timetable() {
       );
     } 
     if (role === "Student" ) {
-      
-    
-
-      const dummyData = [
-        { name: "Math", lectureHours: 3, practicalHours: 1, teacher: "Tejas" },
-        { name: "Physics", lectureHours: 4, practicalHours: 2, teacher: "Swapnil" },
-        { name: "Chemistry", lectureHours: 3, practicalHours: 1, teacher: "Shrey" },
-      ];
-    
       return (
         <Table
           aria-label="Class Timetable"
           className="min-h-[400px] w-full bg-white p-4 shadow-lg rounded-lg border border-gray-200"
         >
           <TableHeader>
-          
-            <TableColumn></TableColumn>
-            <TableColumn>Lecture Hours</TableColumn>
-            <TableColumn>Practical Hours</TableColumn>
-            <TableColumn>Teacher</TableColumn>
+          {
+            timeSlots.map((item)=>(
+            <TableColumn key={item}>{item}</TableColumn>
+            ))
+          }
           </TableHeader>
           <TableBody>
-            {dummyData.map((item, index) => (
-              <TableRow key={index}>
-                <TableCell>{item.name}</TableCell>
-                <TableCell>{item.lectureHours}</TableCell>
-                <TableCell>{item.practicalHours}</TableCell>
-                <TableCell>{item.teacher}</TableCell>
-              </TableRow>
-            ))}
+            {
+              parsedData.map((item) => (
+                <TableRow key={item}>
+                  {
+                    timeSlots.map((row)=>(
+                      <TableCell key={row}>{item[row]}</TableCell>
+                    ))
+                  }
+                </TableRow>
+              ))
+            }
           </TableBody>
         </Table>
       );
