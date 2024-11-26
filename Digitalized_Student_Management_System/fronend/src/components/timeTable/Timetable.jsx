@@ -9,15 +9,12 @@ import Toolbar from "@mui/material/Toolbar";
 import Typography from "@mui/material/Typography";
 import Divider from "@mui/material/Divider";
 import { IconButton, InputLabel, List, ListItem, ListItemIcon, ListItemText,  useMediaQuery } from "@mui/material";
-import { Table, TableHeader, TableColumn, TableBody, TableRow, TableCell } from "@nextui-org/react";
 import MenuIcon from "@mui/icons-material/Menu";
 import Buttons from "@mui/material/Button";
 import { MdOutlineAdd } from "react-icons/md";
-import DragAndDropFileUpload from "../dragNdrop/DragNdrop.jsx";
 import { useSelector } from "react-redux";
 import { Select, SelectItem } from "@nextui-org/react";
 import user from "../../assets/classCards/user.png";
-import TimetableImg from './TimetableImg.png'
 import AttendanceCard from "../attendance/attendanceCard.jsx";
 import {Input} from "@nextui-org/react";
 import {Checkbox} from "@nextui-org/react";
