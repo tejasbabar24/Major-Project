@@ -240,13 +240,6 @@ const [processedUrls, setProcessedUrls] = useState([]);
       );
     } 
      if (role === "Student") {
-      const dummyData = [
-        { subject: "Operating System", marks: 19 },
-        { subject: "Software Testing", marks: 10 },
-        { subject: "Computer Networks", marks: 18 },
-        { subject: "Java", marks: 20 },
-        { subject: "Python", marks: 5 },
-      ];
   
       return (
         <div className=" p-10">
