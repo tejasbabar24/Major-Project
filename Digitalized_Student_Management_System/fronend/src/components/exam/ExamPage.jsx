@@ -106,7 +106,7 @@ export default function ExamPage() {
       }
 
     const formData = new FormData();
-    formData.append("classname", classes);
+    formData.append("classname", "css");
     uploadedFiles.forEach((files, index) => {
       formData.append("attachment", files);
     });
@@ -120,6 +120,7 @@ export default function ExamPage() {
       })
       .then((result) => {
         const message = result.data.message || "Result Uploaded"
+        console.log(message)
         toast.success(message, {
           position: "top-right",
           autoClose: 1500,

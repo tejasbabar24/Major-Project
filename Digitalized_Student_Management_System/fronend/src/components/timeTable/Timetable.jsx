@@ -89,9 +89,10 @@ export default function Timetable() {
     console.log("Subjects Data:", subjects);
     console.log(tableName)
     axios
-      .post("http://localhost:8000/class/genrate-timetable", {config,subjects,title:tableName,classCode:"f5cbacf14e6a"})
+      .post("http://localhost:8000/class/genrate-timetable", {config,subjects,title:"TYFS",classCode:"f5cbacf14e6a"})
       .then((result) => {
         const message = result.data.message || "Timetable Generated"
+        console.log(message)
         toast.success(message, {
           position: "top-right",
           autoClose: 1500,
