@@ -7,10 +7,9 @@ import MuiAppBar from "@mui/material/AppBar";
 import Toolbar from "@mui/material/Toolbar";
 import Typography from "@mui/material/Typography";
 import Divider from "@mui/material/Divider";
-import { IconButton, List, ListItem, ListItemIcon, ListItemText, useMediaQuery } from "@mui/material";
+import { IconButton, InputLabel, List, ListItem, ListItemIcon, ListItemText,  useMediaQuery } from "@mui/material";
 import { Table, TableHeader, TableColumn, TableBody, TableRow, TableCell } from "@nextui-org/react";
 import MenuIcon from "@mui/icons-material/Menu";
-
 import Buttons from "@mui/material/Button";
 import { MdOutlineAdd } from "react-icons/md";
 import DragAndDropFileUpload from "../dragNdrop/DragNdrop.jsx";
@@ -62,9 +61,14 @@ export default function Timetable() {
   const [role] = React.useState(userData.role);
   const [selectedClass ,setselectedClass] = React.useState('')
   const [files, setFiles] = React.useState([]);
+  const [createdClasses, setCreatedClasses] = React.useState([]);
+  const [joinedClasses, setJoinedClasses] = React.useState([]);
   const isSmallScreen = useMediaQuery("(max-width: 768px)");
   const[tableName , setTableName] = React.useState('')
   const [myIndex , setMyIndex] = React.useState(0)
+  const [classes, setClasses] = React.useState("");
+
+  const handleClassChange = (event) => setClasses(event.target.value);
 
   const [config, setConfig] =React.useState({
     lectureDuration: "",
@@ -76,20 +80,62 @@ export default function Timetable() {
     startTime: "",
   });
 
+
   const [subjects, setSubjects] = React.useState([
     { name: "", lectureHours: "", practicalHours: "", teacher: "" },
   ]);
 
+  const clearFields = ()=>{
+    setFiles([])
+    setTableName('')
+    setClasses('')
+    setConfig({
+      lectureDuration: "",
+      practicalDuration: "",
+      breakDuration: "",
+      breakTime: "",
+      dayDuration: "",
+      includeSaturday: false,
+      startTime: "",
+    })
+    setSubjects([
+      { name: "", lectureHours: "", practicalHours: "", teacher: "" },
+    ])
+    setselectedClass('classes')
+  }
   const handleAddSubject = () => {
     setSubjects([...subjects, { name: "", lectureHours: "", practicalHours: "", teacher: "" }]);
   };
 
+  if (userData.role === "Teacher") {
+    React.useEffect(() => {
+      axios
+        .get("http://localhost:8000/class/created-classes")
+        .then((result) => {
+          setCreatedClasses(result.data.data.classes);
+        })
+        .catch((err) => {
+          console.log(err);
+        });
+    }, [createdClasses]);
+  } else if (userData.role === "Student") {
+    React.useEffect(() => {
+      axios
+        .get("http://localhost:8000/class/joined-classes")
+        .then((result) => {
+          setJoinedClasses(result.data.data.classArr);
+        })
+        .catch((err) => {
+          console.log(err);
+        });
+    }, [joinedClasses]);
+  }
+
   const handleSubmit = () => {
     console.log("Config Data:", config);
     console.log("Subjects Data:", subjects);
-    console.log(tableName)
     axios
-      .post("http://localhost:8000/class/genrate-timetable", {config,subjects,title:"TYFS",classCode:"f5cbacf14e6a"})
+      .post("http://localhost:8000/class/genrate-timetable", {config,subjects,title:tableName,classCode:"f5cbacf14e6a"})
       .then((result) => {
         const message = result.data.message || "Timetable Generated"
         console.log(message)
@@ -154,10 +200,11 @@ export default function Timetable() {
                 label="Time Table Name" 
                 placeholder="Enter Name"
                 value={tableName}
-                onChange={ (e)=>{setTableName(e.target.value)} }
+                onChange={ (e)=>setTableName(e.target.value) }
               />
           </div>
             <div className="flex flex-row gap-3">
+          {/* select options */}
               <Input
                 label="Lecture Duration"
                 placeholder="Enter duration"
