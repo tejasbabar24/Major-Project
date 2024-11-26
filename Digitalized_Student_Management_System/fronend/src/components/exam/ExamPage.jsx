@@ -193,25 +193,27 @@ export default function ExamPage() {
       ];
   
       return (
-        <Table
-          aria-label="Student Results"
-          className="min-h-[400px] w-full bg-white p-4 shadow-lg rounded-lg border border-gray-200"
-        >
-          <TableHeader>
-            <TableColumn>Subject</TableColumn>
-            <TableColumn>Marks</TableColumn>
-            <TableColumn>Status</TableColumn>
-          </TableHeader>
-          <TableBody>
-            {dummyData.map((item, index) => (
-              <TableRow key={index}>
-                <TableCell>{item.subject}</TableCell>
-                <TableCell>{item.marks}</TableCell>
-                <TableCell>{item.marks > 7 ? "Pass" : "Fail"}</TableCell>
-              </TableRow>
-            ))}
-          </TableBody>
-        </Table>
+        <div className=" p-10">
+          <Table
+            aria-label="Student Results"
+            className=" w-full h-fit bg-white p-4  rounded-lg border-gray-200"
+          >
+            <TableHeader>
+              <TableColumn>Subject</TableColumn>
+              <TableColumn>Marks</TableColumn>
+              <TableColumn>Status</TableColumn>
+            </TableHeader>
+            <TableBody>
+              {dummyData.map((item, index) => (
+                <TableRow key={index}>
+                  <TableCell>{item.subject}</TableCell>
+                  <TableCell >{item.marks}</TableCell>
+                  <TableCell className={`${item.marks < 7 ? 'text-red-400' : 'text-green-400' }`}>{item.marks > 7 ? "Pass" : "Fail"}</TableCell>
+                </TableRow>
+              ))}
+            </TableBody>
+          </Table>
+        </div>
       );
     } 
      if (selectedClass === "classes") {
@@ -250,12 +252,12 @@ export default function ExamPage() {
       <CssBaseline />
       <AppBar position="fixed" open={open}>
         <Toolbar sx={{ backgroundColor: "#253745" }}>
-          {isSmallScreen && (
+          {isSmallScreen && role==="Teacher" && (
             <IconButton color="inherit" edge="start" onClick={toggleDrawer}>
               <MenuIcon />
             </IconButton>
           )}
-          <Typography variant="h4" sx={{ marginLeft: "35%" }}>
+          <Typography variant="h4" sx={{ marginLeft: isSmallScreen ? '30%':"45%" }}>
             Result
           </Typography>
         </Toolbar>
