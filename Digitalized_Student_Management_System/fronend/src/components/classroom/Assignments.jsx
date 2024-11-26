@@ -32,7 +32,7 @@ function Announcements({ classData, assignment }) {
 
   const downloadFile = () => {
     axios
-      .post("http://localhost:8000/class/download-assignment", {
+      .post("/api/class/download-assignment", {
         url: assignment.attachment,
       })
       .then(() => {

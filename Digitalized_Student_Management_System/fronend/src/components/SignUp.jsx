@@ -78,7 +78,7 @@ function SignUp() {
         formData.append("photo", image);
       });
       axios
-        .post("http://localhost:8000/student/register", formData, {
+        .post("/api/student/register", formData, {
           headers: {
             "Content-Type": "multipart/form-data",
           },
@@ -134,7 +134,7 @@ function SignUp() {
       }
 
       axios
-        .post("http://localhost:8000/faculty/register", {
+        .post("/api/faculty/register", {
           username: username.toLowerCase(),
           email: email,
           password: password,

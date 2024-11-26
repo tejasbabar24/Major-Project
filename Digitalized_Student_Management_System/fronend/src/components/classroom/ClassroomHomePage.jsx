@@ -72,8 +72,8 @@ export default function ClassroomHomePage() {
       try {
         const endpoint =
           userData.role === "Teacher"
-            ? "http://localhost:8000/class/created-classes"
-            : "http://localhost:8000/class/joined-classes";
+            ? "/api/class/created-classes"
+            : "/api/class/joined-classes";
         const { data } = await axios.get(endpoint);
         setClasses(data.data.classes || data.data.classArr);
         dispatch(addClass(data.data.classes || data.data.classArr));
@@ -102,7 +102,7 @@ export default function ClassroomHomePage() {
 
     try {
       const { data } = await axios.post(
-        "http://localhost:8000/class/create-class",
+        "/api/class/create-class",
         {
           classname,
           subject,
@@ -128,7 +128,7 @@ export default function ClassroomHomePage() {
 
     try {
       const { data } = await axios.post(
-        "http://localhost:8000/class/join-class",
+        "/api/class/join-class",
         {
           classCode: joinId,
         }

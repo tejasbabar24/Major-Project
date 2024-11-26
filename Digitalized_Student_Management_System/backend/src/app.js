@@ -22,9 +22,9 @@ import classroomRouter from "./routes/classroom.routes.js";
 import { errorHandler } from "./middlewares/errorHandling.middleware.js";
 
 
-app.use("/faculty", teacherRouter)
-app.use("/student", studentRouter)
-app.use("/class", classroomRouter)
+app.use("/api/faculty", teacherRouter)
+app.use("/api/student", studentRouter)
+app.use("/api/class", classroomRouter)
 
 app.use(errorHandler);
 

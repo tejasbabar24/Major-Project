@@ -168,7 +168,7 @@ const [currentClass,setCurrentClass] = useState('')
   if (userData.role === "Teacher") {
     React.useEffect(() => {
       axios
-        .get("http://localhost:8000/class/created-classes")
+        .get("/api/class/created-classes")
         .then((result) => {
           setCreatedClasses(result.data.data.classes);
         })
@@ -179,7 +179,7 @@ const [currentClass,setCurrentClass] = useState('')
   } else if (userData.role === "Student") {
     React.useEffect(() => {
       axios
-        .get("http://localhost:8000/class/joined-classes")
+        .get("/api/class/joined-classes")
         .then((result) => {
           setJoinedClasses(result.data.data.classArr);
         })
@@ -198,7 +198,7 @@ const [currentClass,setCurrentClass] = useState('')
       return;
     }
     axios
-      .post("http://localhost:8000/class/genrate-timetable", {config,subjects,title:tableName,classCode:classes})
+      .post("/api/class/genrate-timetable", {config,subjects,title:tableName,classCode:classes})
       .then((result) => {
         const message = result.data.message || "Timetable Generated"
         console.log(message)

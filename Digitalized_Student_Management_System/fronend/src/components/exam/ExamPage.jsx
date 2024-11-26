@@ -124,7 +124,7 @@ const [processedUrls, setProcessedUrls] = useState([]);
   if (userData.role === "Teacher") {
     React.useEffect(() => {
       axios
-        .get("http://localhost:8000/class/created-classes")
+        .get("/api/class/created-classes")
         .then((result) => {
           setCreatedClasses(result.data.data.classes);
         })
@@ -135,7 +135,7 @@ const [processedUrls, setProcessedUrls] = useState([]);
   } else if (userData.role === "Student") {
     useEffect(() => {
       axios
-        .get("http://localhost:8000/class/joined-classes")
+        .get("/api/class/joined-classes")
         .then((result) => {
           setJoinedClasses(result.data.data.classArr);
         })
@@ -164,7 +164,7 @@ const [processedUrls, setProcessedUrls] = useState([]);
     });
     
     axios
-      .post("http://localhost:8000/class/result", formData, {
+      .post("/api/class/result", formData, {
         headers: {
           "Content-Type": "multipart/form-data",
         },

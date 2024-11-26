@@ -29,7 +29,7 @@ function Viewclassroom() {
 
   useEffect(() => {
     axios
-      .post("http://localhost:8000/class/joined-students", { classCode: classId })
+      .post("/api/class/joined-students", { classCode: classId })
       .then((result) => {
         setStudents(result.data.data.students);
       })
@@ -52,7 +52,7 @@ function Viewclassroom() {
     formData.append("attachment", image);
 
     axios
-      .post("http://localhost:8000/class/post-assignment", formData)
+      .post("/api/class/post-assignment", formData)
       .then((result) => {
         const message = result.data.data.message
         // toast.success(message || "Assignment Posted!",

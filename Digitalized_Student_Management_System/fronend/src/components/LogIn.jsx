@@ -67,7 +67,7 @@ function LogIn() {
     }
 
     axios
-      .post(`http://localhost:8000/${loginEndpoint}`, {
+      .post(`/api/${loginEndpoint}`, {
         username: username.toLowerCase(),
         password,
       })
