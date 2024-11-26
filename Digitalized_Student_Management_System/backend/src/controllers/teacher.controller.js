@@ -200,10 +200,8 @@ const getCurrentUser = asyncHandler(async (req, res,next) => {
 
 const updateAccountDetails = asyncHandler(async (req, res,next) => {
     const { username, email } = req.body;
-
-    const profileLocalPath = req.file?.path;
     
-    if (!(username || email || profileLocalPath)) {
+    if (!(username || email )) {
         return next(new ApiError("Please fill in all the required fields."));
     }
 
@@ -215,7 +213,6 @@ const updateAccountDetails = asyncHandler(async (req, res,next) => {
             $set: {
                 username,
                 email,
-                profile:profile.url
             }
         },
         { new: true }
