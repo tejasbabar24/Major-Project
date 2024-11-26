@@ -7,6 +7,8 @@ import { Avatar, Button, TextField } from "@mui/material";
 import Announcements from "./Assignments";
 import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import user from "../../assets/classCards/user.png";
+
 function Viewclassroom() {
   const [showInput, setShowInput] = useState(false);
   const [inputValue, setInput] = useState("");
@@ -122,18 +124,39 @@ function Viewclassroom() {
         );
       case "students":
         return (
-          <div className="bg-white rounded-lg shadow p-6 max-h-96 overflow-y-auto mt-4">
-            <h2 className="text-2xl font-bold text-gray-800 mb-4">Teacher</h2>
-            <ul className="list-disc pl-5 mb-4">
-              <li>{classInfo.owner?.toUpperCase()}</li>
-            </ul>
-            <h2 className="text-2xl font-bold text-gray-800 mb-4">Students</h2>
-            <ul className="list-disc pl-5">
-              {students.map((student) => (
-                student && <li key={student?.username}>{student?.username.toUpperCase()}</li>
-              ))}
-            </ul>
-          </div>
+          <div className=" justify-around bg-white rounded-lg shadow p-6 max-h-96 overflow-y-auto mt-4">
+            <div className=" flex flex-col  items-center ">
+              <h2 className="text-2xl font-bold text-gray-800 mb-4">Teacher</h2>
+              <ul className=" pl-5 mb-4">
+                <div className="flex justify-start  gap-2 items-center">
+                  <img src={user} alt="" className=" rounded-full h-10 w-10 border border-stone-950" />
+                  <li>{classInfo.owner?.toUpperCase()}</li>
+                </div>
+              </ul>
+            </div>
+            <div>
+                  <h2 className="text-2xl font-bold text-gray-800 mb-4">Students</h2>
+                  <ul className="grid grid-cols-4 gap-4">
+                    {students.map(
+                      (student) =>
+                        student && (
+                          <div
+                            key={student?.username}
+                            className="flex gap-2 mt-1 items-center border rounded-xl border-stone-500 bg-[#253745] text-white p-2"
+                          >
+                            <img
+                              src={user}
+                              alt=""
+                              className="rounded-full h-10 w-10 border border-stone-950"
+                            />
+                            <li>{student?.username.toUpperCase()}</li>
+                          </div>
+                        )
+                    )}
+                  </ul>
+                </div>
+
+            </div>
         );
       default:
         return null;
