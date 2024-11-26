@@ -441,7 +441,6 @@ const postResult = asyncHandler(async (req, res, next) => {
 
 const getJoinedClasses = asyncHandler(async (req, res) => {
 
-
     const stud = await Student.findById(req.user?._id);
 
     if (!stud) {

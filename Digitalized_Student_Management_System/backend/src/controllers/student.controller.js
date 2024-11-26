@@ -244,8 +244,15 @@ const updateAccountDetails = asyncHandler(async (req, res, next) => {
 
     const profileLocalPath = req.file?.path;
 
-    if (!(username || email || profileLocalPath)) {
+    if (!(username || email )) {
         return next(new ApiError("Please fill in all the required fields."));
+    }
+
+    let profileUrl;
+
+    if (profileLocalPath) {
+        const profile = await uploadOnCloudinary(profileLocalPath);
+         profileUrl = profile.url;
     }
 
     const user = await Student.findByIdAndUpdate(
@@ -254,10 +261,16 @@ const updateAccountDetails = asyncHandler(async (req, res, next) => {
             $set: {
                 username,
                 email,
+                ...(profileUrl && { profile: profileUrl })
             }
         },
         { new: true }
-    ).select("-password")
+    ).select("-password");
+
+    if (!user) {
+        return res.status(404).json({ message: "User not found." });
+    }
+
 
     return res
         .status(200)
