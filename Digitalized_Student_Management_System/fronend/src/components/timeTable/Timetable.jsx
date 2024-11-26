@@ -414,31 +414,26 @@ const [processedUrls, setProcessedUrls] = useState([]);
     } 
     if (role === "Student" ) {
       return (
-        <Table
-          aria-label="Class Timetable"
-          className="min-h-[400px] w-full bg-white p-4 shadow-lg rounded-lg border border-gray-200"
-        >
-          <TableHeader>
-          {
-            timeSlots.map((item)=>(
-            <TableColumn key={item}>{item}</TableColumn>
-            ))
-          }
-          </TableHeader>
-          <TableBody>
-            {
-              parsedData.map((item) => (
-                <TableRow key={item}>
-                  {
-                    timeSlots.map((row)=>(
-                      <TableCell key={row}>{item[row]}</TableCell>
-                    ))
-                  }
-                </TableRow>
-              ))
-            }
-          </TableBody>
-        </Table>
+        <div className=" p-10">
+            <table className="min-h-[400px] w-full bg-white p-4 shadow-lg rounded-lg border border-gray-200">
+                <thead className="border">
+                  <tr >
+                    {timeSlots.map((item) => (
+                      <th key={item} className="px-4 py-2 text-left border">{item}</th> // Table headers
+                    ))}
+                  </tr>
+                </thead>
+                <tbody >
+                  {parsedData.map((item, index) => (
+                    <tr key={index} className="border">
+                      {timeSlots.map((row) => (
+                        <td key={row} className="px-4 py-2 border">{item[row]}</td> // Table data cells
+                      ))}
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+          </div>
       );
     }
     
@@ -486,7 +481,7 @@ const [processedUrls, setProcessedUrls] = useState([]);
           </Typography>
         </Toolbar>
       </AppBar>
-      {role === "Teacher" ?
+     
       <Drawer
         sx={{
           width: drawerWidth,
@@ -520,15 +515,29 @@ const [processedUrls, setProcessedUrls] = useState([]);
           <Typography variant="h6" sx={{ textAlign: "center", paddingTop: 2 }}>
             Your Timetables
           </Typography>
-          <ListItem className="hover:bg-gray-100 cursor-pointer" onClick={()=>{ setselectedClass('classes'), isSmallScreen? toggleDrawer() :null}}>
-            <ListItemIcon>
-              <img src={user} alt="User Profile" className="w-12 h-12 rounded-full" />
-            </ListItemIcon>
-            <ListItemText primary="View Timetable" />
-          </ListItem>
+          {joinedClasses.map((item) => (
+                <ListItem
+                  key={item.classCode}
+                  className="hover:bg-gray-100 cursor-pointer"
+                  onClick={() =>{
+                    setselectedClass('classes')
+                    setCurrentClass(item.classCode.toLowerCase()),
+                    isSmallScreen ?  toggleDrawer() : null 
+                  }}
+                >
+                  <ListItemIcon className="mr-3">
+                    <img
+                      src={user}
+                      alt="User Profile"
+                      className="w-12 h-12 rounded-full mb-2 border solid white "
+                    />
+                  </ListItemIcon>
+                  {item.classname.toUpperCase()}
+                </ListItem>
+              ))}
         </List>
       </Drawer>
-      :null}
+      
 
       <Main open={open}>
         <Box sx={{ mt: 8 }}>{renderContent()}</Box>
