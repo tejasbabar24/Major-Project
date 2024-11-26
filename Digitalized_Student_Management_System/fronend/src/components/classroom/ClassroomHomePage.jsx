@@ -43,6 +43,17 @@ const Main = styled("main")(({ theme }) => ({
   minHeight: "100vh",
 }));
 
+const focusedOutlineStyle = {
+  "& .MuiOutlinedInput-root": {
+    "&.Mui-focused": {
+      "& .MuiOutlinedInput-notchedOutline": {
+        borderColor: "#11212D",
+        borderWidth: "3px",
+      },
+    },
+  },
+};
+
 export default function ClassroomHomePage() {
   const [open, setOpen] = useState(false);
   const [joinDrawerOpen, setJoinDrawerOpen] = useState(false);
@@ -245,6 +256,7 @@ export default function ClassroomHomePage() {
                 margin="normal"
                 value={classname}
                 onChange={(e) => setClassName(e.target.value)}
+                sx={focusedOutlineStyle}
               />
               <TextField
                 fullWidth
@@ -252,6 +264,7 @@ export default function ClassroomHomePage() {
                 margin="normal"
                 value={subject}
                 onChange={(e) => setSubject(e.target.value)}
+                sx={focusedOutlineStyle}
               />
               <TextField
                 fullWidth
@@ -259,6 +272,7 @@ export default function ClassroomHomePage() {
                 margin="normal"
                 value={section}
                 onChange={(e) => setSection(e.target.value)}
+                sx={focusedOutlineStyle}
               />
               <TextField
                 fullWidth
@@ -266,6 +280,7 @@ export default function ClassroomHomePage() {
                 margin="normal"
                 value={year}
                 onChange={(e) => setYear(e.target.value)}
+                sx={focusedOutlineStyle}
               />
             </>
           )}
@@ -276,6 +291,14 @@ export default function ClassroomHomePage() {
               margin="normal"
               value={joinId}
               onChange={(e) => setJoinId(e.target.value)}
+              sx={{
+              "& .MuiOutlinedInput-root": {
+                  "&.Mui-focused": {
+                "& .MuiOutlinedInput-notchedOutline": {
+                  borderColor: "#11212D",
+                  borderWidth: "3px",
+                },            
+            }}}}
             />
           )}
           <Button
