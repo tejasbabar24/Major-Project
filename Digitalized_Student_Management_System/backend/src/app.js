@@ -15,13 +15,13 @@ app.use(express.urlencoded({ extended: true, limit: "16kb" }))
 app.use(express.static("public"))
 app.use(cookieParser())
 app.set("trust proxy",1);
-//routes import do not change
+
 import teacherRouter from "./routes/teacher.routes.js";
 import studentRouter from "./routes/student.routes.js";
 import classroomRouter from "./routes/classroom.routes.js";
 import { errorHandler } from "./middlewares/errorHandling.middleware.js";
 
-//routes declaration
+
 app.use("/faculty", teacherRouter)
 app.use("/student", studentRouter)
 app.use("/class", classroomRouter)

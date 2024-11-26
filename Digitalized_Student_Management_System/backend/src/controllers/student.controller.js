@@ -51,7 +51,6 @@ const registerUser = asyncHandler(async (req, res, next) => {
         photoLocalPaths = req.files.photo.map(file => file.path);
     }
 
-    console.log(photoLocalPaths);
 
     if (photoLocalPaths.length === 0) {
         return next(new ApiError(400, "Please upload an image file."));
@@ -67,23 +66,15 @@ const registerUser = asyncHandler(async (req, res, next) => {
         })
     );
 
-    console.log(uploadedphotos)
-    // Sending the POST request with uploaded photos
     const { data: encodeData } = await axios.post("http://localhost:5001/reg-encode", { img: uploadedphotos });
 
-    // Log the response for debugging
-    console.log("Response from /reg-encode:", encodeData);
-
-    // Handle errors first
     if (encodeData.errors && encodeData.errors.length > 0) {
         const errorMessages = encodeData.errors.map(error => error.error || `Error with image: ${error.image_url}`);
         return next(new ApiError(500, `Face encoding failed: ${errorMessages.join(', ')}`));
     }
 
-    // Filter valid face encodings
     const faceEncodings = encodeData.encodings;
 
-    // Check if no valid encodings were found
     if (faceEncodings.length === 0) {
         return next(new ApiError(
             500, 
@@ -91,11 +82,7 @@ const registerUser = asyncHandler(async (req, res, next) => {
         ));
     }
 
-    // Proceed with the valid encodings
-    console.log("Valid face encodings:", faceEncodings);
 
-
-    console.log(faceEncodings)
     const user = await Student.create({
         username: username.toLowerCase(),
         role,
@@ -255,7 +242,6 @@ const getCurrentUser = asyncHandler(async (req, res) => {
 const updateAccountDetails = asyncHandler(async (req, res, next) => {
     const { username, email } = req.body;
 
-    console.log(username,email)
     const profileLocalPath = req.file?.path;
 
     if (!(username || email || profileLocalPath)) {

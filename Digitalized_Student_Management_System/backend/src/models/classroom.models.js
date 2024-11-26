@@ -35,49 +35,49 @@ const classroomSchema = new Schema({
             ref: "Student"
         }
     ],
-    classCode:{
-        type:String,
+    classCode: {
+        type: String,
     },
-    attendance:{
-        type:[String],
-        
+    attendance: {
+        type: [String],
+
     },
-    assignment:[
+    assignment: [
         {
             title: { type: String, required: true },
-            attachment:String,
-            createdAt:Date
+            attachment: String,
+            createdAt: Date
         }
     ],
-    notice:[
+    notice: [
         {
-            description:{type:String,required:true},
-            attachment:String,
-            createdAt:Date
+            description: { type: String, required: true },
+            attachment: String,
+            createdAt: Date
         }
     ],
-    result:[
+    result: [
         {
-            description:{type:String,required:true},
-            attachment:String,
-            createdAt:Date
+            description: { type: String, required: true },
+            attachment: String,
+            createdAt: Date
         }
     ],
-    attendance:[
+    attendance: [
         {
-            filename:{type:String,required:true},
-            attachment:String,
-            createdAt:Date
+            filename: { type: String, required: true },
+            attachment: String,
+            createdAt: Date
         }
     ],
-    timetable:[
+    timetable: [
         {
-            filename:{type:String,required:true},
-            attachment:String,
-            createdAt:Date
+            filename: { type: String, required: true },
+            attachment: String,
+            createdAt: Date
         }
     ],
 
 }, { timestamps: true });
 
-export const Classroom = mongoose.model("Classroom", classroomSchema);
+export const Classroom = mongoose.model("Classroom" , classroomSchema);

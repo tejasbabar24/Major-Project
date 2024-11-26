@@ -258,7 +258,6 @@ const setProfilePhoto = asyncHandler(async (req, res,next) => {
 
 })
 
-
 export {
     registerUser,
     loginUser,

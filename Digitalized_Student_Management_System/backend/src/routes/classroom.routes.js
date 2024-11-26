@@ -20,7 +20,7 @@ const router = Router();
 
 router.route('/create-class').post(verifyJWT, createClass);
 
-router.route('/join-class').post(stud_verifyJWT,joinClass);
+router.route('/join-class').post(stud_verifyJWT, joinClass);
 
 router.route('/post-assignment').post(
     upload.single('attachment'),
@@ -34,13 +34,13 @@ router.route('/result').post(verifyJWT,
     upload.single('attachment'),
     postResult)
 
-router.route('/genrate-timetable').post(verifyJWT,generateTimetable);
+router.route('/genrate-timetable').post(verifyJWT, generateTimetable);
 
 router.route('/download-assignment').post(download);
 
-router.route('/joined-classes').get(stud_verifyJWT,getJoinedClasses)
+router.route('/joined-classes').get(stud_verifyJWT, getJoinedClasses)
 
-router.route('/created-classes').get(verifyJWT,getCreatedClasses)
+router.route('/created-classes').get(verifyJWT, getCreatedClasses)
 
 router.route('/joined-students').post(getJoinedStudents)
 
