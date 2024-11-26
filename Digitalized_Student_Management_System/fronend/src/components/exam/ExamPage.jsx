@@ -64,6 +64,8 @@ export default function ExamPage() {
   const [createdClasses, setCreatedClasses] = React.useState([]);
   const [joinedClasses, setJoinedClasses] = React.useState([]);
   const [classes, setClasses] = React.useState("");
+  const [uploadedFiles, setUploadedFiles] = React.useState([]);
+  const handleFilesUploaded = (files) => setUploadedFiles(files);
 
   const toggleDrawer = () => setOpen(!open);
 
@@ -105,7 +107,7 @@ export default function ExamPage() {
 
     const formData = new FormData();
     formData.append("classname", classes);
-    files.forEach((files, index) => {
+    uploadedFiles.forEach((files, index) => {
       formData.append("attachment", files);
     });
 
@@ -168,7 +170,11 @@ export default function ExamPage() {
                           </SelectItem>
                         ))}
             </Select>
-            <DragAndDropFileUpload files={files} setFiles={setFiles} />
+            <DragAndDropFileUpload
+                      onFilesUploaded={handleFilesUploaded}
+                      files={files}
+                      setFiles={setFiles}
+                    />
             <Button type="submit" className="w-18 h-8 mt-4 text-white text-sm text-center bg-[#253745] hover:bg-[#11212D]">
               Upload Result
             </Button>

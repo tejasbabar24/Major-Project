@@ -275,8 +275,8 @@ export default function Timetable() {
   
           {/* Submit Button */}
           <div className=" flex w-full justify-center ">
-            <Button type="submit" className="mt-2 w-fit items-center bg-blue-500 text-white">
-                Submit
+            <Button type="submit" className="mt-2 w-fit items-center bg-[#253745] text-white hover:bg-[#11212D]">
+                Generate Timetable
             </Button>
           </div>
         </form>
@@ -350,7 +350,7 @@ export default function Timetable() {
     <Box sx={{ display: "flex" }}>
       <CssBaseline />
       <AppBar position="fixed" open={open}>
-        <Toolbar sx={{ backgroundColor: "#8E6AC4" }}>
+        <Toolbar sx={{ backgroundColor: "#253745" }}>
           {isSmallScreen && (
             <IconButton color="inherit" edge="start" onClick={toggleDrawer}>
               <MenuIcon />
@@ -370,6 +370,7 @@ export default function Timetable() {
             width: drawerWidth,
             boxSizing: "border-box",
             marginTop: isSmallScreen ? "56px" : "64px",
+            backgroundColor:"#eef0ef"
           },
         }}
         variant={isSmallScreen ? "temporary" : "persistent"}
@@ -382,10 +383,10 @@ export default function Timetable() {
           {role === "Teacher" && (
             <ListItem>
               <Buttons
-                className="cursor-pointer"
+               className="cursor-pointer hover:bg-[#11212D]"
                 variant="contained"
                 onClick={() => { setselectedClass('upload'), isSmallScreen? toggleDrawer() :null }}
-                sx={{ fontSize: "15px", backgroundColor: "#3A2B51" }}
+                sx={{ fontSize: "15px", backgroundColor: "#253745" }}
               >
                 Generate Timetable <MdOutlineAdd />
               </Buttons>
