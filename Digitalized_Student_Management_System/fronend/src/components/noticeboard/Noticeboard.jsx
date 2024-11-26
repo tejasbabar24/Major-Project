@@ -189,7 +189,7 @@ export default function Noticeboard() {
             "& .MuiDrawer-paper": {
               width: drawerWidth,
               boxSizing: "border-box",
-              marginTop: "66px",
+              marginTop: isSmallScreen? '85px' : '64px',
             },
           }}
           variant="temporary"
