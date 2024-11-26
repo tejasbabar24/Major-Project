@@ -275,45 +275,46 @@ export default function Timetable() {
   
           {/* Submit Button */}
           <div className=" flex w-full justify-center ">
-            <Button type="submit" className="mt-2 w-fit items-center bg-[#253745] text-white hover:bg-[#11212D]">
-                Generate
+            <Button type="submit" className="mt-2 w-fit items-center bg-blue-500 text-white">
+                Submit
             </Button>
           </div>
         </form>
       </div>
       );
     } 
-     if (role === "Student") {
+    if (role === "Student") {
       const dummyData = [
-        { subject: "Operating System", marks: 19 },
-        { subject: "Software Testing", marks: 10 },
-        { subject: "Computer Networks", marks: 18 },
-        { subject: "Java", marks: 20 },
-        { subject: "Python", marks: 5 },
+        { name: "Math", lectureHours: 3, practicalHours: 1, teacher: "Tejas" },
+        { name: "Physics", lectureHours: 4, practicalHours: 2, teacher: "Swapnil" },
+        { name: "Chemistry", lectureHours: 3, practicalHours: 1, teacher: "Shrey" },
       ];
-  
+    
       return (
         <Table
-          aria-label="Student Results"
+          aria-label="Class Timetable"
           className="min-h-[400px] w-full bg-white p-4 shadow-lg rounded-lg border border-gray-200"
         >
           <TableHeader>
             <TableColumn>Subject</TableColumn>
-            <TableColumn>Marks</TableColumn>
-            <TableColumn>Status</TableColumn>
+            <TableColumn>Lecture Hours</TableColumn>
+            <TableColumn>Practical Hours</TableColumn>
+            <TableColumn>Teacher</TableColumn>
           </TableHeader>
           <TableBody>
             {dummyData.map((item, index) => (
               <TableRow key={index}>
-                <TableCell>{item.subject}</TableCell>
-                <TableCell>{item.marks}</TableCell>
-                <TableCell>{item.marks > 7 ? "Pass" : "Fail"}</TableCell>
+                <TableCell>{item.name}</TableCell>
+                <TableCell>{item.lectureHours}</TableCell>
+                <TableCell>{item.practicalHours}</TableCell>
+                <TableCell>{item.teacher}</TableCell>
               </TableRow>
             ))}
           </TableBody>
         </Table>
       );
-    } 
+    }
+    
      if (selectedClass === "classes") {
       return (
         <div className={`flex flex-wrap mt-7 ${isSmallScreen ? 'grid grid-cols-2' : 'grid grid-cols-5'}`}>
@@ -349,7 +350,7 @@ export default function Timetable() {
     <Box sx={{ display: "flex" }}>
       <CssBaseline />
       <AppBar position="fixed" open={open}>
-        <Toolbar sx={{ backgroundColor: "#253745" }}>
+        <Toolbar sx={{ backgroundColor: "#8E6AC4" }}>
           {isSmallScreen && (
             <IconButton color="inherit" edge="start" onClick={toggleDrawer}>
               <MenuIcon />
@@ -369,7 +370,6 @@ export default function Timetable() {
             width: drawerWidth,
             boxSizing: "border-box",
             marginTop: isSmallScreen ? "56px" : "64px",
-            backgroundColor:"#eef0ef"
           },
         }}
         variant={isSmallScreen ? "temporary" : "persistent"}
@@ -382,10 +382,10 @@ export default function Timetable() {
           {role === "Teacher" && (
             <ListItem>
               <Buttons
-                className="cursor-pointer hover:bg-[#11212D]"
+                className="cursor-pointer"
                 variant="contained"
                 onClick={() => { setselectedClass('upload'), isSmallScreen? toggleDrawer() :null }}
-                sx={{ fontSize: "15px", backgroundColor: "#253745" }}
+                sx={{ fontSize: "15px", backgroundColor: "#3A2B51" }}
               >
                 Generate Timetable <MdOutlineAdd />
               </Buttons>
