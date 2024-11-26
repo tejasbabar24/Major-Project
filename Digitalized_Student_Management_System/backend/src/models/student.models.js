@@ -1,4 +1,4 @@
-import mongoose, {Schema } from "mongoose";
+import mongoose, { Schema } from "mongoose";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 import { Classroom } from "./classroom.models.js";
@@ -34,7 +34,7 @@ const studentSchema = new mongoose.Schema({
     classId: [
         {
             type: Schema.Types.ObjectId,
-            ref:Classroom,
+            ref: Classroom,
             index: true,
         }
     ],
@@ -44,10 +44,10 @@ const studentSchema = new mongoose.Schema({
             index: true
         }
     ],
-    encoding:{
-            type: [[Number]], 
-            required: true
-        }
+    encoding: {
+        type: [[Number]],
+        required: true
+    }
     ,
     refreshToken: {
         type: String,
