@@ -23,6 +23,8 @@ import {Checkbox} from "@nextui-org/react";
 import {Button} from "@nextui-org/react";
 import axios from "axios";
 import { toast, ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+
 
 const drawerWidth = 320;
 
@@ -132,10 +134,15 @@ export default function Timetable() {
   }
 
   const handleSubmit = () => {
-    console.log("Config Data:", config);
-    console.log("Subjects Data:", subjects);
+    if (!tableName || !classes) {
+      toast.error("Class and files are required.", {
+        position: "top-right",
+        autoClose: 1500,
+      });
+      return;
+    }
     axios
-      .post("http://localhost:8000/class/genrate-timetable", {config,subjects,title:tableName,classCode:"f5cbacf14e6a"})
+      .post("http://localhost:8000/class/genrate-timetable", {config,subjects,title:tableName,classCode:classes})
       .then((result) => {
         const message = result.data.message || "Timetable Generated"
         console.log(message)
@@ -385,23 +392,19 @@ export default function Timetable() {
       return (
         <div className={`flex flex-wrap mt-7 ${isSmallScreen ? 'grid grid-cols-2' : 'grid grid-cols-5'}`}>
                 <div className="p-2">
-                  <AttendanceCard name={"NMA"} date={"24-11-2024"} fileUrl={TimetableImg} />
+                  {
+                    createdClasses.map((item)=>(
+                      item.timetable.map((urls)=>(
+                        <AttendanceCard
+                      name={item.classname}
+                      date={urls.createdAt}
+                      fileUrl={urls.attachment}
+                      />
+                      ))
+                    ))
+                  }
                 </div>
-                <div className="p-2">
-                  <AttendanceCard name={"NMA"} date={"24-11-2024"} fileUrl={TimetableImg} />
-                </div>
-                <div className="p-2">
-                  <AttendanceCard name={"NMA"} date={"24-11-2024"} fileUrl={TimetableImg} />
-                </div>
-                <div className="p-2">
-                  <AttendanceCard name={"NMA"} date={"24-11-2024"} fileUrl={TimetableImg} />
-                </div>
-                <div className="p-2">
-                  <AttendanceCard name={"NMA"} date={"24-11-2024"} fileUrl={TimetableImg} />
-                </div>
-                <div className="p-2">
-                  <AttendanceCard name={"NMA"} date={"24-11-2024"} fileUrl={TimetableImg} />
-                </div>
+                
          </div>
 
 
@@ -414,6 +417,7 @@ export default function Timetable() {
   
   return (
     <Box sx={{ display: "flex" }}>
+      <ToastContainer/>
       <CssBaseline />
       <AppBar position="fixed" open={open}>
         <Toolbar sx={{ backgroundColor: "#253745" }}>

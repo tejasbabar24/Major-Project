@@ -21,6 +21,8 @@ import examimg from './examimg.jpg';
 import AttendanceCard from "../attendance/attendanceCard.jsx";
 import axios from "axios";
 import { toast, ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+
 import { useState,useEffect } from "react";
 
 const drawerWidth = 320;
@@ -95,7 +97,7 @@ export default function ExamPage() {
 
   const handleClassChange = (event) => setClasses(event.target.value);
   
-  const uploadResult=(e)=>{
+      const uploadResult=(e)=>{
       e.preventDefault();
       if (!files || !classes) {
         toast.error("Class and files are required.", {
@@ -104,13 +106,14 @@ export default function ExamPage() {
         });
         return;
       }
-
+    console.log(classes); // bhenchod hya mdhe classcode ch ahe mahit nahi kasa pn tech printhot 
+    
     const formData = new FormData();
-    formData.append("classname", "css");
+    formData.append("classname", classes);
     uploadedFiles.forEach((files, index) => {
       formData.append("attachment", files);
     });
-
+    
     axios
       .post("http://localhost:8000/class/result", formData, {
         headers: {
@@ -158,8 +161,7 @@ export default function ExamPage() {
               label="Your Class" 
               placeholder="Select Class" 
               className="w-full" 
-              color="success" 
-              defaultValue="CS" 
+              color="success"
               onChange={handleClassChange}
             >
               {createdClasses.map((item) => (
@@ -249,6 +251,7 @@ export default function ExamPage() {
   
   return (
     <Box sx={{ display: "flex" }}>
+      <ToastContainer/>
       <CssBaseline />
       <AppBar position="fixed" open={open}>
         <Toolbar sx={{ backgroundColor: "#253745" }}>
