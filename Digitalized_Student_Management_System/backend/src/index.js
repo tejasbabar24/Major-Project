@@ -7,7 +7,7 @@ app.use(cors({
     origin: process.env.CORS_ORIGIN
 }));
 
-config()
+config({path:"./.env"})
 
 connectDB()
     .then(() => {
