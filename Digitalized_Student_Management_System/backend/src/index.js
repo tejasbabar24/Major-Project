@@ -1,4 +1,4 @@
-import dotenv from "dotenv";
+import {config} from "dotenv";
 import connectDB from "./db/index.js";
 import { app } from "./app.js";
 import cors from 'cors'
@@ -7,9 +7,7 @@ app.use(cors({
     origin: process.env.CORS_ORIGIN
 }));
 
-dotenv.config({
-    path:"./.env"
-})
+config({path:"./.env"})
 
 connectDB()
     .then(() => {
