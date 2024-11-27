@@ -1,7 +1,7 @@
 {
   "name": "backend",
   "version": "1.0.0",
-  "proxy": "https://major-project-y6c7.onrender.com/",
+  "proxy": "https://major-project-y6c7.onrender.com",
   "type": "module",
   "main": "index.js",
   "scripts": {
