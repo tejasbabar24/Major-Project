@@ -17,8 +17,8 @@ import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import Loading from "./Loading";
 function LogIn() {
-  const baseURL = import.meta.env.BACKEND_URL;
-
+  const baseURL = import.meta.env.VITE_BACKEND_URL;
+  
   const [loading, setLoading] = useState(false);
   const [role, setRole] = useState("Student");
   const dispatch = useDispatch();
