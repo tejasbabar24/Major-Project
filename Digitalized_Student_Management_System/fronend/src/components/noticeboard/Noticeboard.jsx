@@ -51,6 +51,8 @@ export default function Noticeboard() {
   const [uploadFiles, setUploadedFiles] = React.useState([]);
   const [createdClasses, setCreatedClasses] = React.useState([]);
   const [files, setFiles] = React.useState([]);
+  const baseURL = import.meta.env.VITE_BACKEND_URL;
+
   const handleFilesUploaded = (files) => {  
     setUploadedFiles(files[0]);
   };
@@ -59,14 +61,14 @@ export default function Noticeboard() {
   useEffect(() => {
     if (userData.role === "Teacher") {
       axios
-        .get("/api/class/created-classes")
+        .get(`${baseURL}/api/class/created-classes`)
         .then((result) => {
           setCreatedClasses(result.data.data.classes);
         })
         .catch((err) => console.log(err));
     } else if (userData.role === "Student") {
       axios
-        .get("/api/class/joined-classes")
+        .get(`${baseURL}/api/class/joined-classes`  )
         .then((result) => {
           setJoinedClasses(result.data.data.classArr);
         })
@@ -103,7 +105,7 @@ export default function Noticeboard() {
     formData.append("attachment", uploadFiles);
     setLoading(true)
     axios
-      .post("/api/class/notice", formData)
+      .post(`${baseURL}/api/class/notice`, formData)
       .then((result) => {
         const message = result.data.message || "Notice Created"
         toast.success(message, {

@@ -16,8 +16,9 @@ import { useDispatch } from "react-redux";
 import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import Loading from "./Loading";
-
 function LogIn() {
+  const baseURL = import.meta.env.VITE_BACKEND_URL;
+  
   const [loading, setLoading] = useState(false);
   const [role, setRole] = useState("Student");
   const dispatch = useDispatch();
@@ -67,7 +68,7 @@ function LogIn() {
     }
 
     axios
-      .post(`/api/${loginEndpoint}`, {
+      .post(`${baseURL}/api/${loginEndpoint}`, {
         username: username.toLowerCase(),
         password,
       })

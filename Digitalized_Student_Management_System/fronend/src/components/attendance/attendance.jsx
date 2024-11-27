@@ -61,6 +61,7 @@ export default function Attendance() {
   const [selectedClassDates,setSelectedClassDates] = useState([])
 const [processedUrls, setProcessedUrls] = useState([]);
 const [loading,setLoading] = useState(false)
+const baseURL = import.meta.env.VITE_BACKEND_URL;
 
 const isSmallScreen = useMediaQuery("(max-width: 768px)"); // Use media query for small screens
 
@@ -226,7 +227,7 @@ useEffect(()=>{
   if (userData.role === "Teacher") {
     useEffect(() => {
       axios
-        .get("/api/class/created-classes")
+        .get(`${baseURL}/api/class/created-classes`)
         .then((result) => {
           setCreatedClasses(result.data.data.classes);
         })
@@ -237,7 +238,7 @@ useEffect(()=>{
   } else if (userData.role === "Student") {
     useEffect(() => {
       axios
-        .get("/api/class/joined-classes")
+        .get(`${baseURL}/api/class/joined-classes`)
         .then((result) => {
           setJoinedClasses(result.data.data.classArr);
         })

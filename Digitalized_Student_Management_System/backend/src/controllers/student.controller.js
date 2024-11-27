@@ -110,7 +110,8 @@ const registerUser = asyncHandler(async (req, res, next) => {
 
 const loginUser = asyncHandler(async (req, res, next) => {
     const { username, password } = req.body;
-
+    console.log("username",username);
+    
     if (!(username)) {
         return next(new ApiError(400, "Please provide a username or email."))
     }

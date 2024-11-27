@@ -55,6 +55,8 @@ const focusedOutlineStyle = {
 };
 
 export default function ClassroomHomePage() {
+  const baseURL = import.meta.env.VITE_BACKEND_URL;
+
   const [open, setOpen] = useState(false);
   const [joinDrawerOpen, setJoinDrawerOpen] = useState(false);
   const [classname, setClassName] = useState("");
@@ -72,8 +74,8 @@ export default function ClassroomHomePage() {
       try {
         const endpoint =
           userData.role === "Teacher"
-            ? "/api/class/created-classes"
-            : "/api/class/joined-classes";
+            ? `${baseURL}/api/class/created-classes`
+            : `${baseURL}/api/class/joined-classes`;
         const { data } = await axios.get(endpoint);
         setClasses(data.data.classes || data.data.classArr);
         dispatch(addClass(data.data.classes || data.data.classArr));
@@ -102,7 +104,7 @@ export default function ClassroomHomePage() {
 
     try {
       const { data } = await axios.post(
-        "/api/class/create-class",
+        `${baseURL}/api/class/create-class`,
         {
           classname,
           subject,
@@ -128,7 +130,8 @@ export default function ClassroomHomePage() {
 
     try {
       const { data } = await axios.post(
-        "/api/class/join-class",
+        `${baseURL}/api/class/join-class`,
+
         {
           classCode: joinId,
         }
