@@ -73,6 +73,7 @@ export default function Timetable() {
   const [timeSlots , setTimeSlots] = React.useState([]);
 const [processedUrls, setProcessedUrls] = useState([]);
 const [currentClass,setCurrentClass] = useState('')
+const baseURL = import.meta.env.VITE_BACKEND_URL;
 
   const handleClassChange = (event) => setClasses(event.target.value);
   const toggleDrawer = () => setOpen(!open);
@@ -168,7 +169,7 @@ const [currentClass,setCurrentClass] = useState('')
   if (userData.role === "Teacher") {
     React.useEffect(() => {
       axios
-        .get("/api/class/created-classes")
+        .get(`${baseURL}/api/class/created-classes`)
         .then((result) => {
           setCreatedClasses(result.data.data.classes);
         })
@@ -179,7 +180,7 @@ const [currentClass,setCurrentClass] = useState('')
   } else if (userData.role === "Student") {
     React.useEffect(() => {
       axios
-        .get("/api/class/joined-classes")
+        .get(`${baseURL}/api/class/joined-classes`)
         .then((result) => {
           setJoinedClasses(result.data.data.classArr);
         })
@@ -198,7 +199,7 @@ const [currentClass,setCurrentClass] = useState('')
       return;
     }
     axios
-      .post("/api/class/genrate-timetable", {config,subjects,title:tableName,classCode:classes})
+      .post(`${baseURL}/api/class/genrate-timetable`, {config,subjects,title:tableName,classCode:classes})
       .then((result) => {
         const message = result.data.message || "Timetable Generated"
         console.log(message)

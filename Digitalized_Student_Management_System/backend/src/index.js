@@ -4,7 +4,8 @@ import { app } from "./app.js";
 import cors from 'cors'
 
 app.use(cors({
-    origin: ["https://academix-ruby.vercel.app", "http://localhost:5173","http://localhost:5174"]
+    origin: ["https://academix-ruby.vercel.app", "http://localhost:5173","http://localhost:5174"],
+    credentials:true
 }));
 
 config({path:"./.env"})

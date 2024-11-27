@@ -13,10 +13,11 @@ function AttendanceCard({ date, name, fileUrl }) {
     day: "numeric",
     year: "numeric",
   });
+  const baseURL = import.meta.env.VITE_BACKEND_URL;
 
   const downloadFile = () => {
     axios
-      .post("/api/class/download-assignment", {
+      .post(`${baseURL}/api/class/download-assignment`, {
         url: fileUrl,
       })
       .then((result) => {

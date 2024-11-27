@@ -23,6 +23,7 @@ function SignUp() {
   const [images, setImages] = useState([]);
   const dispatch = useDispatch();
   const navigate = useNavigate();
+  const baseURL = import.meta.env.VITE_BACKEND_URL;
 
   const switchImage = () => {
     switch (role) {
@@ -78,7 +79,7 @@ function SignUp() {
         formData.append("photo", image);
       });
       axios
-        .post("/api/student/register", formData, {
+        .post(`${baseURL}/api/student/register`, formData, {
           headers: {
             "Content-Type": "multipart/form-data",
           },
@@ -134,7 +135,7 @@ function SignUp() {
       }
 
       axios
-        .post("/api/faculty/register", {
+        .post(`${baseURL}/api/faculty/register`, {
           username: username.toLowerCase(),
           email: email,
           password: password,

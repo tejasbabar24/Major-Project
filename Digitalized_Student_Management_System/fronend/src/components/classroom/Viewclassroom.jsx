@@ -19,6 +19,7 @@ function Viewclassroom() {
   const classData = useSelector((state) => state.class.classData);
   const userData = useSelector((state) => state.auth.userData);
   const [classInfo, setClassInfo] = useState({});
+  const baseURL = import.meta.env.VITE_BACKEND_URL;
 
   useEffect(() => {
     if (classData && classData.length > 0) {
@@ -29,7 +30,7 @@ function Viewclassroom() {
 
   useEffect(() => {
     axios
-      .post("/api/class/joined-students", { classCode: classId })
+      .post(`${baseURL}/api/class/joined-students`, { classCode: classId })
       .then((result) => {
         setStudents(result.data.data.students);
       })
@@ -52,7 +53,7 @@ function Viewclassroom() {
     formData.append("attachment", image);
 
     axios
-      .post("/api/class/post-assignment", formData)
+      .post(`${baseURL}/api/class/post-assignment`, formData)
       .then((result) => {
         const message = result.data.data.message
         // toast.success(message || "Assignment Posted!",
