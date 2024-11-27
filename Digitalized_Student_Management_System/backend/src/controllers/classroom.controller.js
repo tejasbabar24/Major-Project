@@ -21,7 +21,7 @@ const generateClassCode = async () => {
 
 }
 
-const generateTimetable = asyncHandler(async (req, res, next) => {
+const generateTimetable = asyncHandler(async (req, res, next) => {``
     const { config, subjects,title,classCode} = req.body;
 
     if (!config || !subjects || subjects.length === 0) {

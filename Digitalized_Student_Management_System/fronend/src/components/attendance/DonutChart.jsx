@@ -16,7 +16,7 @@ function DonutChart({ myAttendance, selectedClassDates }) {
 
   // Function to count the number of "Present" entries in the myAttendance array
   const countAttendance = (attendanceArray) => {
-    return attendanceArray.filter((item) => item.Enrollment_Number === userData.username).length;
+    return attendanceArray.filter((item) => item.Name === userData.username).length;
   };
 
   useEffect(() => {

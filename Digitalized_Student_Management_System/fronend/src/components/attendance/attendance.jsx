@@ -79,7 +79,7 @@ const handleParseFromUrl = (csvUrl) => {
       skipEmptyLines: true,
       complete: (results) => {
         const foundData = results.data.find(
-          (item) => item.Enrollment_Number === userData.username
+          (item) => item.Name === userData.username.toLowerCase()
         );
         console.log("Found Data:", foundData);
 
