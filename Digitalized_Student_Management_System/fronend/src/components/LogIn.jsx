@@ -52,7 +52,7 @@ function LogIn() {
     setLoading(true);
 
     const loginEndpoint =
-      role === "Student" ? "/api/student/login" : role === "Teacher" ? "faculty/login" : null;
+      role === "Student" ? "student/login" : role === "Teacher" ? "faculty/login" : null;
 
     if (!loginEndpoint) {
       toast.error("Please select a valid role before logging in.", { autoClose: 3000 });
@@ -67,7 +67,7 @@ function LogIn() {
     }
 
     axios
-      .post(`https://major-project-y6c7.onrender.com${loginEndpoint}`, {
+      .post(`/api/${loginEndpoint}`, {
         username: username.toLowerCase(),
         password,
       })
