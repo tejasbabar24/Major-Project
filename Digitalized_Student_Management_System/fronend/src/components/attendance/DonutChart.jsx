@@ -37,9 +37,11 @@ function DonutChart({ myAttendance, selectedClassDates }) {
       type: 'gradient',
     },
     dataLabels: {
+      
       enabled: true,
       formatter: function (val) {
-        return val + "%"
+        const present =  countAttendance(myAttendance);
+        return present > 0 ? val + "%": 0 +"%"
       },
       
     },
