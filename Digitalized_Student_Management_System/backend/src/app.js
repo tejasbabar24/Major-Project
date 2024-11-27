@@ -6,7 +6,7 @@ import cookieParser from "cookie-parser";
 const app = express()
 
 app.use(cors({
-    origin: process.env.CORS_ORIGIN,
+    origin: "https://academix-ruby.vercel.app",
     credentials: true
 }))
 
