@@ -9,15 +9,12 @@ import Toolbar from "@mui/material/Toolbar";
 import Typography from "@mui/material/Typography";
 import Divider from "@mui/material/Divider";
 import { IconButton, InputLabel, List, ListItem, ListItemIcon, ListItemText,  useMediaQuery } from "@mui/material";
-import { Table, TableHeader, TableColumn, TableBody, TableRow, TableCell } from "@nextui-org/react";
 import MenuIcon from "@mui/icons-material/Menu";
 import Buttons from "@mui/material/Button";
 import { MdOutlineAdd } from "react-icons/md";
-import DragAndDropFileUpload from "../dragNdrop/DragNdrop.jsx";
 import { useSelector } from "react-redux";
 import { Select, SelectItem } from "@nextui-org/react";
 import user from "../../assets/classCards/user.png";
-import TimetableImg from './TimetableImg.png'
 import AttendanceCard from "../attendance/attendanceCard.jsx";
 import {Input} from "@nextui-org/react";
 import {Checkbox} from "@nextui-org/react";
@@ -75,6 +72,7 @@ export default function Timetable() {
   const [parsedData, setParsedData] = React.useState([]); // State to store parsed CSV data
   const [timeSlots , setTimeSlots] = React.useState([]);
 const [processedUrls, setProcessedUrls] = useState([]);
+const [currentClass,setCurrentClass] = useState('')
 
   const handleClassChange = (event) => setClasses(event.target.value);
   const toggleDrawer = () => setOpen(!open);
@@ -143,32 +141,34 @@ const [processedUrls, setProcessedUrls] = useState([]);
   }
   };
 
-  //  useEffect(() => { will be rendered afterwards
-  //   if (userData.role === "Student") { 
+   useEffect(() => { 
+    if (userData.role === "Student") { 
   
-  //     const selectedClassData = joinedClasses.find(
-  //       (item) => item.classname === selectedClass?.toLowerCase()
-  //     );
+      const selectedClassData = joinedClasses.find(
+        (item) => item.classCode === currentClass?.toLowerCase()
+      );
   
-  //     if (selectedClassData && selectedClassData.timetable?.length > 0) {
-  //       selectedClassData.timetable.forEach((item) => {
-  //         if (item.attachment) {
-  //           handleParseFromUrl(item.attachment);
-  //         }
-  //       });
-  //     }
-  //   }
-  // }, [joinedClasses]);
+      if (selectedClassData && selectedClassData.timetable?.length > 0) {
+        selectedClassData.timetable.forEach((item) => {
+          if (item.attachment) {
+            handleParseFromUrl(item.attachment);
+          }
+        });
+      }
+    }
+  }, [joinedClasses,currentClass]);
 
-  // Example usage of CSV URL (you can replace this with a URL or trigger it differently)
-  useEffect(() => {
-    handleParseFromUrl("http://res.cloudinary.com/acadamix/raw/upload/v1732610445/TYFS.csv" );
-  }, []); // Run on component mount
+  useEffect(()=>{
+    
+    setTimeSlots([])
+    setParsedData([])
+    setProcessedUrls([])
+  },[currentClass])
 
   if (userData.role === "Teacher") {
     React.useEffect(() => {
       axios
-        .get("http://localhost:8000/class/created-classes")
+        .get("/api/class/created-classes")
         .then((result) => {
           setCreatedClasses(result.data.data.classes);
         })
@@ -179,7 +179,7 @@ const [processedUrls, setProcessedUrls] = useState([]);
   } else if (userData.role === "Student") {
     React.useEffect(() => {
       axios
-        .get("http://localhost:8000/class/joined-classes")
+        .get("/api/class/joined-classes")
         .then((result) => {
           setJoinedClasses(result.data.data.classArr);
         })
@@ -198,7 +198,7 @@ const [processedUrls, setProcessedUrls] = useState([]);
       return;
     }
     axios
-      .post("http://localhost:8000/class/genrate-timetable", {config,subjects,title:tableName,classCode:classes})
+      .post("/api/class/genrate-timetable", {config,subjects,title:tableName,classCode:classes})
       .then((result) => {
         const message = result.data.message || "Timetable Generated"
         console.log(message)
@@ -413,8 +413,14 @@ const [processedUrls, setProcessedUrls] = useState([]);
       );
     } 
     if (role === "Student" ) {
+      if(!currentClass){
+        return <div>Please select class to view timetable</div>
+      }
+      if(parsedData.length < 1 && currentClass){
+        return <div>No Timetable Available</div>
+      }
       return (
-        <div className=" p-10">
+        <div className="p-10">
             <table className="min-h-[400px] w-full bg-white p-4 shadow-lg rounded-lg border border-gray-200">
                 <thead className="border">
                   <tr >
@@ -454,7 +460,6 @@ const [processedUrls, setProcessedUrls] = useState([]);
                     ))
                   }
                 </div>
-                
          </div>
 
 
@@ -513,7 +518,7 @@ const [processedUrls, setProcessedUrls] = useState([]);
             </ListItem>
           )}
           <Typography variant="h6" sx={{ textAlign: "center", paddingTop: 2 }}>
-            Your Timetables
+            Your Classes
           </Typography>
           {role === "Teacher" ?
           <ListItem className="hover:bg-gray-100 cursor-pointer" onClick={()=>{ setselectedClass('classes'), isSmallScreen? toggleDrawer() :null}}>
@@ -524,10 +529,13 @@ const [processedUrls, setProcessedUrls] = useState([]);
           </ListItem>:null}
 
           {joinedClasses.map((item) => (
+
+               
                 <ListItem
                   key={item.classCode}
                   className="hover:bg-gray-100 cursor-pointer"
                   onClick={() =>{
+                    setCurrentClass(item.classCode.toLowerCase())
                     setselectedClass('classes')
                     isSmallScreen ?  toggleDrawer() : null 
                   }}

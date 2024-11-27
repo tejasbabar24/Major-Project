@@ -226,7 +226,7 @@ useEffect(()=>{
   if (userData.role === "Teacher") {
     useEffect(() => {
       axios
-        .get("http://localhost:8000/class/created-classes")
+        .get("/api/class/created-classes")
         .then((result) => {
           setCreatedClasses(result.data.data.classes);
         })
@@ -237,7 +237,7 @@ useEffect(()=>{
   } else if (userData.role === "Student") {
     useEffect(() => {
       axios
-        .get("http://localhost:8000/class/joined-classes")
+        .get("/api/class/joined-classes")
         .then((result) => {
           setJoinedClasses(result.data.data.classArr);
         })

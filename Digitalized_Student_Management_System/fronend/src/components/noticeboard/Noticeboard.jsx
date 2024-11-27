@@ -59,14 +59,14 @@ export default function Noticeboard() {
   useEffect(() => {
     if (userData.role === "Teacher") {
       axios
-        .get("http://localhost:8000/class/created-classes")
+        .get("/api/class/created-classes")
         .then((result) => {
           setCreatedClasses(result.data.data.classes);
         })
         .catch((err) => console.log(err));
     } else if (userData.role === "Student") {
       axios
-        .get("http://localhost:8000/class/joined-classes")
+        .get("/api/class/joined-classes")
         .then((result) => {
           setJoinedClasses(result.data.data.classArr);
         })
@@ -103,7 +103,7 @@ export default function Noticeboard() {
     formData.append("attachment", uploadFiles);
     setLoading(true)
     axios
-      .post("http://localhost:8000/class/notice", formData)
+      .post("/api/class/notice", formData)
       .then((result) => {
         const message = result.data.message || "Notice Created"
         toast.success(message, {

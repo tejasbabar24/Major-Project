@@ -44,7 +44,7 @@ function Home() {
     form.append("profile",profile)
     if (profile) {
       axios
-        .patch(`http://localhost:8000/${setProfileEndpoint}`, 
+        .patch(`/api/${setProfileEndpoint}`, 
             form
         )
         .then((result) => {
@@ -74,7 +74,7 @@ function Home() {
     }
 
     axios
-      .patch(`http://localhost:8000/${updateEndpoint}`, {
+      .patch(`/api/${updateEndpoint}`, {
         username: formData.username.toLowerCase(),
         email:formData.email,
       })
@@ -113,7 +113,7 @@ function Home() {
 
   const handleLogout = () => {
     const endpoint = userData.role === "Student" ? '/student/logout' : '/faculty/logout';
-    axios.post(`http://localhost:8000${endpoint}`)
+    axios.post(`/api${endpoint}`)
       .then(result => {
         console.log(result);
         navigate('/');
