@@ -98,8 +98,14 @@ function DonutChart({ myAttendance, selectedClassDates }) {
       id="chart"
       className=" flex-col rounded-lg flex items-center justify-center h-full w-full p-4"
     >
+    { selectedClassDates >0 ? <>
       <Chart options={options} series={series} type="donut" width="100%" />
       Total - {selectedClassDates} Lectures
+      </>:
+      <div>
+        THIS CLASS DOESNT CONDUCT ANY  LECTURES
+      </div>
+    }
     </div>
   );
 }
