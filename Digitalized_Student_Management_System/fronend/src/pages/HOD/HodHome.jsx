@@ -14,7 +14,7 @@ import axios from 'axios';
 import { IoCameraOutline, IoCloseSharp } from "react-icons/io5";
 import {Input} from "@nextui-org/react";
 import { FaUserEdit } from "react-icons/fa";
-import { login } from '../../store/authSlice';
+import { login, logout } from '../../store/authSlice';
 import { toast, ToastContainer } from 'react-toastify';
 import "react-toastify/dist/ReactToastify.css";
 
@@ -30,6 +30,9 @@ function Home() {
     username: userData.username,
     email: userData.email,
   });
+  const baseURL = import.meta.env.VITE_BACKEND_URL;
+  axios.defaults.withCredentials = true;
+
 
 
   const handleChange = (e) => {
@@ -44,7 +47,7 @@ function Home() {
     form.append("profile",profile)
     if (profile) {
       axios
-        .patch(`/api/${setProfileEndpoint}`, 
+        .patch(`${baseURL}/api/${setProfileEndpoint}`, 
             form
         )
         .then((result) => {
@@ -74,7 +77,7 @@ function Home() {
     }
 
     axios
-      .patch(`/api/${updateEndpoint}`, {
+      .patch(`${baseURL}/api/${updateEndpoint}`, {
         username: formData.username.toLowerCase(),
         email:formData.email,
       })
@@ -113,9 +116,10 @@ function Home() {
 
   const handleLogout = () => {
     const endpoint = userData.role === "Student" ? '/student/logout' : '/faculty/logout';
-    axios.post(`/api${endpoint}`)
+    axios.post(`${baseURL}/api${endpoint}`)
       .then(result => {
         console.log(result);
+        dispatch(logout())
         navigate('/');
       })
       .catch(err => {
