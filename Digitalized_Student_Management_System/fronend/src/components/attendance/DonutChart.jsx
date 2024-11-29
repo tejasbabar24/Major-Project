@@ -41,7 +41,7 @@ function DonutChart({ myAttendance, selectedClassDates }) {
       enabled: true,
       formatter: function (val) {
         const present =  countAttendance(myAttendance);
-        return present > 0 ? val + "%": 0 +"%"
+        return present > 0 ? val.toFixed(2) + "%": 0 +"%"
       },
       
     },
