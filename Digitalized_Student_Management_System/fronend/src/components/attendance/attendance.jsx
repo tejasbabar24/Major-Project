@@ -62,6 +62,8 @@ export default function Attendance() {
 const [processedUrls, setProcessedUrls] = useState([]);
 const [loading,setLoading] = useState(false)
 const baseURL = import.meta.env.VITE_BACKEND_URL;
+axios.defaults.withCredentials = true;
+
 
 const isSmallScreen = useMediaQuery("(max-width: 768px)"); // Use media query for small screens
 

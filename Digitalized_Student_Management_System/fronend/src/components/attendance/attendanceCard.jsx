@@ -14,6 +14,8 @@ function AttendanceCard({ date, name, fileUrl }) {
     year: "numeric",
   });
   const baseURL = import.meta.env.VITE_BACKEND_URL;
+  axios.defaults.withCredentials = true;
+
 
   const downloadFile = () => {
     axios

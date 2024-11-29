@@ -76,6 +76,8 @@ const [processedUrls, setProcessedUrls] = useState([]);
   const [currentClass,setCurrentClass] = useState('')
 
   const baseURL = import.meta.env.VITE_BACKEND_URL;
+  axios.defaults.withCredentials = true;
+
 
   const clearFields = ()=>{
     setFiles([])

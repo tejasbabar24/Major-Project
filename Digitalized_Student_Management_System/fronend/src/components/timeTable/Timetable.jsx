@@ -74,6 +74,8 @@ export default function Timetable() {
 const [processedUrls, setProcessedUrls] = useState([]);
 const [currentClass,setCurrentClass] = useState('')
 const baseURL = import.meta.env.VITE_BACKEND_URL;
+axios.defaults.withCredentials = true;
+
 
   const handleClassChange = (event) => setClasses(event.target.value);
   const toggleDrawer = () => setOpen(!open);

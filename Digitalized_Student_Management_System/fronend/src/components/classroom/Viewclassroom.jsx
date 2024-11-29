@@ -20,6 +20,8 @@ function Viewclassroom() {
   const userData = useSelector((state) => state.auth.userData);
   const [classInfo, setClassInfo] = useState({});
   const baseURL = import.meta.env.VITE_BACKEND_URL;
+  axios.defaults.withCredentials = true;
+
 
   useEffect(() => {
     if (classData && classData.length > 0) {

@@ -7,6 +7,8 @@ import "react-toastify/dist/ReactToastify.css";
 function Announcements({ classData, assignment }) {
   const [fileType, setFileType] = useState("");
   const baseURL = import.meta.env.VITE_BACKEND_URL;
+  axios.defaults.withCredentials = true;
+
 
   const formattedDate = new Date(assignment.createdAt).toLocaleDateString(
     "en-US",

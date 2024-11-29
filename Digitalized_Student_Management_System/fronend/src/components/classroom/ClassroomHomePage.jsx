@@ -68,6 +68,7 @@ export default function ClassroomHomePage() {
   const userData = useSelector((state) => state.auth.userData);
   const dispatch = useDispatch();
   const navigate = useNavigate();
+  axios.defaults.withCredentials = true;
 
   useEffect(() => {
     const fetchClasses = async () => {
@@ -98,7 +99,7 @@ export default function ClassroomHomePage() {
   const handleCreateClass = async (e) => {
     e.preventDefault();
     if (!classname || !subject || !section || !year) {
-      toast.error("All fields are required!");
+      toast.error("All fields are required!",{autoClose:1500});
       return;
     }
 
@@ -113,18 +114,18 @@ export default function ClassroomHomePage() {
         }
       );
       setClasses((prev) => [...prev, data.data]);
-      toast.success(data.message || "Class created!");
+      toast.success(data.message || "Class created!",{autoClose:1500});
       clearFields();
       setJoinDrawerOpen(false);
     } catch (error) {
-      toast.error(error.response?.data?.message || "Failed to create class!");
+      toast.error(error.response?.data?.message || "Failed to create class!",{autoClose:1500});
     }
   };
 
   const handleJoinClass = async (e) => {
     e.preventDefault();
     if (!joinId) {
-      toast.error("Class ID is required!");
+      toast.error("Class ID is required!",{autoClose:1500});
       return;
     }
 
@@ -137,11 +138,11 @@ export default function ClassroomHomePage() {
         }
       );
       setClasses((prev) => [...prev, data.data.classroom]);
-      toast.success(data.message || "Joined class!");
+      toast.success(data.message || "Joined class!",{autoClose:1500});
       clearFields();
       setJoinDrawerOpen(false);
     } catch (error) {
-      toast.error(error.response?.data?.message || "Failed to join class!");
+      toast.error(error.response?.data?.message || "Failed to join class!",{autoClose:1500});
     }
   };
 

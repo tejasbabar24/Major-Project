@@ -52,6 +52,8 @@ export default function Noticeboard() {
   const [createdClasses, setCreatedClasses] = React.useState([]);
   const [files, setFiles] = React.useState([]);
   const baseURL = import.meta.env.VITE_BACKEND_URL;
+  axios.defaults.withCredentials = true;
+
 
   const handleFilesUploaded = (files) => {  
     setUploadedFiles(files[0]);

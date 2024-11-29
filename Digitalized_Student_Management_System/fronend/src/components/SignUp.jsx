@@ -24,6 +24,8 @@ function SignUp() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const baseURL = import.meta.env.VITE_BACKEND_URL;
+  axios.defaults.withCredentials = true;
+
 
   const switchImage = () => {
     switch (role) {
@@ -49,7 +51,7 @@ function SignUp() {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-
+    setLoading(true)
     if (role === "Student") {
       setLoading(true);
       if (!username || !email || !password || !images) {
@@ -124,7 +126,6 @@ function SignUp() {
         });
     } else if (role === "Teacher") {
       setLoading(true);
-
       if (!username || !email || !password) {
         toast.error("All fields are required.", {
           position: "top-right",
@@ -217,6 +218,21 @@ function SignUp() {
           </h2>
 
           <form onSubmit={handleSubmit} className="space-y-6">
+           {/* Role Selection for Mobile */}
+           <div className="lg:hidden space-y-2">
+              <label htmlFor="role" className="block text-gray-600 text-sm font-medium">
+                Select Role
+              </label>
+              <select
+                id="role"
+                value={role}
+                onChange={(e) => setRole(e.target.value)}
+                className="w-full border border-gray-300 rounded-md py-2 px-3 focus:outline-none focus:ring-2 focus:ring-blue-400"
+              >
+                <option value="Student">Student</option>
+                <option value="Teacher">Teacher</option>
+              </select>
+            </div>
             {/* Username */}
             <div className="relative">
               <i className="bx bx-user absolute left-3 top-3 text-gray-400"></i>
