@@ -151,7 +151,7 @@ const generateTimetable = asyncHandler(async (req, res, next) => {``
             $push: {
                 timetable: {
                     title,
-                    attachment: uploaded.url,
+                    attachment: uploaded.secure_url,
                     createdAt: new Date(),
                 },
             },
@@ -291,7 +291,7 @@ const postAssignment = asyncHandler(async (req, res, next) => {
             $push: {
                 assignment: {
                     title,
-                    attachment: uploaded.url,
+                    attachment: uploaded.secure_url,
                     createdAt: new Date(),
                 },
             },
@@ -361,7 +361,7 @@ const postNotice = asyncHandler(async (req, res, next) => {
             $push: {
                 notice: {
                     description,
-                    attachment: uploaded.url,
+                    attachment: uploaded.secure_url,
                     createdAt: new Date(),
                 },
             },
@@ -420,7 +420,7 @@ const postResult = asyncHandler(async (req, res, next) => {
             $push: {
                 result: {
                     description:uploaded.public_id,
-                    attachment: uploaded?.url || "",
+                    attachment: uploaded?.secure_url || "",
                     createdAt: new Date(),
                 },
             },

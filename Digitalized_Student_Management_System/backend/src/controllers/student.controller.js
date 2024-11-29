@@ -62,7 +62,7 @@ const registerUser = asyncHandler(async (req, res, next) => {
             if (!photo) {
                 throw new ApiError(500, "There was an issue uploading the file. Please try again.")
             }
-            return photo.url;
+            return photo.secure_url;
         })
     );
 
@@ -253,7 +253,7 @@ const updateAccountDetails = asyncHandler(async (req, res, next) => {
 
     if (profileLocalPath) {
         const profile = await uploadOnCloudinary(profileLocalPath);
-         profileUrl = profile.url;
+         profileUrl = profile.secure_url;
     }
 
     const user = await Student.findByIdAndUpdate(
@@ -296,7 +296,7 @@ const setProfilePhoto = asyncHandler(async (req, res, next) => {
         req.user?._id,
         {
             $set: {
-                profile: profile.url
+                profile: profile.secure_url
             }
         },
         { new: true }

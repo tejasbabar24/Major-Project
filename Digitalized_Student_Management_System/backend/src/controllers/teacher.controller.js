@@ -210,7 +210,7 @@ const updateAccountDetails = asyncHandler(async (req, res,next) => {
 
     if (profileLocalPath) {
         const profile = await uploadOnCloudinary(profileLocalPath);
-         profileUrl = profile.url;
+         profileUrl = profile.secure_url;
     }
 
     const user = await Teacher.findByIdAndUpdate(
@@ -252,7 +252,7 @@ const setProfilePhoto = asyncHandler(async (req, res,next) => {
         req.user?._id,
         {
             $set: {
-                profile: profile.url
+                profile: profile.secure_url
             }
         },
         { new: true }
