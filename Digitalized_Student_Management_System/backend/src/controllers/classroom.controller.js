@@ -345,16 +345,20 @@ const postNotice = asyncHandler(async (req, res, next) => {
         return next(new ApiError(500, "There was an error while uploading the file. Please try again later."));
     }
 
-    const username=req.user?._username;
+    const username=req.user?.username;
+
     if(!username){
         return next(new ApiError(400,"User is not authenticated or invalid"))
     }
 
+    console.log(classname)
+    console.log(description)
+    console.log(uploaded.secure_url)
     const classroom = await Classroom.findOneAndUpdate(
         { 
             $and: [
                 { classname: classname }, 
-                { owner: req.user?._username }
+                { owner: username }
             ] 
         },
         {
