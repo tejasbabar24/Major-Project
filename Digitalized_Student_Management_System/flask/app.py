@@ -9,6 +9,7 @@ import os
 import cloudinary
 import cloudinary.uploader
 import cloudinary.api
+import threading
 from datetime import datetime
 from dotenv import load_dotenv
 from flask_cors import CORS
@@ -16,13 +17,14 @@ from io import BytesIO
 from PIL import Image
 from flask import Flask, request, jsonify
 from pymongo import MongoClient
+from concurrent.futures import ThreadPoolExecutor
 
 load_dotenv()
 
 flask = Flask(__name__)
 CORS(flask,supports_credentials=True, origins=["http://localhost:5173","http://localhost:8000","https://major-project-y6c7.onrender.com","https://academix-ruby.vercel.app"])
 
-app = FaceAnalysis(providers=['CPUExecutionProvider']) 
+app = FaceAnalysis(providers=['CUDAExecutionProvider'])
 app.prepare(ctx_id=0, det_size=(640, 640))  
 
 cloudinary.config(
@@ -107,108 +109,106 @@ def compute_average_encoding_from_images(images):
         return None
 
 @flask.route('/face_recognition',methods=['POST'])
+
 def recognize_faces_in_photos():
-    
     current_date = datetime.now().strftime("%Y-%m-%d")
     csv_file = output_path / f"recognized_{current_date}.csv"
-    Code = request.form.get('classCode')    
+    Code = request.form.get('classCode')
     
-    recognized_students = set()    
+    recognized_students = set()
+    lock = threading.Lock()  # Lock to ensure thread-safe updates to the set
 
     students = db.students.find({"classCode": Code})
-    
     known_encodings = {}
 
     for student in students:
-        if 'encoding' in student and student['encoding']:  # Ensure 'encoding' exists and is not empty
-            if isinstance(student['encoding'], list) and len(student['encoding']) > 0:
-                encoding = student['encoding'][0]  # Take the first encoding
-                if isinstance(encoding, (list, np.ndarray)):  # Validate that the encoding is array-like
-                    if 'username' in student:  # Ensure 'username' exists
-                        person_name = student['username']
+        if 'encoding' in student and student['encoding']:
+            encoding = student['encoding'][0]
+            if isinstance(encoding, (list, np.ndarray)) and 'username' in student:
+                known_encodings[student['username']] = np.array(encoding)
 
-                        # Store the encoding in the known_faces dictionary
-                        known_encodings[person_name] = np.array(encoding)
-
-    # Ensure the data is sent as JSON
     if 'image' not in request.files:
         return jsonify({"error": "No files found in request"}), 400
 
-    # Extract the photo paths
     group_photos = request.files.getlist('image')
     if not group_photos:
         return jsonify({"error": "No photos in the files array"}), 400
-    # Process each photo
-    for photo_file in group_photos:
-        start_time = time.time()
-        # Read file content into an OpenCV-compatible format
-        file_content = photo_file.read()  # Read the file bytes
-        np_arr = np.frombuffer(file_content, np.uint8)
-        image = cv2.imdecode(np_arr, cv2.IMREAD_COLOR)  # Decode the image
 
-        if image is None:
-            print(f"Error reading image: {photo_file.filename}")
-            continue
+    def process_photo(photo_file):
+        try:
+            start_time = time.time()
+            file_content = photo_file.read()
+            np_arr = np.frombuffer(file_content, np.uint8)
+            image = cv2.imdecode(np_arr, cv2.IMREAD_COLOR)
 
-        # Detect faces in the group photo
-        faces = app.get(image)  # Assuming `app.get()` detects faces
-        if not faces:
-            print(f"No faces detected in {photo_file.filename}")
-            continue
+            if image is None:
+                print(f"Error reading image: {photo_file.filename}")
+                return
 
-        for face in faces:
-            group_embedding = face.embedding
-            matched = False
+            faces = app.get(image)
+            if not faces:
+                print(f"No faces detected in {photo_file.filename}")
+                return
 
-            # Compare with known encodings
-            for person_name, known_embedding in known_encodings.items():
-                # Compute cosine similarity
-                similarity = np.dot(known_embedding, group_embedding) / (
-                    np.linalg.norm(known_embedding) * np.linalg.norm(group_embedding)
-                )
-                if similarity > 0.6:  # Threshold for match
-                    print(f"Match found for {person_name} with similarity {similarity:.2f}")
-                    recognized_students.add(person_name)
-                    matched = True
-                    break
+            for face in faces:
+                group_embedding = face.embedding
+                matched = False
 
-            if not matched:
-                print("Face detected but no match found.")
+                for person_name, known_embedding in known_encodings.items():
+                    similarity = np.dot(known_embedding, group_embedding) / (
+                        np.linalg.norm(known_embedding) * np.linalg.norm(group_embedding)
+                    )
+                    if similarity > 0.6:
+                        with lock:
+                            recognized_students.add(person_name)
+                        print(f"Face matched! {person_name} recognized in {photo_file.filename} with similarity {similarity:.2f}")  # New message
+                        matched = True
+                        break
 
-        end_time = time.time()
-        print(f"Time taken for {photo_file}: {end_time - start_time:.2f} seconds")
+                if not matched:
+                    print("Face detected but no match found.")
 
-    
+            print(f"Time taken for {photo_file.filename}: {time.time() - start_time:.2f} seconds")
+
+        except Exception as e:
+            print(f"Error processing {photo_file.filename}: {e}")
+
+    # Use ThreadPoolExecutor to process photos concurrently
+    with ThreadPoolExecutor(max_workers=4) as executor:
+        executor.map(process_photo, group_photos)
+
+    # Write results to CSV
     with csv_file.open('w', newline='') as f:
         writer = csv.writer(f)
-        writer.writerow(["Date","Name", "Timestamp"])
+        writer.writerow(["Date", "Name", "Timestamp"])
         timestamp = datetime.now().strftime("%H:%M:%S")
-        for student in recognized_students:
-            writer.writerow([current_date,student, timestamp])
+        for student in sorted(recognized_students):
+            writer.writerow([current_date, student, timestamp])
 
     upload_result = cloudinary.uploader.upload(
-    csv_file,
-    resource_type="raw",  
-    public_id=current_date
+        str(csv_file),
+        resource_type="raw",
+        public_id=current_date
     )
     os.unlink(csv_file)
 
     filename = os.path.splitext(os.path.basename(csv_file))[0]
     attendance_record = {
-    "filename": filename,  
-    "attachment": upload_result["secure_url"], 
-    "createdAt": datetime.now()
-    }        
+        "filename": filename,
+        "attachment": upload_result["secure_url"],
+        "createdAt": datetime.now()
+    }
 
-    update_result=db.classrooms.update_one(
-    {"classCode": Code}, {"$push": {"attendance":attendance_record }})
+    db.classrooms.update_one(
+        {"classCode": Code}, {"$push": {"attendance": attendance_record}}
+    )
 
     response = {
-            "status": "success",
-            "message": "File uploaded and attendance record added successfully.",
-        }    
-    
-    return jsonify(f"Recognition completed. Recognized names saved to {csv_file}")
+        "status": "success",
+        "message": "File uploaded and attendance record added successfully."
+    }
+
+    return jsonify(response)
 
 if __name__ == "__main__":
     flask.run(debug=True,port=5001)
