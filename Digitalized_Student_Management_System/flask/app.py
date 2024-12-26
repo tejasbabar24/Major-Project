@@ -5,12 +5,14 @@ from flask_cors import CORS
 from PIL import Image
 from pymongo import MongoClient
 from insightface.app import FaceAnalysis  # Focus on minimal model loading
-import onnxruntime  # For ONNX inference
+import onnxruntime  
 import cloudinary
 import cloudinary.uploader
 import cloudinary.api
 import requests
 from pathlib import Path
+import csv
+from time import time
 from datetime import datetime
 from dotenv import load_dotenv
 from io import BytesIO
