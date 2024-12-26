@@ -25,14 +25,14 @@
 # # HTTP requests
 # requests==2.31.0
 
-opencv-python-headless==4.8.0.74  # Avoid the full OpenCV library to save space
-numpy==1.24.3  # A lighter version compatible with insightface
-insightface # Choose a stable version
+numpy==1.24.3
+insightface==0.7
+onnxruntime==1.16.0
+flask==2.2.2
+flask-cors==3.0.10
+pillow==9.5.0
+pymongo==4.3.3
 requests==2.31.0
 python-dotenv==1.0.0
-Flask==2.2.5
-flask-cors==3.0.10
-onnxruntime==1.16.0  # Use only for inference
-pillow==9.4.0
-pymongo==4.5.0
-cloudinary==1.33.0
+opencv-python-headless==4.8.0.76
+cloudinary==1.31.0
