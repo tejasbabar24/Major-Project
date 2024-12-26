@@ -210,4 +210,4 @@ def recognize_faces_in_photos():
     return jsonify(response)
 
 if __name__ == "__main__":
-    flask.run(debug=True,port=5001)
+    flask.run(debug=True,port=5000)
