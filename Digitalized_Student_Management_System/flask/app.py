@@ -25,7 +25,7 @@ load_dotenv()
 flask = Flask(__name__)
 CORS(flask,supports_credentials=True, origins=["http://localhost:5173","http://localhost:8000","https://major-project-y6c7.onrender.com","https://academix-ruby.vercel.app"])
 
-app = FaceAnalysis(name="retinaface",providers=['CPUExecutionProvider'])
+app = FaceAnalysis(providers=['CPUExecutionProvider'])
 app.prepare(ctx_id=0, det_size=(640, 640))
 
 cloudinary.config(
