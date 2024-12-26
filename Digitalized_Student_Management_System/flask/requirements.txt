@@ -26,7 +26,7 @@
 # requests==2.31.0
 
 opencv-python-headless==4.8.0.74  # Avoid the full OpenCV library to save space
-numpy==1.21.0  # A lighter version compatible with insightface
+numpy  # A lighter version compatible with insightface
 insightface==0.7  # Choose a stable version
 requests==2.31.0
 python-dotenv==1.0.0
