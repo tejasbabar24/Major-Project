@@ -1,22 +1,21 @@
-import cv2
-import csv
 import numpy as np
-import time
-from insightface.app import FaceAnalysis
-from pathlib import Path
-import requests
-import os
+import cv2  # Lightweight OpenCV for image decoding
+from flask import Flask, request, jsonify
+from flask_cors import CORS
+from PIL import Image
+from pymongo import MongoClient
+from insightface.app import FaceAnalysis  # Focus on minimal model loading
+import onnxruntime  # For ONNX inference
 import cloudinary
 import cloudinary.uploader
 import cloudinary.api
-import threading
+import requests
+from pathlib import Path
 from datetime import datetime
 from dotenv import load_dotenv
-from flask_cors import CORS
 from io import BytesIO
-from PIL import Image
-from flask import Flask, request, jsonify
-from pymongo import MongoClient
+import os
+import threading
 from concurrent.futures import ThreadPoolExecutor
 
 load_dotenv()
