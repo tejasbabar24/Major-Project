@@ -35,3 +35,4 @@ flask-cors
 pillow
 pymongo
 cloudinary
+onnxruntime==1.16.0
