@@ -1,22 +1,23 @@
-import cv2
-import csv
 import numpy as np
-import time
-from insightface.app import FaceAnalysis
-from pathlib import Path
-import requests
-import os
+import cv2  # Lightweight OpenCV for image decoding
+from flask import Flask, request, jsonify
+from flask_cors import CORS
+from PIL import Image
+from pymongo import MongoClient
+from insightface.app import FaceAnalysis  # Focus on minimal model loading
+import onnxruntime  
 import cloudinary
 import cloudinary.uploader
 import cloudinary.api
-import threading
+import requests
+from pathlib import Path
+import csv
+from time import time
 from datetime import datetime
 from dotenv import load_dotenv
-from flask_cors import CORS
 from io import BytesIO
-from PIL import Image
-from flask import Flask, request, jsonify
-from pymongo import MongoClient
+import os
+import threading
 from concurrent.futures import ThreadPoolExecutor
 
 load_dotenv()
@@ -24,8 +25,8 @@ load_dotenv()
 flask = Flask(__name__)
 CORS(flask,supports_credentials=True, origins=["http://localhost:5173","http://localhost:8000","https://major-project-y6c7.onrender.com","https://academix-ruby.vercel.app"])
 
-app = FaceAnalysis(providers=['CUDAExecutionProvider'])
-app.prepare(ctx_id=0, det_size=(640, 640))  
+app = FaceAnalysis(providers=['CPUExecutionProvider'])
+app.prepare(ctx_id=0, det_size=(640, 640))
 
 cloudinary.config(
     cloud_name=os.getenv('CLOUDINARY_CLOUD_NAME'),
@@ -211,4 +212,4 @@ def recognize_faces_in_photos():
     return jsonify(response)
 
 if __name__ == "__main__":
-    flask.run(debug=True,port=5001)
+    flask.run(debug=True,port=5000)
