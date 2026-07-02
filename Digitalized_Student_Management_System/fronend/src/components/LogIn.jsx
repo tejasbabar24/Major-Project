@@ -47,7 +47,13 @@ function LogIn() {
   };
 
   axios.defaults.withCredentials = true;
-
+const demo = role === "Student" ? {
+    username: "FS22CO013",
+    password: "12345"
+  } : role==="Teacher" ? {
+    username: "SHREY",
+    password: "12345"
+  } : null;
   const handleSubmit = (e) => {
     e.preventDefault();
     setLoading(true);
@@ -165,13 +171,21 @@ function LogIn() {
                 onChange={(e) => setPassword(e.target.value)}
               />
             </div>
-
+            <div className="flex justify-between">
+              
+            <h1 className="text-xs text-[#4A5C6A]">
+             DEMO :
+             {
+              " "+demo.username +" "+ demo.password
+             }
+            </h1>
             <div className="text-right">
               <button type="button" className="text-[#4A5C6A] text-sm hover:underline">
                 Forgot password?
               </button>
             </div>
-
+            </div>
+          
             {/* Submit Button */}
             <div>
               <Loading show={loading} />
