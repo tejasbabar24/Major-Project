@@ -187,7 +187,7 @@ useEffect(()=>{
     });
 
     axios
-      .post("http://localhost:5001/face_recognition", formData, {
+      .post(`${import.meta.VITE_FLASK_URL}/face_recognition`, formData, {
         headers: {
           "Content-Type": "multipart/form-data",
         },

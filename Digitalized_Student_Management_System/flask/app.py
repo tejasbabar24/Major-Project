@@ -12,7 +12,7 @@ import cloudinary.api
 import requests
 from pathlib import Path
 import csv
-from time import time
+import time
 from datetime import datetime
 from dotenv import load_dotenv
 from io import BytesIO
@@ -36,8 +36,8 @@ cloudinary.config(
 
 client = MongoClient(os.getenv('MONGODB_URI'))
 db = client.acadamix 
-
 output_path= Path("./photos")
+output_path.mkdir(parents=True, exist_ok=True)
 current_date = datetime.now().strftime("%Y-%m-%d")
 
 @flask.route('/reg-encode', methods=['POST'])
