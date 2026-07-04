@@ -66,7 +66,7 @@ const registerUser = asyncHandler(async (req, res, next) => {
         })
     );
 
-    const { data: encodeData } = await axios.post(`${import.meta.VITE_FLASK_URL}/reg-encode`, { img: uploadedphotos });
+    const { data: encodeData } = await axios.post(`${process.env.FLASK_URL}/reg-encode`, { img: uploadedphotos });
 
     if (encodeData.errors && encodeData.errors.length > 0) {
         const errorMessages = encodeData.errors.map(error => error.error || `Error with image: ${error.image_url}`);

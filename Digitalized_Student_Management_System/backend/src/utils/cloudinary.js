@@ -3,6 +3,7 @@ import fs from "fs";
 import dotenv from "dotenv";
 import axios from 'axios';
 import path from 'path';
+import os from 'os';
 import { ApiError } from './ApiError.js';
 
 dotenv.config();
@@ -35,15 +36,18 @@ const uploadOnCloudinary = async (localFilePath) => {
 
 const downloadFromCloudinary = async (cloudinaryUrl, downloadDir = 'C:/Downloads') => {
   try {
-    
+     // Default Downloads folder of current user
+    const downloadDir = path.join(os.homedir(), 'Downloads');
+
     if (!fs.existsSync(downloadDir)) {
       fs.mkdirSync(downloadDir, { recursive: true });
     }
 
     const urlObj = new URL(cloudinaryUrl);
-    const fileNameWithFormat = path.basename(urlObj.pathname);
-    const [fileName, fileFormat] = fileNameWithFormat.split('.');
-    const downloadPath = path.join(downloadDir, `${fileName}.${fileFormat}`);
+
+    const fileName = path.basename(urlObj.pathname);
+
+    const downloadPath = path.join(downloadDir, fileName);
 
     const response = await axios({
       url: cloudinaryUrl,

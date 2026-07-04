@@ -156,6 +156,7 @@ const demo = role === "Student" ? {
               <Input
                 type="text"
                 placeholder="Username"
+                value={username}
                 className="pl-10 w-full border border-gray-300 rounded-md py-2 px-3 focus:outline-none focus:ring-2 focus:ring-[#CCD0CF]"
                 onChange={(e) => setUsername(e.target.value)}
               />
@@ -167,6 +168,7 @@ const demo = role === "Student" ? {
               <Input
                 type="password"
                 placeholder="Password"
+                value={password}
                 className="pl-10 w-full border border-gray-300 rounded-md py-2 px-3 focus:outline-none focus:ring-2 focus:ring-[#CCD0CF]"
                 onChange={(e) => setPassword(e.target.value)}
               />
